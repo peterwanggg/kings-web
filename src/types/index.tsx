@@ -1,7 +1,6 @@
 export interface StoreState {
-    // languageName: string;
-    // enthusiasmLevel: number;
-    contestants: JSON
+    latLon: LatLon,
+    contestants: ContestantEntry[]
 }
 
 export interface ActionType<T extends string> {
@@ -9,7 +8,22 @@ export interface ActionType<T extends string> {
 }
 
 export const INITIAL_STATE: StoreState = {
-    contestants: JSON.parse('""')
+    latLon: {lat: 37.7749, lon:122.4194},
+    contestants: []
+}
+
+export interface ContestantEntry {
+    apiProviderId: string;
+    apiProviderType: string;
+    categoryId: number;
+    contestantId: number;
+    contestantName: string;
+    imageUrl: string;
+}
+
+export type LatLon = {
+    lat: number,
+    lon: number
 }
 
 // export declare type ActionCreatorsMapObject<T> = {
