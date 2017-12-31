@@ -1,7 +1,7 @@
 import { RECEIVE_CONTESTANTS, SUBMIT_BOUT } from '../constants'
 // import { ReceiveContestantsResponseAction } from '../actions/kingsApiActions'
 import { ContestantState, INITIAL_STATE } from '../types/index';
-import * as _ from 'lodash'
+// import * as _ from 'lodash'
 
 // TODO: type action
 export const contestants =
@@ -9,7 +9,8 @@ export const contestants =
         switch (action.type) {
             case RECEIVE_CONTESTANTS:
                 return {
-                    entries: _.values(action.contestants),
+                    // entries: _.values(action.contestants),
+                    entries: action.contestants,
                     challenger: action.contestants[0],
                     currContestantIndex: 1,
                 }

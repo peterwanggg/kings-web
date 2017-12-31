@@ -41,6 +41,7 @@ class AppContainer extends React.Component<AppProps> {
                     currContestantIndex={INITIAL_STATE.contestants.currContestantIndex}
                     contestantsEntries={INITIAL_STATE.contestants.entries}
                     challenger={INITIAL_STATE.contestants.challenger}
+                    categoryType={INITIAL_STATE.categoryType}
                     categories={INITIAL_STATE.categories}
                     categoryId={INITIAL_STATE.categoryId}
 
@@ -55,8 +56,8 @@ class AppContainer extends React.Component<AppProps> {
 export function mapStateToProps(state: StoreState) {
     return {
         latLon: state.latLon,
-        categoryId: state.categoryId,
         categoryType: state.categoryType,
+        categoryId: state.categoryId,
     }
 }
 

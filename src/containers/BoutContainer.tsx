@@ -8,6 +8,7 @@ export function mapStateToProps(state: StoreState, ownProps: BoutProps) {
 
     return {
         latLon: state.latLon,
+        categoryType: state.categoryType,
         categoryId: state.categoryId,
         categories: state.categories,
         contestantsEntries: state.contestants.entries,

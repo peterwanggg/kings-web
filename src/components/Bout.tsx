@@ -1,16 +1,18 @@
 import * as React from 'react';
 import './Hello.css';
-import { SubmitBoutCallType } from '../actions/kingsApiActions';
+import { SubmitBoutCallType, searchContestantsCall } from '../actions/kingsApiActions';
 import { ChangeCategoryIdType } from '../actions/globalPreferenceActions';
 import { ContestantEntry, LatLon, Category } from "../types/index"
 import Contestant from './Contestant';
 import * as _ from 'lodash'
-import Select, { Options, Option } from 'react-select'
+import Select, { Options, Option, Async } from 'react-select'
 import 'react-select/dist/react-select.css';
+import { CATEGORY_TYPE } from '../constants';
 
 export interface BoutProps {
     // global
     latLon: LatLon;
+    categoryType: CATEGORY_TYPE;
     categoryId: number;
     categories: Category[];
 
@@ -24,16 +26,9 @@ export interface BoutProps {
     changeCategoryId: ChangeCategoryIdType;
 }
 
-const transformCategoriesToSelectOptions =
-    (categories: Category[]): Options =>
-        _.map(categories, category => ({
-            value: category.categoryId,
-            label: category.categoryName,
-        })
-        )
-
 const Bout = ({
     latLon,
+    categoryType,
     categoryId,
     categories,
     contestantsEntries,
@@ -47,6 +42,12 @@ const Bout = ({
     return (
         <div>
             <div>
+                <Async
+                    name="challenger"
+                    clearable={false}
+                    valueKey="contestantId" labelKey="contestantName"
+                    loadOptions={(input: string) => searchContestants(
+                        latLon, categoryType, input)} />
                 <Select
                     name="categories"
                     value={categoryId}
@@ -98,6 +99,23 @@ const Bout = ({
     );
 }
 
+
+const searchContestants =
+    (latLon: LatLon, categoryType: CATEGORY_TYPE, searchString: string) => {
+        if (_.isEmpty(searchString) || searchString.length < 2) {
+            return Promise.resolve({ options: [] })
+        }
+        return searchContestantsCall(latLon, categoryType, searchString)
+            .then((entries: ContestantEntry[]) => {
+                return { options: entries }
+            })
+    }
+
+const transformCategoriesToSelectOptions =
+    (categories: Category[]): Options => _.map(categories, category => ({
+        value: category.categoryId,
+        label: category.categoryName
+    }))
 
 
 export default Bout;

@@ -1,7 +1,7 @@
 import { RECEIVE_CONTESTANTS, REQUEST_CONTESTANTS, SUBMIT_BOUT, CATEGORY_TYPE, RECEIVE_CATEGORIES } from '../constants'
 import { ActionType, StoreState, ContestantEntry, LatLon, Category } from '../types/index'
 import { Dispatch } from 'redux'
-// import * as _ from 'lodash'
+import * as _ from 'lodash'
 
 const AUTH_TOKEN = "Basic cGV0ZTo=";
 const KINGS_API_BASE_URL = "http://localhost:8080";
@@ -110,6 +110,18 @@ export const requestCategoriesCall: RequestCategoriesCallType =
                 .then(json => dispatch(receiveCategories(json)))
         }
 
+export const searchContestantsCall: (latLon: LatLon, categoryType: CATEGORY_TYPE, contestantName: string) => Promise<ContestantEntry[]> =
+    (latLon, categoryType, contestantName) =>
+        fetch(
+            KINGS_API_BASE_URL + `/contestants/search?lat=${latLon.lat}&lon=${latLon.lon}&category-type=${categoryType}&contestant-name=${contestantName}`,
+            {
+                method: 'GET',
+                credentials: "same-origin",
+                headers: DEFAULT_HEADERS,
+            })
+            .then(response => response.json())
+            .then(json => _.values(json))
+
 
 /*** LOCAL CALLS **/
 const submitBout: (currContestantIndex: number) => SubmitBoutResponseAction =
@@ -136,7 +148,6 @@ const receiveCategories: (requestCategoriesResponse: Category[]) => ReceiveCateg
         type: RECEIVE_CATEGORIES,
         categories: requestCategoriesResponse,
     })
-
 
 // const requestChallengers = (latLon: LatLon, challengerContestantId: number) => ({
 //     type: REQUEST_CHALLENGERS,
