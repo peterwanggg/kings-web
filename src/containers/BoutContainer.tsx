@@ -1,13 +1,15 @@
-import {   submitBoutCall, requestContestantsCall } from '../actions/kingsApiActions';
-import { StoreState, LatLon } from '../types/index';
+import { submitBoutCall } from '../actions/kingsApiActions';
+import { StoreState } from '../types/index';
 import { connect } from 'react-redux';
 import Bout, { BoutProps } from '../components/Bout'
+import { changeCategoryId } from '../actions/globalPreferenceActions';
 
 export function mapStateToProps(state: StoreState, ownProps: BoutProps) {
 
     return {
-
         latLon: state.latLon,
+        categoryId: state.categoryId,
+        categories: state.categories,
         contestantsEntries: state.contestants.entries,
         challenger: state.contestants.challenger,
         currContestantIndex: state.contestants.currContestantIndex,
@@ -19,17 +21,7 @@ export function mapDispatchToProps(
     ownProps: BoutProps,
 ) {
     return {
-
-        // requestChallengersCall: (latLon: LatLon, challengerContestantId: number) =>
-        //     dispatch(requestChallengersCall(
-        //         ownProps.latLon,
-        //         ownProps.challengerMaybe.contestantId
-        //     )),
-        requestContestantsCall: (latLon: LatLon, categoryId: number) =>
-            dispatch(requestContestantsCall(
-                ownProps.latLon,
-                ownProps.challenger.categoryId
-            )),
+        changeCategoryId: (nextCategoryId: number) => dispatch(changeCategoryId(nextCategoryId)),
         submitBoutCall: (winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
             dispatch(submitBoutCall(
                 winnerContestantId,

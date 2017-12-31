@@ -8,7 +8,7 @@ import logger from 'redux-logger';
 import { createStore, applyMiddleware, combineReducers, Middleware } from 'redux';
 import { StoreState } from './types/index';
 import { contestants } from './reducers/kingsApiReducers'
-import { latLon, categoryId } from './reducers/globalPreferenceReducers'
+import { latLon, categoryType, categoryId, categories } from './reducers/globalPreferenceReducers'
 import thunk from 'redux-thunk';
 
 
@@ -20,8 +20,11 @@ if (process.env.NODE_ENV !== 'production') {
 const store = createStore<StoreState>(
   combineReducers({
     contestants,
+
     latLon,
-    categoryId
+    categoryType,
+    categoryId,
+    categories,
   }),
   applyMiddleware(...middleware));
 

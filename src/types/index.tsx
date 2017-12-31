@@ -1,8 +1,13 @@
+import { RESTAURANT, CATEGORY_TYPE, DEFAULT_CONTESTANT, DEFAULT_CATEGORY } from "../constants/index";
 
 export interface StoreState {
     latLon: LatLon;
-    contestants: ContestantState;
+
+    categories: Category[];
     categoryId: number;
+    categoryType: CATEGORY_TYPE;
+
+    contestants: ContestantState;
 }
 
 export interface ContestantState {
@@ -29,23 +34,22 @@ export type LatLon = {
     lon: number
 }
 
-
-export const TEMP_CONTESTANT: ContestantEntry = {
-    contestantId: -1,
-    categoryId: 0,
-    contestantName: "",
-    imageUrl: "",
-    apiProviderType: "",
-    apiProviderId: ""
+export type Category = {
+    categoryId: number;
+    categoryName: string;
+    categoryType: string;
 }
-
 
 export const INITIAL_STATE: StoreState = {
     latLon: { lat: 47.6522155000, lon: -122.3543657000 },
+
+    categoryId: DEFAULT_CATEGORY,
+    categories: [],
+    categoryType: RESTAURANT,
+
     contestants: {
         entries: [],
         currContestantIndex: 0,
-        challenger: TEMP_CONTESTANT,
+        challenger: DEFAULT_CONTESTANT,
     },
-    categoryId: 24,
 }

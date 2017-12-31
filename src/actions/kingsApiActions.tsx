@@ -1,12 +1,17 @@
-import { RECEIVE_CONTESTANTS, REQUEST_CONTESTANTS, SUBMIT_BOUT } from '../constants'
-import { ActionType, StoreState, ContestantEntry, LatLon } from '../types/index'
+import { RECEIVE_CONTESTANTS, REQUEST_CONTESTANTS, SUBMIT_BOUT, CATEGORY_TYPE, RECEIVE_CATEGORIES } from '../constants'
+import { ActionType, StoreState, ContestantEntry, LatLon, Category } from '../types/index'
 import { Dispatch } from 'redux'
 // import * as _ from 'lodash'
 
 const AUTH_TOKEN = "Basic cGV0ZTo=";
 const KINGS_API_BASE_URL = "http://localhost:8080";
+const DEFAULT_HEADERS = {
+    Authorization: AUTH_TOKEN,
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+};
 
-// response action types
+/*** TYPES: ACTION **/
 // export interface RequestChallengersResponseAction extends ActionType<REQUEST_CHALLENGERS> {
 //     type: REQUEST_CHALLENGERS,
 //     challengerContestantId: number,
@@ -17,35 +22,33 @@ export interface ReceiveContestantsResponseAction extends ActionType<RECEIVE_CON
     categoryId: number,
     contestants: ContestantEntry[]
 }
-// export interface ReceiveSubmitBoutResponseAction extends ActionType<RECEIVE_SUBMIT_BOUT> {
-//     type: RECEIVE_SUBMIT_BOUT,
-// }
-
+export interface ReceiveCategoriesResponseAction extends ActionType<RECEIVE_CATEGORIES> {
+    type: RECEIVE_CATEGORIES,
+    categories: Category[]
+}
 export interface SubmitBoutResponseAction extends ActionType<SUBMIT_BOUT> {
     type: SUBMIT_BOUT,
 }
 
-
-// call types
+/*** TYPES: CALL **/
 // export type RequestChallengersCallType = (
 //     latLon: LatLon,
 //     challengerContestantId: number) =>
 //     (dispatch: Dispatch<StoreState>) => Promise<ReceiveChallengersReponseAction>
 
-export type RequestContestantsCallType = (
-    latLon: LatLon,
-    categoryId: number) =>
-    (dispatch: Dispatch<StoreState>) => Promise<ReceiveContestantsResponseAction>
+export type RequestContestantsCallType =
+    (latLon: LatLon, categoryId: number) =>
+        (dispatch: Dispatch<StoreState>) => Promise<ReceiveContestantsResponseAction>
 
-export type SubmitBoutCallType = (
-    winnerContestantId: number,
-    loserContestantId: number,
-    categoryId: number,
-    currContestantIndex: number) =>
-    (dispatch: Dispatch<StoreState>) => Promise<void>
+export type RequestCategoriesCallType =
+    (latLon: LatLon, categoryType: CATEGORY_TYPE) =>
+        (dispatch: Dispatch<StoreState>) => Promise<ReceiveCategoriesResponseAction>
 
-// api calls
+export type SubmitBoutCallType =
+    (winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
+        (dispatch: Dispatch<StoreState>) => Promise<void>
 
+/*** API CALLS **/
 // export const requestChallengersCall: RequestChallengersCallType =
 //     (latLon: LatLon, challengerContestantId: number) =>
 //         (dispatch: Dispatch<StoreState>) => {
@@ -73,49 +76,53 @@ export const requestContestantsCall: RequestContestantsCallType =
                 {
                     method: 'GET',
                     credentials: "same-origin",
-                    headers: {
-                        Authorization: AUTH_TOKEN,
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    }
+                    headers: DEFAULT_HEADERS,
                 })
                 .then(response => response.json())
                 .then(json => dispatch(receiveContestants(categoryId, json)))
         }
 
-
 export const submitBoutCall: SubmitBoutCallType =
     (winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
         (dispatch: Dispatch<StoreState>) => {
             dispatch(submitBout(currContestantIndex))
-            console.log("wtf");
             return fetch(
                 KINGS_API_BASE_URL + `/bout?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&category-id=${categoryId}`,
                 {
                     method: 'POST',
                     credentials: "same-origin",
-                    headers: {
-                        Authorization: AUTH_TOKEN,
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    }
+                    headers: DEFAULT_HEADERS,
                 })
-                .then(response => {})
-                // .then(json => dispatch(receiveSubmitBout()))
+                .then(response => { })
         }
 
-// local calls
+export const requestCategoriesCall: RequestCategoriesCallType =
+    (latLon: LatLon, categoryType: CATEGORY_TYPE) =>
+        (dispatch: Dispatch<StoreState>) => {
+            return fetch(
+                KINGS_API_BASE_URL + `/categories?lat=${latLon.lat}&lon=${latLon.lon}&category-type=${categoryType}`,
+                {
+                    method: 'GET',
+                    credentials: "same-origin",
+                    headers: DEFAULT_HEADERS,
+                })
+                .then(response => response.json())
+                .then(json => dispatch(receiveCategories(json)))
+        }
+
+
+/*** LOCAL CALLS **/
 const submitBout: (currContestantIndex: number) => SubmitBoutResponseAction =
     (currContestantIndex) => ({
         type: SUBMIT_BOUT,
         currContestantIndex: currContestantIndex,
     })
 
-// const receiveChallengers: (challengerContestantId: number, fetchContestantsResponse: ContestantEntry[]) => RequestChallengersResponseAction =
-//     (challengerContestantId: number, fetchContestantsResponse: ContestantEntry[]) => ({
+// const receiveChallengers: (challengerContestantId: number, fetchChallengersResponse: ContestantEntry[]) => RequestChallengersResponseAction =
+//     (challengerContestantId: number, fetchChallengersResponse: ContestantEntry[]) => ({
 //         type: RECEIVE_CHALLENGERS,
 //         challengerContestantId,
-//         contestants: fetchContestantsResponse
+//         contestants: fetchChallengersResponse
 //     })
 const receiveContestants: (categoryId: number, fetchContestantsResponse: ContestantEntry[]) => ReceiveContestantsResponseAction =
     (categoryId: number, fetchContestantsResponse: ContestantEntry[]) => ({
@@ -123,10 +130,12 @@ const receiveContestants: (categoryId: number, fetchContestantsResponse: Contest
         categoryId,
         contestants: fetchContestantsResponse
     })
-// const receiveSubmitBout: () => ReceiveSubmitBoutResponseAction =
-//     () => ({
-//         type: RECEIVE_SUBMIT_BOUT,
-//     })
+
+const receiveCategories: (requestCategoriesResponse: Category[]) => ReceiveCategoriesResponseAction =
+    (requestCategoriesResponse: Category[]) => ({
+        type: RECEIVE_CATEGORIES,
+        categories: requestCategoriesResponse,
+    })
 
 
 // const requestChallengers = (latLon: LatLon, challengerContestantId: number) => ({
