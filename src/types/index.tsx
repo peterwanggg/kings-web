@@ -1,15 +1,18 @@
+
 export interface StoreState {
-    latLon: LatLon,
-    contestants: ContestantEntry[]
+    latLon: LatLon;
+    contestants: ContestantState;
+    categoryId: number;
+}
+
+export interface ContestantState {
+    currContestantIndex: number;
+    entries: ContestantEntry[];
+    challenger: ContestantEntry;
 }
 
 export interface ActionType<T extends string> {
     type: T
-}
-
-export const INITIAL_STATE: StoreState = {
-    latLon: {lat: 37.7749, lon:122.4194},
-    contestants: []
 }
 
 export interface ContestantEntry {
@@ -26,6 +29,23 @@ export type LatLon = {
     lon: number
 }
 
-// export declare type ActionCreatorsMapObject<T> = {
-//   [K in keyof T]: any;
-// }
+
+export const TEMP_CONTESTANT: ContestantEntry = {
+    contestantId: -1,
+    categoryId: 0,
+    contestantName: "",
+    imageUrl: "",
+    apiProviderType: "",
+    apiProviderId: ""
+}
+
+
+export const INITIAL_STATE: StoreState = {
+    latLon: { lat: 47.6522155000, lon: -122.3543657000 },
+    contestants: {
+        entries: [],
+        currContestantIndex: 0,
+        challenger: TEMP_CONTESTANT,
+    },
+    categoryId: 24,
+}

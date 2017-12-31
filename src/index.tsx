@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import BoutContainer from './containers/BoutContainer';
+import AppContainer from './containers/AppContainer';
 import { Provider } from 'react-redux';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
@@ -8,7 +8,7 @@ import logger from 'redux-logger';
 import { createStore, applyMiddleware, combineReducers, Middleware } from 'redux';
 import { StoreState } from './types/index';
 import { contestants } from './reducers/kingsApiReducers'
-import { fetchChallengers } from './actions/kingsApiActions'
+import { latLon, categoryId } from './reducers/globalPreferenceReducers'
 import thunk from 'redux-thunk';
 
 
@@ -19,19 +19,15 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore<StoreState>(
   combineReducers({
-    contestants
+    contestants,
+    latLon,
+    categoryId
   }),
   applyMiddleware(...middleware));
 
 ReactDOM.render(
   <Provider store={store} >
-    <BoutContainer
-      latLon={{lat: 47.6522155000, lon: -122.3543657000}}
-      challengerContestantId={4}
-      fetchChallengers={fetchChallengers}
-      contestants={[]}
-    >
-    </BoutContainer>
+    <AppContainer />
   </Provider>,
   document.getElementById('root') as HTMLElement
 );

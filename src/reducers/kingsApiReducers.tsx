@@ -1,14 +1,18 @@
-import { RECEIVE_CONTESTANTS, REQUEST_CONTESTANTS } from '../constants'
-import { ContestantsResponseAction } from '../actions/kingsApiActions'
-import { StoreState, INITIAL_STATE } from '../types/index';
+import { RECEIVE_CONTESTANTS } from '../constants'
+// import { RequestContestantsResponseAction } from '../actions/kingsApiActions'
+import { ContestantState, INITIAL_STATE } from '../types/index';
 import * as _ from 'lodash'
 
-export const contestants = (state: StoreState = INITIAL_STATE, action: ContestantsResponseAction) => {
+export const contestants = (state: ContestantState = INITIAL_STATE.contestants, action: any) => {
     switch (action.type) {
         case RECEIVE_CONTESTANTS:
-        case REQUEST_CONTESTANTS:
-            return _.values(action.contestants)
+            return {
+                entries: _.values(action.contestants),
+                challenger: action.contestants[0],
+                currContestantIndex: 1,
+            }
         default:
             return state
     }
 }
+

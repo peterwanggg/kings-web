@@ -1,11 +1,16 @@
-// import * as React from 'react';
+import * as React from 'react';
+import { ContestantEntry } from '../types/index';
+export interface ContestantProps {
+    contestant: ContestantEntry;
+}
 
-// export interface ContestantProps {
-//     imageUrl: string;
-// }
+const Contestant = ({ contestant }: ContestantProps) => {
+    return (
+        <div>
+            {contestant.contestantName}
+            <img src={contestant.imageUrl} />
+        </div>
+    );
+}
 
-// function Contestant({}: ContestantProps) {
-//     return (
-//         <img src={this.props}/>
-//     );
-// }
+export default Contestant;

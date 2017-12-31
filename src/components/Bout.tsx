@@ -1,44 +1,64 @@
 import * as React from 'react';
 import './Hello.css';
-import { ContestantsResponseAction } from '../actions/kingsApiActions';
-import { Dispatch } from 'redux'
-import { StoreState, ContestantEntry, LatLon} from "../types/index"
+import { RequestChallengersCallType, submitBoutCall, SubmitBoutCallType } from '../actions/kingsApiActions';
+import { ContestantEntry, LatLon } from "../types/index"
+import Contestant from './Contestant';
 import * as _ from 'lodash'
-
 
 export interface BoutProps {
     latLon: LatLon;
-    challengerContestantId: number;
+    challenger: ContestantEntry;
+    contestantsEntries: ContestantEntry[];
+    currContestantIndex: number;
 
-    contestants?: ContestantEntry[],
-    fetchChallengers: (latLon: LatLon, challengerContestantId: number) =>
-        (dispatch: Dispatch<StoreState>) =>
-            Promise<ContestantsResponseAction>;
+    // dispatch functions
+    requestChallengersCall?: RequestChallengersCallType;
+    submitBoutCall?: SubmitBoutCallType;
 }
 
+const Bout = ({ latLon, contestantsEntries, challenger, requestChallengersCall, currContestantIndex }: BoutProps) => {
+    let otherContestant: ContestantEntry = contestantsEntries[currContestantIndex];
 
-function Bout({ contestants, fetchChallengers }: BoutProps) {
     return (
-        <div className="hello">
-            <div className="greeting">
-                {_.map(contestants, contestant => {
-                    console.log(contestant.contestantName)
-                    return (
-                        <div>
-                            {contestant.contestantName}
-                        </div>
-                    )
-                })}
-            </div>
-            <div>
-                <button onClick={() => fetchChallengers(
-                    {lat: 47.6522155000, lon: -122.3543657000},
-                    4)}>-</button>
-            </div>
+        <div>
+            {_.isNil(otherContestant) ?
+                <div /> :
+
+                <div className="hello">
+                    <div className="greeting">
+                        Challenger:
+                        <Contestant contestant={challenger} />
+                    </div>
+
+                    <div className="greeting">
+                        Other Guy:
+                        <Contestant contestant={otherContestant} />
+                    </div>
+
+                    <div>
+                        <button onClick={() => submitBoutCall(
+                            challenger.contestantId,
+                            otherContestant.contestantId,
+                            challenger.categoryId,
+                            currContestantIndex)} >
+                            CHALLENGER
+                        </button>
+                        <button onClick={() => submitBoutCall(
+                            otherContestant.contestantId,
+                            challenger.contestantId,
+                            challenger.categoryId,
+                            currContestantIndex)} >
+                            OTHER GUY
+                </button>
+                    </div>
+                </div>
+            }
         </div>
     );
 }
-
-
 export default Bout;
 
+
+{/* <button onClick={() => requestChallengersCall(latLon, challenger.contestantId)}>
+                    FETCH
+                </button> */}
