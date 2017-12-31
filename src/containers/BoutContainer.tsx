@@ -1,8 +1,7 @@
-import {   submitBoutCall } from '../actions/kingsApiActions';
-import { StoreState } from '../types/index';
-import { connect, Dispatch } from 'react-redux';
+import {   submitBoutCall, requestContestantsCall } from '../actions/kingsApiActions';
+import { StoreState, LatLon } from '../types/index';
+import { connect } from 'react-redux';
 import Bout, { BoutProps } from '../components/Bout'
-import { KINGS_API_ACTION } from '../constants/index';
 
 export function mapStateToProps(state: StoreState, ownProps: BoutProps) {
 
@@ -16,7 +15,7 @@ export function mapStateToProps(state: StoreState, ownProps: BoutProps) {
 }
 
 export function mapDispatchToProps(
-    dispatch: Dispatch<KINGS_API_ACTION>,
+    dispatch: any,
     ownProps: BoutProps,
 ) {
     return {
@@ -26,6 +25,11 @@ export function mapDispatchToProps(
         //         ownProps.latLon,
         //         ownProps.challengerMaybe.contestantId
         //     )),
+        requestContestantsCall: (latLon: LatLon, categoryId: number) =>
+            dispatch(requestContestantsCall(
+                ownProps.latLon,
+                ownProps.challenger.categoryId
+            )),
         submitBoutCall: (winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
             dispatch(submitBoutCall(
                 winnerContestantId,

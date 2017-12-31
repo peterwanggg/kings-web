@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './Hello.css';
-import { RequestChallengersCallType, submitBoutCall, SubmitBoutCallType } from '../actions/kingsApiActions';
+import {  SubmitBoutCallType } from '../actions/kingsApiActions';
 import { ContestantEntry, LatLon } from "../types/index"
 import Contestant from './Contestant';
 import * as _ from 'lodash'
@@ -12,11 +12,11 @@ export interface BoutProps {
     currContestantIndex: number;
 
     // dispatch functions
-    requestChallengersCall?: RequestChallengersCallType;
-    submitBoutCall?: SubmitBoutCallType;
+    // requestContestantsCall: RequestContestantsCallType;
+    submitBoutCall: SubmitBoutCallType;
 }
 
-const Bout = ({ latLon, contestantsEntries, challenger, requestChallengersCall, currContestantIndex }: BoutProps) => {
+const Bout = ({ latLon, contestantsEntries, challenger, currContestantIndex, submitBoutCall}: BoutProps) => {
     let otherContestant: ContestantEntry = contestantsEntries[currContestantIndex];
 
     return (
@@ -49,7 +49,11 @@ const Bout = ({ latLon, contestantsEntries, challenger, requestChallengersCall, 
                             challenger.categoryId,
                             currContestantIndex)} >
                             OTHER GUY
-                </button>
+                        </button>
+
+                        {/* <button onClick={() => requestContestantsCall(latLon, challenger.categoryId)}>
+                            FETCH
+                        </button> */}
                     </div>
                 </div>
             }
@@ -57,8 +61,3 @@ const Bout = ({ latLon, contestantsEntries, challenger, requestChallengersCall, 
     );
 }
 export default Bout;
-
-
-{/* <button onClick={() => requestChallengersCall(latLon, challenger.contestantId)}>
-                    FETCH
-                </button> */}

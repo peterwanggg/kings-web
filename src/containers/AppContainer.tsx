@@ -4,7 +4,7 @@ import BoutContainer from './BoutContainer'
 import { StoreState, INITIAL_STATE, LatLon } from '../types/index'
 import { connect } from 'react-redux';
 
-import { requestContestantsCall, } from '../actions/kingsApiActions';
+import { requestContestantsCall, submitBoutCall } from '../actions/kingsApiActions';
 
 export interface AppProps {
     latLon: LatLon;
@@ -30,8 +30,8 @@ class AppContainer extends React.Component<AppProps> {
                     currContestantIndex={INITIAL_STATE.contestants.currContestantIndex}
                     contestantsEntries={INITIAL_STATE.contestants.entries}
                     challenger={INITIAL_STATE.contestants.challenger}
-                // requestChallengersCall={requestChallengersCall}
-                    // submitBoutCall={submitBoutCall}
+                    // requestContestantsCall={requestContestantsCall}
+                    submitBoutCall={submitBoutCall}
                 />
             </div>
         )
