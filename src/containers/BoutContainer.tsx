@@ -1,11 +1,10 @@
-import { submitBoutCall } from '../actions/kingsApiActions';
-import { StoreState } from '../types/index';
+import { StoreState, ContestantEntry } from '../types/index';
 import { connect } from 'react-redux';
 import Bout, { BoutProps } from '../components/Bout'
 import { changeCategoryId } from '../actions/globalPreferenceActions';
+import { submitBoutThunk, changeChallengerThunk } from '../actions/kingsApiActions';
 
 export function mapStateToProps(state: StoreState, ownProps: BoutProps) {
-
     return {
         latLon: state.latLon,
         categoryType: state.categoryType,
@@ -22,9 +21,16 @@ export function mapDispatchToProps(
     ownProps: BoutProps,
 ) {
     return {
-        changeCategoryId: (nextCategoryId: number) => dispatch(changeCategoryId(nextCategoryId)),
-        submitBoutCall: (winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
-            dispatch(submitBoutCall(
+        // changeChallenger: (nextChallenger: ContestantEntry) =>
+        //     dispatch(changeChallenger(nextChallenger)),
+        changeChallengerThunk: (nextChallenger: ContestantEntry) =>
+            dispatch(changeChallengerThunk(nextChallenger)),
+
+
+        changeCategoryId: (nextCategoryId: number) =>
+            dispatch(changeCategoryId(nextCategoryId)),
+        submitBoutThunk: (winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
+            dispatch(submitBoutThunk(
                 winnerContestantId,
                 loserContestantId,
                 categoryId,

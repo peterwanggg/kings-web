@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './Hello.css';
-import { SubmitBoutCallType, searchContestantsCall } from '../actions/kingsApiActions';
+import { SubmitBoutCallType, searchContestantsCall, ChangeChallengerThunkType } from '../actions/kingsApiActions';
 import { ChangeCategoryIdType } from '../actions/globalPreferenceActions';
 import { ContestantEntry, LatLon, Category } from "../types/index"
 import Contestant from './Contestant';
@@ -22,8 +22,9 @@ export interface BoutProps {
     currContestantIndex: number;
 
     // dispatch functions
-    submitBoutCall: SubmitBoutCallType;
+    submitBoutThunk: SubmitBoutCallType;
     changeCategoryId: ChangeCategoryIdType;
+    changeChallengerThunk: ChangeChallengerThunkType;
 }
 
 const Bout = ({
@@ -31,11 +32,14 @@ const Bout = ({
     categoryType,
     categoryId,
     categories,
-    contestantsEntries,
+
     challenger,
+    contestantsEntries,
     currContestantIndex,
-    submitBoutCall,
-    changeCategoryId }: BoutProps) => {
+
+    submitBoutThunk,
+    changeCategoryId,
+    changeChallengerThunk }: BoutProps) => {
 
     let otherContestant: ContestantEntry = contestantsEntries[currContestantIndex];
 
@@ -45,6 +49,7 @@ const Bout = ({
                 <Async
                     name="challenger"
                     clearable={false}
+                    onChange={(value: ContestantEntry) => changeChallengerThunk(value)}
                     valueKey="contestantId" labelKey="contestantName"
                     loadOptions={(input: string) => searchContestants(
                         latLon, categoryType, input)} />
@@ -74,14 +79,14 @@ const Bout = ({
                     </div>
 
                     <div>
-                        <button onClick={() => submitBoutCall(
+                        <button onClick={() => submitBoutThunk(
                             challenger.contestantId,
                             otherContestant.contestantId,
                             challenger.categoryId,
                             currContestantIndex)} >
                             CHALLENGER
                         </button>
-                        <button onClick={() => submitBoutCall(
+                        <button onClick={() => submitBoutThunk(
                             otherContestant.contestantId,
                             challenger.contestantId,
                             challenger.categoryId,
@@ -89,7 +94,7 @@ const Bout = ({
                             OTHER GUY
                         </button>
 
-                        {/* <button onClick={() => requestContestantsCall(latLon, challenger.categoryId)}>
+                        {/* <button onClick={() => requestContestantsThunk(latLon, challenger.categoryId)}>
                             FETCH
                         </button> */}
                     </div>
@@ -98,7 +103,6 @@ const Bout = ({
         </div>
     );
 }
-
 
 const searchContestants =
     (latLon: LatLon, categoryType: CATEGORY_TYPE, searchString: string) => {

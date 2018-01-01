@@ -1,6 +1,6 @@
 import { ContestantEntry } from '../types/index'
 
-// Actions
+// Actions: API
 export const REQUEST_CONTESTANTS = 'REQUEST_CONTESTANTS'
 export type REQUEST_CONTESTANTS = typeof REQUEST_CONTESTANTS;
 export const RECEIVE_CONTESTANTS = 'RECEIVE_CONTESTANTS'
@@ -19,8 +19,12 @@ export type RECEIVE_CATEGORIES = typeof RECEIVE_CATEGORIES;
 
 export type KINGS_API_ACTION = RECEIVE_CHALLENGERS | RECEIVE_CONTESTANTS | RECEIVE_CATEGORIES | SUBMIT_BOUT;
 
+// Actions: Global
 export const CHANGE_CATEGORY_ID = 'CHANGE_CATEGORY_ID'
 export type CHANGE_CATEGORY_ID = typeof CHANGE_CATEGORY_ID;
+
+export const CHANGE_CHALLENGER = 'CHANGE_CHALLENGER'
+export type CHANGE_CHALLENGER = typeof CHANGE_CHALLENGER;
 
 
 // CategoryTypes
@@ -30,9 +34,10 @@ export type CATEGORY_TYPE = RESTAURANT_TYPE;
 
 // DEFAULT VALUES
 export const DEFAULT_CATEGORY = -1;
+export const DEFAULT_CONTESTANT_ID = -1;
 
 export const DEFAULT_CONTESTANT: ContestantEntry = {
-    contestantId: -1,
+    contestantId: DEFAULT_CONTESTANT_ID,
     categoryId: 0,
     contestantName: "",
     imageUrl: "",

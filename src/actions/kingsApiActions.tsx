@@ -1,6 +1,16 @@
-import { RECEIVE_CONTESTANTS, REQUEST_CONTESTANTS, SUBMIT_BOUT, CATEGORY_TYPE, RECEIVE_CATEGORIES } from '../constants'
+import {
+    RECEIVE_CONTESTANTS,
+    REQUEST_CONTESTANTS,
+    RECEIVE_CHALLENGERS,
+    REQUEST_CHALLENGERS,
+    SUBMIT_BOUT,
+    CATEGORY_TYPE,
+    RECEIVE_CATEGORIES,
+    CHANGE_CHALLENGER,
+} from '../constants'
 import { ActionType, StoreState, ContestantEntry, LatLon, Category } from '../types/index'
 import { Dispatch } from 'redux'
+import { changeCategoryId } from '../actions/globalPreferenceActions'
 import * as _ from 'lodash'
 
 const AUTH_TOKEN = "Basic cGV0ZTo=";
@@ -12,14 +22,12 @@ const DEFAULT_HEADERS = {
 };
 
 /*** TYPES: ACTION **/
-// export interface RequestChallengersResponseAction extends ActionType<REQUEST_CHALLENGERS> {
-//     type: REQUEST_CHALLENGERS,
-//     challengerContestantId: number,
-//     contestants: ContestantEntry[]
-// }
 export interface ReceiveContestantsResponseAction extends ActionType<RECEIVE_CONTESTANTS> {
     type: RECEIVE_CONTESTANTS,
-    categoryId: number,
+    contestants: ContestantEntry[]
+}
+export interface ReceiveChallengersResponseAction extends ActionType<RECEIVE_CHALLENGERS> {
+    type: RECEIVE_CHALLENGERS,
     contestants: ContestantEntry[]
 }
 export interface ReceiveCategoriesResponseAction extends ActionType<RECEIVE_CATEGORIES> {
@@ -29,16 +37,20 @@ export interface ReceiveCategoriesResponseAction extends ActionType<RECEIVE_CATE
 export interface SubmitBoutResponseAction extends ActionType<SUBMIT_BOUT> {
     type: SUBMIT_BOUT,
 }
+export interface ChangeChallengerAction extends ActionType<CHANGE_CHALLENGER> {
+    type: CHANGE_CHALLENGER;
+    nextChallenger: ContestantEntry;
+}
+
 
 /*** TYPES: CALL **/
-// export type RequestChallengersCallType = (
-//     latLon: LatLon,
-//     challengerContestantId: number) =>
-//     (dispatch: Dispatch<StoreState>) => Promise<ReceiveChallengersReponseAction>
-
 export type RequestContestantsCallType =
     (latLon: LatLon, categoryId: number) =>
         (dispatch: Dispatch<StoreState>) => Promise<ReceiveContestantsResponseAction>
+
+export type RequestChallengersCallType =
+    (latLon: LatLon, challengerContestantId: number) =>
+        (dispatch: Dispatch<StoreState>) => Promise<ReceiveChallengersResponseAction>
 
 export type RequestCategoriesCallType =
     (latLon: LatLon, categoryType: CATEGORY_TYPE) =>
@@ -46,30 +58,35 @@ export type RequestCategoriesCallType =
 
 export type SubmitBoutCallType =
     (winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
-        (dispatch: Dispatch<StoreState>) => Promise<void>
+        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<void>
 
-/*** API CALLS **/
-// export const requestChallengersCall: RequestChallengersCallType =
-//     (latLon: LatLon, challengerContestantId: number) =>
-//         (dispatch: Dispatch<StoreState>) => {
-//             dispatch(requestChallengers(latLon, challengerContestantId))
-//             return fetch(
-//                 KINGS_API_BASE_URL + `/contestants/challenger?lat=${latLon.lat}&lon=${latLon.lon}&challenger-contestant-id=${challengerContestantId}`,
-//                 {
-//                     method: 'GET',
-//                     credentials: "same-origin",
-//                     headers: {
-//                         Authorization: AUTH_TOKEN,
-//                         Accept: 'application/json',
-//                         'Content-Type': 'application/json',
-//                     }
-//                 })
-//                 .then(response => response.json())
-//                 .then(json => dispatch(receiveChallengers(challengerContestantId, json)))
-//         }
-export const requestContestantsCall: RequestContestantsCallType =
-    (latLon: LatLon, categoryId: number) =>
-        (dispatch: Dispatch<StoreState>) => {
+export type ChangeChallengerType =
+    (nextChallenger: ContestantEntry) => ChangeChallengerAction;
+
+export type ChangeChallengerThunkType =
+    (nextChallenger: ContestantEntry) =>
+        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => void;
+
+
+/*** API CALL ACTIONS ***/
+export const requestChallengersThunk: RequestChallengersCallType =
+    (latLon, challengerContestantId) =>
+        (dispatch) => {
+            dispatch(requestChallengers(latLon, challengerContestantId))
+            return fetch(
+                KINGS_API_BASE_URL + `/contestants/challenger?lat=${latLon.lat}&lon=${latLon.lon}&challenger-contestant-id=${challengerContestantId}`,
+                {
+                    method: 'GET',
+                    credentials: "same-origin",
+                    headers: DEFAULT_HEADERS,
+                })
+                .then(response => response.json())
+                .then(json => dispatch(receiveChallengers(challengerContestantId, json)))
+        }
+
+export const requestContestantsThunk: RequestContestantsCallType =
+    (latLon, categoryId) =>
+        (dispatch) => {
             dispatch(requestContestants(latLon, categoryId))
             return fetch(
                 KINGS_API_BASE_URL + `/contestants/category?lat=${latLon.lat}&lon=${latLon.lon}&category-id=${categoryId}`,
@@ -82,9 +99,14 @@ export const requestContestantsCall: RequestContestantsCallType =
                 .then(json => dispatch(receiveContestants(categoryId, json)))
         }
 
-export const submitBoutCall: SubmitBoutCallType =
-    (winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
-        (dispatch: Dispatch<StoreState>) => {
+export const submitBoutThunk: SubmitBoutCallType =
+    (winnerContestantId, loserContestantId, categoryId, currContestantIndex) =>
+        (dispatch, getState) => {
+            let state: StoreState = getState();
+            if (state.contestants.currContestantIndex === state.contestants.entries.length - 1) {
+                dispatch(requestChallengersThunk(state.latLon, winnerContestantId));
+            }
+
             dispatch(submitBout(currContestantIndex))
             return fetch(
                 KINGS_API_BASE_URL + `/bout?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&category-id=${categoryId}`,
@@ -96,9 +118,9 @@ export const submitBoutCall: SubmitBoutCallType =
                 .then(response => { })
         }
 
-export const requestCategoriesCall: RequestCategoriesCallType =
-    (latLon: LatLon, categoryType: CATEGORY_TYPE) =>
-        (dispatch: Dispatch<StoreState>) => {
+export const requestCategoriesThunk: RequestCategoriesCallType =
+    (latLon, categoryType) =>
+        (dispatch) => {
             return fetch(
                 KINGS_API_BASE_URL + `/categories?lat=${latLon.lat}&lon=${latLon.lon}&category-type=${categoryType}`,
                 {
@@ -123,23 +145,36 @@ export const searchContestantsCall: (latLon: LatLon, categoryType: CATEGORY_TYPE
             .then(json => _.values(json))
 
 
-/*** LOCAL CALLS **/
+/*** LOCAL ACTIONS **/
+export const changeChallenger: ChangeChallengerType =
+    (nextChallenger) => ({
+        type: CHANGE_CHALLENGER,
+        nextChallenger: nextChallenger,
+    })
+
+export const changeChallengerThunk: ChangeChallengerThunkType =
+    (nextChallenger: ContestantEntry) =>
+        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => {
+            dispatch(requestChallengersThunk(getState().latLon, nextChallenger.contestantId))
+            dispatch(changeChallenger(nextChallenger))
+            dispatch(changeCategoryId(nextChallenger.categoryId))
+        }
+
 const submitBout: (currContestantIndex: number) => SubmitBoutResponseAction =
     (currContestantIndex) => ({
         type: SUBMIT_BOUT,
         currContestantIndex: currContestantIndex,
     })
 
-// const receiveChallengers: (challengerContestantId: number, fetchChallengersResponse: ContestantEntry[]) => RequestChallengersResponseAction =
-//     (challengerContestantId: number, fetchChallengersResponse: ContestantEntry[]) => ({
-//         type: RECEIVE_CHALLENGERS,
-//         challengerContestantId,
-//         contestants: fetchChallengersResponse
-//     })
+const receiveChallengers: (challengerContestantId: number, fetchContestantsResponse: ContestantEntry[]) => ReceiveChallengersResponseAction =
+    (categoryId: number, fetchContestantsResponse: ContestantEntry[]) => ({
+        type: RECEIVE_CHALLENGERS,
+        contestants: fetchContestantsResponse
+    })
+
 const receiveContestants: (categoryId: number, fetchContestantsResponse: ContestantEntry[]) => ReceiveContestantsResponseAction =
     (categoryId: number, fetchContestantsResponse: ContestantEntry[]) => ({
         type: RECEIVE_CONTESTANTS,
-        categoryId,
         contestants: fetchContestantsResponse
     })
 
@@ -149,48 +184,15 @@ const receiveCategories: (requestCategoriesResponse: Category[]) => ReceiveCateg
         categories: requestCategoriesResponse,
     })
 
-// const requestChallengers = (latLon: LatLon, challengerContestantId: number) => ({
-//     type: REQUEST_CHALLENGERS,
-//     latLon: latLon,
-//     challengerContestantId: challengerContestantId,
-// })
+// these two are probably useless, unless you add a loading screen
+const requestChallengers = (latLon: LatLon, challengerContestantId: number) => ({
+    type: REQUEST_CHALLENGERS,
+    latLon: latLon,
+    challengerContestantId: challengerContestantId,
+})
 
 const requestContestants = (latLon: LatLon, categoryId: number) => ({
     type: REQUEST_CONTESTANTS,
     latLon: latLon,
     categoryId: categoryId,
 })
-
-
-
-
-
- //////////////////
-// import { ThunkAction } from 'redux-thunk';
-// export interface IExtraArgument {
-// }
-
-// // use a generic to define the type of the return according to the context (binded action or not)
-// export type LoadChallengers<R> = (lat: number, lon: number, challengerContestantId: number) => R;
-
-// export const fetchChallengers2: LoadChallengers<ThunkAction<Promise<RequestChallengersResponseAction>, StoreState, IExtraArgument>> =
-//     (lat, lon, challengerContestantId) => {
-//         return (dispatch: Dispatch<StoreState>, getState) => {
-//             dispatch(requestContestants(lat, lon, challengerContestantId))
-//             return fetch(
-//                 `http://localhost:8080/contestants/challenger?lat=${lat}&lon=${lon}&challenger-contestant-id=${challengerContestantId}`,
-//                 {
-//                     method: 'GET',
-//                     credentials: "same-origin",
-//                     // mode: 'no-cors',
-//                     headers: {
-//                         Authorization: AUTH_TOKEN,
-//                         Accept: 'application/json',
-//                         'Content-Type': 'application/json',
-//                     }
-//                 })
-//                 .then(response => response.json())
-//                 .then(json => dispatch(receiveContestants(challengerContestantId, json)))
-//         }
-//     };
-//////////////////

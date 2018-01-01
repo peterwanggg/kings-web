@@ -1,24 +1,36 @@
-import { RECEIVE_CONTESTANTS, SUBMIT_BOUT } from '../constants'
-// import { ReceiveContestantsResponseAction } from '../actions/kingsApiActions'
+import { RECEIVE_CONTESTANTS, SUBMIT_BOUT, CHANGE_CHALLENGER, RECEIVE_CHALLENGERS } from '../constants'
 import { ContestantState, INITIAL_STATE } from '../types/index';
-// import * as _ from 'lodash'
+import { ReceiveContestantsResponseAction, SubmitBoutResponseAction, ChangeChallengerAction, ReceiveChallengersResponseAction } from '../actions/kingsApiActions'
 
-// TODO: type action
 export const contestants =
-    (state: ContestantState = INITIAL_STATE.contestants, action: any) => {
+    (state: ContestantState = INITIAL_STATE.contestants, action: ReceiveContestantsResponseAction | SubmitBoutResponseAction | ChangeChallengerAction | ReceiveChallengersResponseAction) => {
         switch (action.type) {
+            case CHANGE_CHALLENGER:
+                return {
+                    entries: state.entries,
+                    challenger: action.nextChallenger,
+                    currContestantIndex: state.currContestantIndex,
+                }
+            case RECEIVE_CHALLENGERS:
+                return {
+                    entries: action.contestants,
+                    challenger: state.challenger,
+                    currContestantIndex: 0,
+                }
             case RECEIVE_CONTESTANTS:
                 return {
-                    // entries: _.values(action.contestants),
                     entries: action.contestants,
                     challenger: action.contestants[0],
                     currContestantIndex: 1,
                 }
             case SUBMIT_BOUT:
+                // if that was the last contestant, don't increment the index, submitBoutThunk will dispatch for more challengers
+                let nextIndex: number = (state.currContestantIndex === state.entries.length-1) ?
+                    state.currContestantIndex : state.currContestantIndex + 1
                 return {
                     entries: state.entries,
                     challenger: state.challenger,
-                    currContestantIndex: state.currContestantIndex + 1
+                    currContestantIndex: nextIndex,
                 }
             default:
                 return state

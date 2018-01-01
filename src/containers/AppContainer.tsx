@@ -1,19 +1,21 @@
 import * as React from 'react'
 import BoutContainer from './BoutContainer'
-import { CATEGORY_TYPE, DEFAULT_CATEGORY } from '../constants/index'
-import { StoreState, INITIAL_STATE, LatLon } from '../types/index'
+import { CATEGORY_TYPE, DEFAULT_CATEGORY, DEFAULT_CONTESTANT_ID } from '../constants/index'
+import { StoreState, INITIAL_STATE, LatLon, ContestantEntry} from '../types/index'
 import { connect } from 'react-redux';
 import { changeCategoryId } from '../actions/globalPreferenceActions';
 import {
-    requestContestantsCall,
-    submitBoutCall,
-    requestCategoriesCall,
+    requestContestantsThunk,
+    requestCategoriesThunk,
+    submitBoutThunk,
+    changeChallengerThunk,
 } from '../actions/kingsApiActions';
 
 export interface AppProps {
     latLon: LatLon;
     categoryId: number;
     categoryType: CATEGORY_TYPE;
+    challenger: ContestantEntry;
     dispatch?: any;
 }
 
@@ -24,12 +26,15 @@ class AppContainer extends React.Component<AppProps> {
     }
 
     public componentDidMount() {
-        this.props.dispatch(requestCategoriesCall(this.props.latLon, this.props.categoryType))
+        this.props.dispatch(requestCategoriesThunk(this.props.latLon, this.props.categoryType))
     }
 
     public componentDidUpdate(prevProps: AppProps) {
-        if (prevProps.categoryId != this.props.categoryId && this.props.categoryId != DEFAULT_CATEGORY) {
-            this.props.dispatch(requestContestantsCall(this.props.latLon, this.props.categoryId))
+        if (prevProps.categoryId != this.props.categoryId
+            && this.props.categoryId != DEFAULT_CATEGORY
+            && this.props.challenger.contestantId === DEFAULT_CONTESTANT_ID
+        ) {
+            this.props.dispatch(requestContestantsThunk(this.props.latLon, this.props.categoryId))
         }
     }
 
@@ -40,24 +45,27 @@ class AppContainer extends React.Component<AppProps> {
                     latLon={INITIAL_STATE.latLon}
                     currContestantIndex={INITIAL_STATE.contestants.currContestantIndex}
                     contestantsEntries={INITIAL_STATE.contestants.entries}
+
                     challenger={INITIAL_STATE.contestants.challenger}
                     categoryType={INITIAL_STATE.categoryType}
                     categories={INITIAL_STATE.categories}
                     categoryId={INITIAL_STATE.categoryId}
 
-                    // requestContestantsCall={requestContestantsCall}
-                    submitBoutCall={submitBoutCall}
+                    submitBoutThunk={submitBoutThunk}
                     changeCategoryId={changeCategoryId}
+                    changeChallengerThunk={changeChallengerThunk}
                 />
             </div>
         )
     }
 }
+
 export function mapStateToProps(state: StoreState) {
     return {
         latLon: state.latLon,
         categoryType: state.categoryType,
         categoryId: state.categoryId,
+        challenger: state.contestants.challenger,
     }
 }
 
