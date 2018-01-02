@@ -3,13 +3,14 @@ import BoutContainer from './BoutContainer'
 import { CATEGORY_TYPE, DEFAULT_CATEGORY, DEFAULT_CONTESTANT_ID } from '../constants/index'
 import { StoreState, INITIAL_STATE, LatLon, ContestantEntry} from '../types/index'
 import { connect } from 'react-redux';
-import { changeCategoryId } from '../actions/globalPreferenceActions';
+import { changeCategoryId } from '../actions/GlobalActions';
 import {
     requestContestantsThunk,
     requestCategoriesThunk,
     submitBoutThunk,
     changeChallengerThunk,
-} from '../actions/kingsApiActions';
+    // toggleSkipContestantId,
+} from '../actions/ContestantActions';
 import * as _ from 'lodash';
 
 export interface AppProps {
@@ -55,6 +56,7 @@ class AppContainer extends React.Component<AppProps> {
                     submitBoutThunk={submitBoutThunk}
                     changeCategoryId={changeCategoryId}
                     changeChallengerThunk={changeChallengerThunk}
+
                 />
             </div>
         )

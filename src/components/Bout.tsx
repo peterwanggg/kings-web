@@ -1,9 +1,14 @@
 import * as React from 'react';
 import './Hello.css';
-import { SubmitBoutCallType, searchContestantsCall, ChangeChallengerThunkType } from '../actions/kingsApiActions';
-import { ChangeCategoryIdType } from '../actions/globalPreferenceActions';
+import {
+    SubmitBoutCallType,
+    searchContestantsCall,
+    ChangeChallengerThunkType
+} from '../actions/ContestantActions';
+import { ChangeCategoryIdType } from '../actions/GlobalActions';
 import { ContestantEntry, LatLon, Category } from "../types/index"
 import Contestant from './Contestant';
+import ContestantList from './ContestantList'
 import * as _ from 'lodash'
 import Select, { Options, Option, Async } from 'react-select'
 import 'react-select/dist/react-select.css';
@@ -25,6 +30,7 @@ export interface BoutProps {
     submitBoutThunk: SubmitBoutCallType;
     changeCategoryId: ChangeCategoryIdType;
     changeChallengerThunk: ChangeChallengerThunkType;
+
 }
 
 const Bout = ({
@@ -63,22 +69,21 @@ const Bout = ({
                     options={transformCategoriesToSelectOptions(categories)} />
             </div>
 
-
             {_.isNil(otherContestant) ?
                 <div /> :
 
-                <div className="hello">
-                    <div className="greeting">
+                <div>
+                    <div className="hello">
                         Challenger:
                         <Contestant contestant={challenger} />
                     </div>
 
-                    <div className="greeting">
+                    <div className="hello">
                         Other Guy:
                         <Contestant contestant={otherContestant} />
                     </div>
 
-                    <div>
+                    <div className="hello">
                         <button onClick={() => submitBoutThunk(
                             challenger,
                             challenger.contestantId,
@@ -95,11 +100,12 @@ const Bout = ({
                             currContestantIndex)} >
                             OTHER GUY
                         </button>
-
-                        {/* <button onClick={() => requestContestantsThunk(latLon, challenger.categoryId)}>
-                            FETCH
-                        </button> */}
                     </div>
+
+                    <div>
+                        <ContestantList contestants={contestantsEntries} />
+                    </div>
+
                 </div>
             }
         </div>

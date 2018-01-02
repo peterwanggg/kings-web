@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ContestantEntry } from '../types/index';
+
 export interface ContestantProps {
     contestant: ContestantEntry;
 }

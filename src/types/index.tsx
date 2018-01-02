@@ -14,6 +14,7 @@ export interface ContestantState {
     currContestantIndex: number;
     entries: ContestantEntry[];
     challenger: ContestantEntry;
+    skipContestantIds: number[];
 }
 
 export interface ActionType<T extends string> {
@@ -51,5 +52,6 @@ export const INITIAL_STATE: StoreState = {
         entries: [],
         currContestantIndex: 0,
         challenger: DEFAULT_CONTESTANT,
+        skipContestantIds: []
     },
 }
