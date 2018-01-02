@@ -67,7 +67,7 @@ export type RequestCategoriesCallType =
         (dispatch: Dispatch<StoreState>) => Promise<ReceiveCategoriesResponseAction>
 
 export type SubmitBoutCallType =
-    (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
+    (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) =>
         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<void>
 
 export type ChangeChallengerType =
@@ -112,15 +112,15 @@ export const requestContestantsThunk: RequestContestantsCallType =
         }
 
 export const submitBoutThunk: SubmitBoutCallType =
-    (challenger, winnerContestantId, loserContestantId, categoryId, currContestantIndex) =>
+    (challenger, winnerContestantId, loserContestantId) =>
         (dispatch, getState) => {
             let state: StoreState = getState();
             if (findNextContestantIndex(state.contestants.entries, state.contestants.skipContestantIds, state.contestants.currContestantIndex) === -1) {
                 dispatch(requestChallengersThunk(state.latLon, challenger));
             }
-            dispatch(submitBout(currContestantIndex))
+            dispatch(submitBout(state.contestants.currContestantIndex))
             return fetch(
-                KINGS_API_BASE_URL + `/bout?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&category-id=${categoryId}`,
+                KINGS_API_BASE_URL + `/bout?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&category-id=${challenger.categoryId}`,
                 {
                     method: 'POST',
                     credentials: "same-origin",

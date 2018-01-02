@@ -1,9 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import AppContainer from './containers/AppContainer';
+import App from './App';
 import { Provider } from 'react-redux';
 import registerServiceWorker from './registerServiceWorker';
-import './index.css';
+// import './index.css';
 import logger from 'redux-logger';
 import { createStore, applyMiddleware, combineReducers, Middleware } from 'redux';
 import { StoreState } from './types/index';
@@ -30,7 +30,7 @@ const store = createStore<StoreState>(
 
 ReactDOM.render(
   <Provider store={store} >
-    <AppContainer />
+    <App />
   </Provider>,
   document.getElementById('root') as HTMLElement
 );
