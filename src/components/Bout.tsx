@@ -80,6 +80,7 @@ const Bout = ({
 
                     <div>
                         <button onClick={() => submitBoutThunk(
+                            challenger,
                             challenger.contestantId,
                             otherContestant.contestantId,
                             challenger.categoryId,
@@ -87,6 +88,7 @@ const Bout = ({
                             CHALLENGER
                         </button>
                         <button onClick={() => submitBoutThunk(
+                            challenger,
                             otherContestant.contestantId,
                             challenger.contestantId,
                             challenger.categoryId,

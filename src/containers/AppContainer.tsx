@@ -10,6 +10,7 @@ import {
     submitBoutThunk,
     changeChallengerThunk,
 } from '../actions/kingsApiActions';
+import * as _ from 'lodash';
 
 export interface AppProps {
     latLon: LatLon;
@@ -32,7 +33,7 @@ class AppContainer extends React.Component<AppProps> {
     public componentDidUpdate(prevProps: AppProps) {
         if (prevProps.categoryId != this.props.categoryId
             && this.props.categoryId != DEFAULT_CATEGORY
-            && this.props.challenger.contestantId === DEFAULT_CONTESTANT_ID
+            && (_.isNil(this.props.challenger) || this.props.challenger.contestantId === DEFAULT_CONTESTANT_ID)
         ) {
             this.props.dispatch(requestContestantsThunk(this.props.latLon, this.props.categoryId))
         }

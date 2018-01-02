@@ -29,8 +29,9 @@ export function mapDispatchToProps(
 
         changeCategoryId: (nextCategoryId: number) =>
             dispatch(changeCategoryId(nextCategoryId)),
-        submitBoutThunk: (winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
+        submitBoutThunk: (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number, categoryId: number, currContestantIndex: number) =>
             dispatch(submitBoutThunk(
+                challenger,
                 winnerContestantId,
                 loserContestantId,
                 categoryId,

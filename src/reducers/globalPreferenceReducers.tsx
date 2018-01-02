@@ -1,7 +1,7 @@
 
 import { LatLon, INITIAL_STATE, Category } from '../types/index';
-import { CATEGORY_TYPE, RECEIVE_CATEGORIES, CHANGE_CATEGORY_ID } from '../constants/index';
-import { ReceiveCategoriesResponseAction } from '../actions/kingsApiActions';
+import { CATEGORY_TYPE, RECEIVE_CATEGORIES, CHANGE_CATEGORY_ID, RECEIVE_CHALLENGERS } from '../constants/index';
+import { ReceiveCategoriesResponseAction, ReceiveChallengersResponseAction } from '../actions/kingsApiActions';
 import { ChangeCategoryIdAction, } from '../actions/globalPreferenceActions';
 
 // TODO: fix action type
@@ -22,8 +22,10 @@ export const categoryType =
     }
 
 export const categoryId =
-    (state: number = INITIAL_STATE.categoryId, action: ReceiveCategoriesResponseAction | ChangeCategoryIdAction) => {
+    (state: number = INITIAL_STATE.categoryId, action: ReceiveCategoriesResponseAction | ChangeCategoryIdAction | ReceiveChallengersResponseAction) => {
         switch (action.type) {
+            case RECEIVE_CHALLENGERS:
+                return action.challenger.categoryId;
             case CHANGE_CATEGORY_ID:
                 return action.nextCategoryId;
             case RECEIVE_CATEGORIES:
