@@ -25,28 +25,25 @@ const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) =>
 
                 <div className="columns">
                     <div className="column">
-                        Challenger:
-                        <Contestant contestant={challenger} />
-                    </div>
-
-                    <div className="column">
-                        Other Guy:
-                        <Contestant contestant={otherContestant} />
-                    </div>
-
-                    <div>
-                        <button onClick={() => submitBoutDispatch(
+                        <button className="button" onClick={() => submitBoutDispatch(
                             challenger,
                             challenger.contestantId,
                             otherContestant.contestantId)} >
-                            CHALLENGER
+                            👑 CHALLENGER: {challenger.contestantName}
                         </button>
-                        <button onClick={() => submitBoutDispatch(
+                        <Contestant contestant={challenger} />
+
+                    </div>
+
+                    <div className="column">
+                        <button className="button" onClick={() => submitBoutDispatch(
                             challenger,
                             otherContestant.contestantId,
                             challenger.contestantId)} >
-                            OTHER GUY
+                            👑 OTHER GUY: {otherContestant.contestantName}
                         </button>
+                        <Contestant contestant={otherContestant} />
+
                     </div>
                 </div>
             }

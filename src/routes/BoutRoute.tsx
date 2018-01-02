@@ -68,7 +68,8 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                         onChange={(value: ContestantEntry) => this.props.dispatch(changeChallengerThunk(value))}
                         valueKey="contestantId" labelKey="contestantName"
                         loadOptions={(input: string) => searchContestants(
-                            this.props.latLon, this.props.categoryType, input)} />
+                            this.props.latLon, this.props.categoryType, input)}
+                    />
                     <Select
                         name="categories"
                         value={this.props.categoryId}
@@ -76,17 +77,22 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                         onChange={(selectedOption: Option) => {
                             this.props.dispatch(changeCategoryId(Number(selectedOption.value)))
                         }}
-                        options={transformCategoriesToSelectOptions(this.props.categories)} />
+                        options={transformCategoriesToSelectOptions(this.props.categories)}
+                    />
                 </section>
 
-                <BoutContainer
-                    challenger={DEFAULT_CONTESTANT}
-                    otherContestant={DEFAULT_CONTESTANT}
-                    submitBoutDispatch={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
-                />
+                <div className="columns">
+                    <div className="column">
+                        <BoutContainer
+                            challenger={DEFAULT_CONTESTANT}
+                            otherContestant={DEFAULT_CONTESTANT}
+                            submitBoutDispatch={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
+                        />
+                    </div>
 
-                <div className="column">
-                    <ContestantList contestants={this.props.contestantsEntries} currContestantIndex={this.props.currContestantIndex} />
+                    <div className="column is-one-third">
+                        <ContestantList contestants={this.props.contestantsEntries} currContestantIndex={this.props.currContestantIndex} />
+                    </div>
                 </div>
             </div>
         )
