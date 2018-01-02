@@ -103,7 +103,7 @@ const Bout = ({
                     </div>
 
                     <div>
-                        <ContestantList contestants={contestantsEntries} />
+                        <ContestantList contestants={contestantsEntries} currContestantIndex={currContestantIndex} />
                     </div>
 
                 </div>

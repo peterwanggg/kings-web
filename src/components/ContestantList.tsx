@@ -8,6 +8,7 @@ import ContestantPreviewContainer from '../containers/ContestantPreviewContainer
 
 export interface ContestantListProps {
     contestants: ContestantEntry[];
+    currContestantIndex: number;
 }
 
 const rowRenderer: (contestants: ContestantEntry[]) => ListRowRenderer =
@@ -23,16 +24,16 @@ const rowRenderer: (contestants: ContestantEntry[]) => ListRowRenderer =
             )
         }
 
-
-const ContestantList = ({ contestants }: ContestantListProps) => {
+const ContestantList = ({ contestants, currContestantIndex }: ContestantListProps) => {
     return (
         <List
             height={500}
             // noRowsRenderer={this._noRowsRenderer}
             rowCount={contestants.length}
-            rowHeight={80}
+            rowHeight={120}
             rowRenderer={rowRenderer(contestants)}
             width={500}
+            scrollToIndex={currContestantIndex}
         />
     );
 }
