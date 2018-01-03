@@ -26,7 +26,6 @@ const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) =>
                 </div>
                 :
                 <div className="tile is-parent">
-
                     <div className="tile is-child is-fullwidth">
                         <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
                             challenger,

@@ -20,7 +20,7 @@ export const contestants =
                 return {
                     ...state,
                     skipContestantIds: _.includes(state.skipContestantIds, action.skipContestantId) ?
-                        _.remove(state.skipContestantIds, action.skipContestantId) :
+                        _.pull(state.skipContestantIds, action.skipContestantId) :
                         _.concat(state.skipContestantIds, action.skipContestantId)
                 }
             case CHANGE_CATEGORY_ID:
