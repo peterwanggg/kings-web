@@ -75,9 +75,9 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                         name="categories"
                         value={this.props.categoryId}
                         clearable={false}
-                        onChange={(selectedOption: Option) => {
-                            this.props.dispatch(changeCategoryId(Number(selectedOption.value)))
-                        }}
+                        onChange={(selectedOption: Option) => !_.isNil(selectedOption) && _.isNumber(selectedOption.value) ?
+                            this.props.dispatch(changeCategoryId(Number(selectedOption.value))) : null
+                        }
                         options={transformCategoriesToSelectOptions(this.props.categories)}
                     />
                 </section>
