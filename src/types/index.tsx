@@ -50,7 +50,7 @@ export const INITIAL_STATE: StoreState = {
 
     contestants: {
         entries: [],
-        currContestantIndex: 0,
+        currContestantIndex: 1,
         challenger: DEFAULT_CONTESTANT,
         skipContestantIds: []
     },

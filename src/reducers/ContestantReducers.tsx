@@ -1,4 +1,4 @@
-import { RECEIVE_CONTESTANTS, SUBMIT_BOUT, CHANGE_CHALLENGER, RECEIVE_CHALLENGERS, CHANGE_CATEGORY_ID, TOGGLE_SKIP_CONTESTANT_ID } from '../constants';
+import { RECEIVE_CONTESTANTS, SUBMIT_BOUT, CHANGE_CHALLENGER, RECEIVE_CHALLENGERS, CHANGE_CATEGORY_ID, TOGGLE_SKIP_CONTESTANT_ID, DEFAULT_CONTESTANT_ID } from '../constants';
 import { ContestantState, INITIAL_STATE } from '../types/index';
 import { ReceiveContestantsResponseAction, SubmitBoutResponseAction, ChangeChallengerAction, ReceiveChallengersResponseAction, ToggleSkipContestantIdAction } from '../actions/ContestantActions';
 import { ChangeCategoryIdAction } from '../actions/GlobalActions';
@@ -26,25 +26,31 @@ export const contestants =
             case CHANGE_CATEGORY_ID:
                 return {
                     ...state,
+                    entries: [],
                     challenger: INITIAL_STATE.contestants.challenger,
+                    currContestantIndex: 1
                 }
             case CHANGE_CHALLENGER:
                 return {
                     ...state,
+                    entires: [],
                     challenger: action.nextChallenger,
+                    currContestantIndex: 0,
                 }
             case RECEIVE_CHALLENGERS:
                 return {
                     ...state,
-                    entries: action.contestants,
-                    currContestantIndex: 0,
+                    entries: _.concat(state.entries, action.contestants),
                 }
             case RECEIVE_CONTESTANTS:
                 return {
                     ...state,
-                    entries: action.contestants,
-                    challenger: action.contestants[0],
-                    currContestantIndex: 1,
+                    entries: _.concat(state.entries, action.contestants),
+                    challenger:
+                        state.challenger.contestantId === DEFAULT_CONTESTANT_ID &&
+                            findNextContestantIndex(action.contestants, state.skipContestantIds, 1) !== -1 ?
+                            action.contestants[0] : state.challenger,
+                    currContestantIndex: state.currContestantIndex,
                 }
             case SUBMIT_BOUT:
                 // if that was the last contestant, don't increment the index, submitBoutThunk will dispatch for more challengers

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import BoutContainer from '../containers/BoutContainer'
-import { CATEGORY_TYPE, DEFAULT_CATEGORY, DEFAULT_CONTESTANT_ID, DEFAULT_CONTESTANT } from '../constants/index'
-import { StoreState, LatLon, ContestantEntry, Category } from '../types/index'
+import { CATEGORY_TYPE, DEFAULT_CATEGORY, DEFAULT_CONTESTANT_ID, DEFAULT_CONTESTANT, RECEIVE_CHALLENGERS } from '../constants/index'
+import { StoreState, LatLon, ContestantEntry, Category, INITIAL_STATE } from '../types/index'
 import { connect, Dispatch } from 'react-redux';
 import { changeCategoryId } from '../actions/GlobalActions';
 import {
@@ -9,8 +9,9 @@ import {
     requestCategoriesThunk,
     changeChallengerThunk,
     searchContestantsCall,
+    ReceiveChallengersResponseAction,
 } from '../actions/ContestantActions';
-import ContestantList from '../components/ContestantList'
+import ContestantListContainer from '../containers/ContestantListContainer'
 import * as _ from 'lodash';
 import Select, { Options, Option, Async } from 'react-select'
 
@@ -21,8 +22,8 @@ export interface BoutRouteProps {
     categoryType: CATEGORY_TYPE;
 
     challenger: ContestantEntry;
-    contestantsEntries: ContestantEntry[];
-    skipContestantIds: number[];
+    // contestantsEntries: ContestantEntry[];
+    // skipContestantIds: number[];
     currContestantIndex: number;
 
     dispatch: Dispatch<StoreState>;
@@ -55,7 +56,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
             && this.props.categoryId !== DEFAULT_CATEGORY
             && (_.isNil(this.props.challenger) || this.props.challenger.contestantId === DEFAULT_CONTESTANT_ID)
         ) {
-            this.props.dispatch(requestContestantsThunk(this.props.latLon, this.props.categoryId))
+            this.props.dispatch(requestContestantsThunk(this.props.latLon, this.props.categoryId, 0))
         }
     }
 
@@ -92,10 +93,17 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                         />
                     </div>
                     <div className="tile is-parent is-vertical is-3">
-                        <ContestantList
-                            contestants={this.props.contestantsEntries}
-                            skipContestantIds={this.props.skipContestantIds}
-                            currContestantIndex={this.props.currContestantIndex} />
+                        <ContestantListContainer
+                            latLon={INITIAL_STATE.latLon}
+                            contestants={INITIAL_STATE.contestants.entries}
+                            challenger={INITIAL_STATE.contestants.challenger}
+                            skipContestantIds={INITIAL_STATE.contestants.skipContestantIds}
+                            currContestantIndex={INITIAL_STATE.contestants.currContestantIndex}
+                            dispatchRequestChallengers={(latLon: LatLon, challenger: ContestantEntry, offset: number) =>
+                                Promise.resolve({
+                                    type: RECEIVE_CHALLENGERS, challenger: INITIAL_STATE.contestants.challenger, contestants: INITIAL_STATE.contestants.entries
+                                } as ReceiveChallengersResponseAction)}
+                        />
                     </div>
                 </div>
             </div>
@@ -111,8 +119,8 @@ export function mapStateToProps(state: StoreState) {
         categories: state.categories,
 
         challenger: state.contestants.challenger,
-        contestantsEntries: state.contestants.entries,
-        skipContestantIds: state.contestants.skipContestantIds,
+        // contestantsEntries: state.contestants.entries,
+        // skipContestantIds: state.contestants.skipContestantIds,
         currContestantIndex: state.contestants.currContestantIndex,
     }
 }

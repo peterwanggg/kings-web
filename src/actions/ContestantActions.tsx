@@ -55,11 +55,11 @@ export interface ToggleSkipContestantIdAction extends ActionType<TOGGLE_SKIP_CON
 
 /*** TYPES: CALL **/
 export type RequestContestantsCallType =
-    (latLon: LatLon, categoryId: number) =>
+    (latLon: LatLon, categoryId: number, offset: number) =>
         (dispatch: Dispatch<StoreState>) => Promise<ReceiveContestantsResponseAction>
 
 export type RequestChallengersCallType =
-    (latLon: LatLon, challenger: ContestantEntry) =>
+    (latLon: LatLon, challenger: ContestantEntry, offset: number) =>
         (dispatch: Dispatch<StoreState>) => Promise<ReceiveChallengersResponseAction>
 
 export type RequestCategoriesCallType =
@@ -82,11 +82,11 @@ export type ToggleSkipContestantIdType =
 
 /*** API CALL ACTIONS ***/
 export const requestChallengersThunk: RequestChallengersCallType =
-    (latLon, challenger) =>
+    (latLon, challenger, offset) =>
         (dispatch) => {
             dispatch(requestChallengers(latLon, challenger.contestantId))
             return fetch(
-                KINGS_API_BASE_URL + `/contestants/challenger?lat=${latLon.lat}&lon=${latLon.lon}&challenger-contestant-id=${challenger.contestantId}`,
+                KINGS_API_BASE_URL + `/contestants/challenger?lat=${latLon.lat}&lon=${latLon.lon}&challenger-contestant-id=${challenger.contestantId}&offset=${offset}`,
                 {
                     method: 'GET',
                     credentials: "same-origin",
@@ -97,11 +97,11 @@ export const requestChallengersThunk: RequestChallengersCallType =
         }
 
 export const requestContestantsThunk: RequestContestantsCallType =
-    (latLon, categoryId) =>
+    (latLon, categoryId, offset) =>
         (dispatch) => {
             dispatch(requestContestants(latLon, categoryId))
             return fetch(
-                KINGS_API_BASE_URL + `/contestants/category?lat=${latLon.lat}&lon=${latLon.lon}&category-id=${categoryId}`,
+                KINGS_API_BASE_URL + `/contestants/category?lat=${latLon.lat}&lon=${latLon.lon}&category-id=${categoryId}&offset=${offset}`,
                 {
                     method: 'GET',
                     credentials: "same-origin",
@@ -115,10 +115,10 @@ export const submitBoutThunk: SubmitBoutCallType =
     (challenger, winnerContestantId, loserContestantId) =>
         (dispatch, getState) => {
             let state: StoreState = getState();
-            if (findNextContestantIndex(state.contestants.entries, state.contestants.skipContestantIds, state.contestants.currContestantIndex) === -1) {
-                dispatch(requestChallengersThunk(state.latLon, challenger));
-            }
             dispatch(submitBout(state.contestants.currContestantIndex))
+            if (findNextContestantIndex(state.contestants.entries, state.contestants.skipContestantIds, state.contestants.currContestantIndex) === -1) {
+                dispatch(requestChallengersThunk(state.latLon, challenger, state.contestants.entries.length+1));
+            }
             return fetch(
                 KINGS_API_BASE_URL + `/bout?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&category-id=${challenger.categoryId}`,
                 {
@@ -172,8 +172,8 @@ export const changeChallenger: ChangeChallengerType =
 export const changeChallengerThunk: ChangeChallengerThunkType =
     (nextChallenger: ContestantEntry) =>
         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => {
-            dispatch(requestChallengersThunk(getState().latLon, nextChallenger))
             dispatch(changeChallenger(nextChallenger))
+            dispatch(requestChallengersThunk(getState().latLon, nextChallenger, 0))
         }
 
 const submitBout: (currContestantIndex: number) => SubmitBoutResponseAction =

@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 
 export const findNextContestantIndex =
     (contestants: ContestantEntry[], skipContestantIds: number[], currContestantIndex: number): number => {
-        if (currContestantIndex === contestants.length - 1) {
+        if (currContestantIndex >= contestants.length - 1) {
             return -1;
         }
         return _.findIndex(

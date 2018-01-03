@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './Hello.css';
-// import { SubmitBoutCallType } from '../actions/ContestantActions';
+import { DEFAULT_CONTESTANT_ID } from '../constants/index'
 import { ContestantEntry } from "../types/index"
 import Contestant from './Contestant';
 import * as _ from 'lodash'
@@ -14,16 +14,13 @@ export interface BoutProps {
 
     // dispatch functions
     submitBoutDispatch: (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise<void>;
-
 }
 
 const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) => {
     return (
         <div>
-            {_.isNil(otherContestant) ?
-                <div>
-                    No more contestants!
-                </div>
+            {_.isNil(otherContestant) || challenger.contestantId === DEFAULT_CONTESTANT_ID ?
+                <div>No more contestants!</div>
                 :
                 <div className="tile is-parent">
                     <div className="tile is-child is-fullwidth">
