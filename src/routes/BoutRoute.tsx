@@ -81,16 +81,16 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                     />
                 </section>
 
-                <div className="columns">
-                    <div className="column">
+
+                <div className="tile is-ancestor">
+                    <div className="tile box">
                         <BoutContainer
                             challenger={DEFAULT_CONTESTANT}
                             otherContestant={DEFAULT_CONTESTANT}
                             submitBoutDispatch={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
                         />
                     </div>
-
-                    <div className="column is-one-third">
+                    <div className="tile is-parent is-vertical is-3">
                         <ContestantList contestants={this.props.contestantsEntries} currContestantIndex={this.props.currContestantIndex} />
                     </div>
                 </div>

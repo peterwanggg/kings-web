@@ -15,7 +15,8 @@ const ContestantPreview = ({ contestant, isSkipped, toggleSkipContestantId }: Co
             <input
                 type="checkbox"
                 checked={!isSkipped}
-                onChange={() => toggleSkipContestantId(contestant.contestantId)} />
+                onChange={() => toggleSkipContestantId(contestant.contestantId)}
+            />
             {contestant.contestantName}
             <img height="100" width="100" src={contestant.imageUrl} />
         </div>

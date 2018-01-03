@@ -23,8 +23,8 @@ const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) =>
             {_.isNil(otherContestant) ?
                 <div /> :
 
-                <div className="columns">
-                    <div className="column">
+                <div className="tile is-parent">
+                    <div className="tile is-child">
                         <button className="button" onClick={() => submitBoutDispatch(
                             challenger,
                             challenger.contestantId,
@@ -35,7 +35,7 @@ const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) =>
 
                     </div>
 
-                    <div className="column">
+                    <div className="tile is-child">
                         <button className="button" onClick={() => submitBoutDispatch(
                             challenger,
                             otherContestant.contestantId,
