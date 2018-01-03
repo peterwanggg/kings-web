@@ -6,12 +6,14 @@ export interface ContestantPreviewProps {
     contestant: ContestantEntry;
     isSkipped: boolean;
     isPassed: boolean;
+
+    // action
     toggleSkipContestantId: ToggleSkipContestantIdType;
 }
 
 const ContestantPreview = ({ contestant, isSkipped, isPassed, toggleSkipContestantId }: ContestantPreviewProps) => {
     return (
-        <div>
+        <div className="box">
             <input
                 disabled={isPassed}
                 type="checkbox"
@@ -19,8 +21,11 @@ const ContestantPreview = ({ contestant, isSkipped, isPassed, toggleSkipContesta
                 onChange={() => toggleSkipContestantId(contestant.contestantId)}
             />
             {contestant.contestantName}
-            <img height="100" width="100" src={contestant.imageUrl} />
+            <figure className="image is-96x96">
+                <img src={contestant.imageUrl} />
+            </figure>
         </div>
+
     );
 }
 

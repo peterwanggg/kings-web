@@ -1,9 +1,12 @@
 import * as React from 'react'
 import BoutContainer from '../containers/BoutContainer'
-import { CATEGORY_TYPE, DEFAULT_CATEGORY, DEFAULT_CONTESTANT_ID, DEFAULT_CONTESTANT } from '../constants/index'
+import { CATEGORY_TYPE, DEFAULT_CATEGORY_ID, DEFAULT_CONTESTANT_ID, DEFAULT_CONTESTANT, BOUT_MODE_TYPE, CHALLENGER } from '../constants/index'
 import { StoreState, LatLon, ContestantEntry, Category } from '../types/index'
 import { connect, Dispatch } from 'react-redux';
-import { changeCategoryId } from '../actions/GlobalActions';
+import {
+    changeCategoryId,
+    changeBoutMode,
+} from '../actions/GlobalActions';
 import {
     requestContestantsThunk,
     requestCategoriesThunk,
@@ -13,12 +16,15 @@ import {
 import ContestantList from '../components/ContestantList'
 import * as _ from 'lodash';
 import Select, { Options, Option, Async } from 'react-select'
+import BoutModeSelector from '../components/BoutModeSelector';
 
 export interface BoutRouteProps {
     latLon: LatLon;
     categoryId: number;
     categories: Category[]
     categoryType: CATEGORY_TYPE;
+
+    boutMode: BOUT_MODE_TYPE;
 
     challenger: ContestantEntry;
     contestantsEntries: ContestantEntry[];
@@ -44,6 +50,7 @@ const transformCategoriesToSelectOptions =
         label: category.categoryName
     }))
 
+// const noOption: Option = null typeof Option;
 
 class BoutRoute extends React.Component<BoutRouteProps> {
     public componentDidMount() {
@@ -52,7 +59,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
 
     public componentDidUpdate(prevProps: BoutRouteProps) {
         if (prevProps.categoryId !== this.props.categoryId
-            && this.props.categoryId !== DEFAULT_CATEGORY
+            && this.props.categoryId !== DEFAULT_CATEGORY_ID
             && (_.isNil(this.props.challenger) || this.props.challenger.contestantId === DEFAULT_CONTESTANT_ID)
         ) {
             this.props.dispatch(requestContestantsThunk(this.props.latLon, this.props.categoryId))
@@ -63,39 +70,59 @@ class BoutRoute extends React.Component<BoutRouteProps> {
         return (
             <div>
                 <section className="section">
-                    <Async
-                        name="challenger"
-                        clearable={false}
-                        onChange={(value: ContestantEntry) => this.props.dispatch(changeChallengerThunk(value))}
-                        valueKey="contestantId" labelKey="contestantName"
-                        loadOptions={(input: string) => searchContestants(
-                            this.props.latLon, this.props.categoryType, input)}
-                    />
-                    <Select
-                        name="categories"
-                        value={this.props.categoryId}
-                        clearable={false}
-                        onChange={(selectedOption: Option) => !_.isNil(selectedOption) && _.isNumber(selectedOption.value) ?
-                            this.props.dispatch(changeCategoryId(Number(selectedOption.value))) : null
-                        }
-                        options={transformCategoriesToSelectOptions(this.props.categories)}
-                    />
+                    <div className="tile is-ancestor">
+
+                        <div className="tile is-child is-2">
+                            <BoutModeSelector
+                                boutMode={this.props.boutMode}
+                                dispatchChangeBoutMode={(nextBoutMode: BOUT_MODE_TYPE) =>
+                                    this.props.dispatch(changeBoutMode(nextBoutMode))}
+                            />
+                        </div>
+                        <div className="tile is-vertical">
+                            <div className="tile is-child">
+                                <Async
+                                    name="challenger"
+                                    value={this.props.boutMode === CHALLENGER ?
+                                        this.props.challenger : false}
+                                    placeholder="Select a Challenger..."
+                                    clearable={false}
+                                    onChange={(value: ContestantEntry) => this.props.dispatch(changeChallengerThunk(value))}
+                                    valueKey="contestantId" labelKey="contestantName"
+                                    loadOptions={(input: string) => searchContestants(
+                                        this.props.latLon, this.props.categoryType, input)}
+                                />
+                            </div>
+                            <div className="tile is-child">
+                                <Select
+                                    name="categories"
+                                    value={this.props.categoryId}
+                                    clearable={false}
+                                    onChange={(selectedOption: Option) => !_.isNil(selectedOption) && _.isNumber(selectedOption.value) ?
+                                        this.props.dispatch(changeCategoryId(Number(selectedOption.value))) : null
+                                    }
+                                    options={transformCategoriesToSelectOptions(this.props.categories)}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
 
-                <div className="tile is-ancestor">
-                    <div className="tile box">
+                <div className="tile is-ancestor is-fullwidth">
+                    {/* <div className="tile box"> */}
                         <BoutContainer
                             challenger={DEFAULT_CONTESTANT}
                             otherContestant={DEFAULT_CONTESTANT}
                             submitBoutDispatch={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
                         />
-                    </div>
+                    {/* </div> */}
                     <div className="tile is-parent is-vertical is-3">
                         <ContestantList
                             contestants={this.props.contestantsEntries}
                             skipContestantIds={this.props.skipContestantIds}
-                            currContestantIndex={this.props.currContestantIndex} />
+                            currContestantIndex={this.props.currContestantIndex}
+                        />
                     </div>
                 </div>
             </div>
@@ -106,9 +133,12 @@ class BoutRoute extends React.Component<BoutRouteProps> {
 export function mapStateToProps(state: StoreState) {
     return {
         latLon: state.latLon,
+
         categoryType: state.categoryType,
         categoryId: state.categoryId,
         categories: state.categories,
+
+        boutMode: state.boutMode,
 
         challenger: state.contestants.challenger,
         contestantsEntries: state.contestants.entries,

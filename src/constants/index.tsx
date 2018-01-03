@@ -29,13 +29,24 @@ export type TOGGLE_SKIP_CONTESTANT_ID = typeof TOGGLE_SKIP_CONTESTANT_ID;
 export const CHANGE_CATEGORY_ID = 'CHANGE_CATEGORY_ID';
 export type CHANGE_CATEGORY_ID = typeof CHANGE_CATEGORY_ID;
 
+export const CHANGE_BOUT_MODE = 'CHANGE_BOUT_MODE';
+export type CHANGE_BOUT_MODE = typeof CHANGE_BOUT_MODE;
+
+// BoutModes
+export const CHALLENGER = 'CHALLENGER';
+export type CHALLENGER_MODE_TYPE = typeof CHALLENGER;
+export const ROULETTE = 'ROULETTE';
+export type ROULETTE_MODE_TYPE = typeof ROULETTE;
+export type BOUT_MODE_TYPE = CHALLENGER_MODE_TYPE | ROULETTE_MODE_TYPE;
+
 // CategoryTypes
 export const RESTAURANT = 'restaurant';
 export type RESTAURANT_TYPE = typeof RESTAURANT;
 export type CATEGORY_TYPE = RESTAURANT_TYPE;
 
 // DEFAULT VALUES
-export const DEFAULT_CATEGORY = -1;
+export const DEFAULT_CATEGORY_NAME = 'Drinks Only';
+export const DEFAULT_CATEGORY_ID = -1;
 export const DEFAULT_CONTESTANT_ID = -1;
 
 export const DEFAULT_CONTESTANT: ContestantEntry = {

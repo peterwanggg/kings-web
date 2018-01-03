@@ -17,7 +17,7 @@ const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number)
     (contestants, currContestantIndex) =>
         ({ index, isScrolling, key, style }) => {
             return (
-                <div style={style}>
+                <div style={style} key={index}>
                     <ContestantPreviewContainer
                         key={contestants[index].contestantId}
                         contestant={contestants[index]}
@@ -29,7 +29,7 @@ const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number)
             )
         }
 
-const ContestantList = ({ contestants, skipContestantIds, currContestantIndex }: ContestantListProps) => {
+const ContestantList = ({ contestants, skipContestantIds, currContestantIndex}: ContestantListProps) => {
     return (
         <div className="cList">
             <AutoSizer>
@@ -38,7 +38,7 @@ const ContestantList = ({ contestants, skipContestantIds, currContestantIndex }:
                         height={height}
                         // noRowsRenderer={this._noRowsRenderer}
                         rowCount={contestants.length}
-                        rowHeight={120}
+                        rowHeight={140}
                         rowRenderer={rowRenderer(contestants, currContestantIndex)}
                         width={width}
                         scrollToIndex={findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) != -1 ?

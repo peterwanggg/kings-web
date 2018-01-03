@@ -18,37 +18,37 @@ export interface BoutProps {
 }
 
 const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) => {
-    return (
-        <div>
-            {_.isNil(otherContestant) ?
-                <div>
-                    No more contestants!
-                </div>
-                :
-                <div className="tile is-parent">
-                    <div className="tile is-child is-fullwidth">
-                        <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
-                            challenger,
-                            challenger.contestantId,
-                            otherContestant.contestantId)} >
-                            Challenger: 👑 {challenger.contestantName} 👑
-                        </button>
-                        <Contestant contestant={challenger} />
-                    </div>
+    if (_.isNil(otherContestant)) {
+        return (
+            <div>No more contestants!</div>
+        )
+    }
 
-                    <div className="tile is-child is-fullwidth">
-                        <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
-                            challenger,
-                            otherContestant.contestantId,
-                            challenger.contestantId)} >
-                            Other Contestant: 👑 {otherContestant.contestantName} 👑
+    return (
+        <div className="tile is-parent">
+            <div className="tile is-child">
+                <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
+                    challenger,
+                    challenger.contestantId,
+                    otherContestant.contestantId)} >
+                    Challenger: 👑 {challenger.contestantName} 👑
                         </button>
-                        <Contestant contestant={otherContestant} />
-                    </div>
-                </div>
-            }
+                <Contestant contestant={challenger} />
+            </div>
+
+            <div className="tile is-child">
+                <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
+                    challenger,
+                    otherContestant.contestantId,
+                    challenger.contestantId)} >
+                    Other Contestant: 👑 {otherContestant.contestantName} 👑
+                        </button>
+                <Contestant contestant={otherContestant} />
+            </div>
         </div>
+
     );
 }
+
 
 export default Bout;

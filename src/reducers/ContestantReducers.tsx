@@ -1,7 +1,7 @@
-import { RECEIVE_CONTESTANTS, SUBMIT_BOUT, CHANGE_CHALLENGER, RECEIVE_CHALLENGERS, CHANGE_CATEGORY_ID, TOGGLE_SKIP_CONTESTANT_ID } from '../constants';
+import { RECEIVE_CONTESTANTS, SUBMIT_BOUT, CHANGE_BOUT_MODE, CHANGE_CHALLENGER, ROULETTE, RECEIVE_CHALLENGERS, CHANGE_CATEGORY_ID, TOGGLE_SKIP_CONTESTANT_ID } from '../constants';
 import { ContestantState, INITIAL_STATE } from '../types/index';
 import { ReceiveContestantsResponseAction, SubmitBoutResponseAction, ChangeChallengerAction, ReceiveChallengersResponseAction, ToggleSkipContestantIdAction } from '../actions/ContestantActions';
-import { ChangeCategoryIdAction } from '../actions/GlobalActions';
+import { ChangeCategoryIdAction, ChangeBoutModeAction } from '../actions/GlobalActions';
 import * as _ from 'lodash';
 import { findNextContestantIndex } from '../utils/ContestantUtils';
 
@@ -12,10 +12,21 @@ export const contestants =
         ChangeChallengerAction |
         ReceiveChallengersResponseAction |
         ChangeCategoryIdAction |
-        ToggleSkipContestantIdAction
+        ToggleSkipContestantIdAction |
+        ChangeBoutModeAction
     ) => {
 
         switch (action.type) {
+            case CHANGE_BOUT_MODE:
+                return {
+                    ...state,
+                    entries: action.nextBoutMode === ROULETTE &&
+                        findNextContestantIndex(state.entries, state.skipContestantIds, state.currContestantIndex) !== -1 ?
+                        _.concat(
+                            _.take(state.entries, state.currContestantIndex + 1),
+                            _.shuffle(_.takeRight(state.entries, state.entries.length - state.currContestantIndex -1))
+                        ) : state.entries
+                }
             case TOGGLE_SKIP_CONTESTANT_ID:
                 return {
                     ...state,
@@ -47,9 +58,10 @@ export const contestants =
                     currContestantIndex: 1,
                 }
             case SUBMIT_BOUT:
-                // if that was the last contestant, don't increment the index, submitBoutThunk will dispatch for more challengers
                 return {
                     ...state,
+                    challenger: action.boutMode === ROULETTE ?
+                        state.entries[state.currContestantIndex] : state.challenger,
                     currContestantIndex: findNextContestantIndex(
                         state.entries, state.skipContestantIds, state.currContestantIndex)
                 }

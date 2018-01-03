@@ -1,4 +1,4 @@
-import { RESTAURANT, CATEGORY_TYPE, DEFAULT_CONTESTANT, DEFAULT_CATEGORY } from "../constants/index";
+import { RESTAURANT, CATEGORY_TYPE, DEFAULT_CONTESTANT, DEFAULT_CATEGORY_ID, BOUT_MODE_TYPE, ROULETTE } from "../constants/index";
 
 export interface StoreState {
     latLon: LatLon;
@@ -6,6 +6,8 @@ export interface StoreState {
     categories: Category[];
     categoryId: number;
     categoryType: CATEGORY_TYPE;
+
+    boutMode: BOUT_MODE_TYPE;
 
     contestants: ContestantState;
 }
@@ -44,9 +46,11 @@ export type Category = {
 export const INITIAL_STATE: StoreState = {
     latLon: { lat: 47.6522155000, lon: -122.3543657000 },
 
-    categoryId: DEFAULT_CATEGORY,
+    categoryId: DEFAULT_CATEGORY_ID,
     categories: [],
     categoryType: RESTAURANT,
+
+    boutMode: ROULETTE,
 
     contestants: {
         entries: [],
