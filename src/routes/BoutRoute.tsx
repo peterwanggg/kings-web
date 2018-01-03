@@ -22,6 +22,7 @@ export interface BoutRouteProps {
 
     challenger: ContestantEntry;
     contestantsEntries: ContestantEntry[];
+    skipContestantIds: number[];
     currContestantIndex: number;
 
     dispatch: Dispatch<StoreState>;
@@ -91,7 +92,10 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                         />
                     </div>
                     <div className="tile is-parent is-vertical is-3">
-                        <ContestantList contestants={this.props.contestantsEntries} currContestantIndex={this.props.currContestantIndex} />
+                        <ContestantList
+                            contestants={this.props.contestantsEntries}
+                            skipContestantIds={this.props.skipContestantIds}
+                            currContestantIndex={this.props.currContestantIndex} />
                     </div>
                 </div>
             </div>
@@ -108,6 +112,7 @@ export function mapStateToProps(state: StoreState) {
 
         challenger: state.contestants.challenger,
         contestantsEntries: state.contestants.entries,
+        skipContestantIds: state.contestants.skipContestantIds,
         currContestantIndex: state.contestants.currContestantIndex,
     }
 }

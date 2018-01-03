@@ -21,29 +21,30 @@ const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) =>
     return (
         <div>
             {_.isNil(otherContestant) ?
-                <div /> :
-
+                <div>
+                    No more contestants!
+                </div>
+                :
                 <div className="tile is-parent">
-                    <div className="tile is-child">
-                        <button className="button" onClick={() => submitBoutDispatch(
+
+                    <div className="tile is-child is-fullwidth">
+                        <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
                             challenger,
                             challenger.contestantId,
                             otherContestant.contestantId)} >
-                            👑 CHALLENGER: {challenger.contestantName}
+                            Challenger: 👑 {challenger.contestantName} 👑
                         </button>
                         <Contestant contestant={challenger} />
-
                     </div>
 
-                    <div className="tile is-child">
-                        <button className="button" onClick={() => submitBoutDispatch(
+                    <div className="tile is-child is-fullwidth">
+                        <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
                             challenger,
                             otherContestant.contestantId,
                             challenger.contestantId)} >
-                            👑 OTHER GUY: {otherContestant.contestantName}
+                            Other Contestant: 👑 {otherContestant.contestantName} 👑
                         </button>
                         <Contestant contestant={otherContestant} />
-
                     </div>
                 </div>
             }
