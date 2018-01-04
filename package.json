@@ -5,6 +5,7 @@
   "dependencies": {
     "@types/react-virtualized": "^9.7.10",
     "bulma": "^0.6.1",
+    "font-awesome": "^4.7.0",
     "jest-cli": "^20.0.4",
     "lodash": "^4.17.4",
     "node-sass-chokidar": "0.0.3",

@@ -43,6 +43,7 @@ const ContestantList = ({ contestants, skipContestantIds, currContestantIndex }:
                         // noRowsRenderer={this._noRowsRenderer}
                         rowCount={contestants.length}
                         rowHeight={140}
+                        style={({ outline: 'none' })}
                         rowRenderer={rowRenderer(contestants, currContestantIndex)}
                         width={width}
                         scrollToIndex={findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) !== -1 ?

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ContestantEntry } from '../types/index';
 import { ToggleSkipContestantIdType } from '../actions/ContestantActions';
 import { SetContestantModalType } from '../actions/GlobalActions';
+import 'font-awesome/css/font-awesome.css'
 
 export interface ContestantPreviewProps {
     contestant: ContestantEntry;
@@ -15,16 +16,15 @@ export interface ContestantPreviewProps {
 
 const skipCheckbox =
     (contestant: ContestantEntry, isSkipped: boolean, isPassed: boolean, toggleSkipContestantId: ToggleSkipContestantIdType) => {
-        if (isPassed) {
-            return <div />
-        }
+        const spanClassName = (isSkipped: boolean, isPassed: boolean) =>
+            "icon is-large " + (isPassed ? "has-text-info" : (isSkipped ? "has-text-warning" : "has-text-success"))
+        const iClassName = (isSkipped: boolean, isPassed: boolean) =>
+            isPassed ? "fa fa-repeat" : isSkipped ? "fa fa-minus" : "fa fa-check"
         return (
-            <input
-                disabled={isPassed}
-                type="checkbox"
-                checked={!isSkipped}
-                onChange={() => toggleSkipContestantId(contestant.contestant.contestantId)}
-            />
+            <span className={spanClassName(isSkipped, isPassed)} onClick={() => toggleSkipContestantId(contestant.contestant.contestantId)}>
+                <i className={iClassName(isSkipped, isPassed)} />
+            </span>
+
         )
     }
 

@@ -121,13 +121,11 @@ class BoutRoute extends React.Component<BoutRouteProps> {
 
 
                 <div className="tile is-ancestor is-fullwidth">
-                    {/* <div className="tile box"> */}
                     <BoutContainer
                         challenger={DEFAULT_CONTESTANT_ENTRY}
                         otherContestant={DEFAULT_CONTESTANT_ENTRY}
                         submitBoutDispatch={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
                     />
-                    {/* </div> */}
                     <div className="tile is-parent is-vertical is-3">
                         <ContestantList
                             contestants={this.props.contestantsEntries}
