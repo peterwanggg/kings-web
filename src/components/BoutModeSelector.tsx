@@ -9,7 +9,7 @@ export interface BoutModeSelectorProps {
 
 const buttonClassName =
     (boutMode: BOUT_MODE_TYPE, buttonBoutMode: BOUT_MODE_TYPE) =>
-        "button is-fullwidth is-rounded " + ((boutMode === buttonBoutMode) ? "is-success is-selected" : "")
+        "button is-rounded is-fullwidth " + ((boutMode === buttonBoutMode) ? "is-success is-selected" : "")
 
 const Contestant = ({ boutMode, dispatchChangeBoutMode }: BoutModeSelectorProps) => {
     return (

@@ -1,8 +1,32 @@
 
-import { LatLon, INITIAL_STATE, Category } from '../types/index';
-import { CATEGORY_TYPE, RECEIVE_CATEGORIES, CHANGE_CATEGORY_ID, RECEIVE_CHALLENGERS, BOUT_MODE_TYPE, CHANGE_BOUT_MODE, ROULETTE, CHALLENGER, CHANGE_CHALLENGER, DEFAULT_CATEGORY_NAME } from '../constants/index';
-import { ReceiveCategoriesResponseAction, ReceiveChallengersResponseAction, ChangeChallengerAction } from '../actions/ContestantActions';
-import { ChangeCategoryIdAction, ChangeBoutModeAction, } from '../actions/GlobalActions';
+import {
+    LatLon,
+    INITIAL_STATE,
+    Category,
+    ContestantEntry,
+} from '../types/index';
+import {
+    CATEGORY_TYPE, RECEIVE_CATEGORIES,
+    CHANGE_CATEGORY_ID,
+    RECEIVE_CHALLENGERS,
+    BOUT_MODE_TYPE,
+    CHANGE_BOUT_MODE,
+    ROULETTE,
+    CHALLENGER,
+    CHANGE_CHALLENGER,
+    DEFAULT_CATEGORY_NAME,
+    SET_CONTESTANT_MODAL
+} from '../constants/index';
+import {
+    ReceiveCategoriesResponseAction,
+    ReceiveChallengersResponseAction,
+    ChangeChallengerAction
+} from '../actions/ContestantActions';
+import {
+    ChangeCategoryIdAction,
+    ChangeBoutModeAction,
+    SetContestantModalAction,
+} from '../actions/GlobalActions';
 import * as _ from 'lodash';
 
 // TODO: fix action type
@@ -59,6 +83,16 @@ export const boutMode =
                 return CHALLENGER;
             case CHANGE_BOUT_MODE:
                 return action.nextBoutMode;
+            default:
+                return state;
+        }
+    }
+
+export const contestantModal =
+    (state: ContestantEntry | null = INITIAL_STATE.contestantModal, action: SetContestantModalAction) => {
+        switch (action.type) {
+            case SET_CONTESTANT_MODAL:
+                return action.contestant;
             default:
                 return state;
         }

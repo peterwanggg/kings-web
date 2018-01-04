@@ -8,7 +8,7 @@ import logger from 'redux-logger';
 import { createStore, applyMiddleware, combineReducers, Middleware } from 'redux';
 import { StoreState } from './types/index';
 import { contestants } from './reducers/ContestantReducers'
-import { latLon, categoryType, categoryId, categories, boutMode } from './reducers/GlobalReducers'
+import { latLon, categoryType, categoryId, categories, boutMode, contestantModal } from './reducers/GlobalReducers'
 import thunk from 'redux-thunk';
 
 
@@ -27,6 +27,8 @@ const store = createStore<StoreState>(
     categories,
 
     boutMode,
+
+    contestantModal,
   }),
   applyMiddleware(...middleware));
 

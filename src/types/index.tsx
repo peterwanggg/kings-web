@@ -9,6 +9,8 @@ export interface StoreState {
 
     boutMode: BOUT_MODE_TYPE;
 
+    contestantModal: ContestantEntry | null;
+
     contestants: ContestantState;
 }
 
@@ -63,6 +65,8 @@ export const INITIAL_STATE: StoreState = {
     categoryType: RESTAURANT,
 
     boutMode: ROULETTE,
+
+    contestantModal: null,
 
     contestants: {
         entries: [],

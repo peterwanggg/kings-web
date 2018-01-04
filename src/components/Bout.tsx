@@ -1,6 +1,4 @@
 import * as React from 'react';
-import './Hello.css';
-// import { SubmitBoutCallType } from '../actions/ContestantActions';
 import { ContestantEntry } from "../types/index"
 import Contestant from './Contestant';
 import * as _ from 'lodash'

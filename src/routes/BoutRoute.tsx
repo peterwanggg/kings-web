@@ -6,6 +6,7 @@ import { connect, Dispatch } from 'react-redux';
 import {
     changeCategoryId,
     changeBoutMode,
+    setContestantModal,
 } from '../actions/GlobalActions';
 import {
     requestContestantsThunk,
@@ -17,6 +18,7 @@ import ContestantList from '../components/ContestantList'
 import * as _ from 'lodash';
 import Select, { Options, Option, Async } from 'react-select'
 import BoutModeSelector from '../components/BoutModeSelector';
+import ContestantModal from '../components/ContestantModal';
 
 export interface BoutRouteProps {
     latLon: LatLon;
@@ -25,6 +27,8 @@ export interface BoutRouteProps {
     categoryType: CATEGORY_TYPE;
 
     boutMode: BOUT_MODE_TYPE;
+
+    contestantModal: ContestantEntry;
 
     challenger: ContestantEntry;
     contestantsEntries: ContestantEntry[];
@@ -69,9 +73,16 @@ class BoutRoute extends React.Component<BoutRouteProps> {
     render() {
         return (
             <div>
+                <ContestantModal
+                    contestant={this.props.contestantModal}
+                    setContestantModal={(contestant: ContestantEntry | null) => this.props.dispatch(setContestantModal(contestant))}
+                    showStats={
+                        !_.isNil(this.props.contestantModal)
+                        && _.findIndex(this.props.contestantsEntries, cE => cE.contestant.contestantId == this.props.contestantModal.contestant.contestantId) < this.props.currContestantIndex
+                        && this.props.contestantModal.contestant.contestantId != this.props.contestantModal.contestant.contestantId}
+                />
                 <section className="section">
                     <div className="tile is-ancestor">
-
                         <div className="tile is-child is-2">
                             <BoutModeSelector
                                 boutMode={this.props.boutMode}
@@ -111,11 +122,11 @@ class BoutRoute extends React.Component<BoutRouteProps> {
 
                 <div className="tile is-ancestor is-fullwidth">
                     {/* <div className="tile box"> */}
-                        <BoutContainer
-                            challenger={DEFAULT_CONTESTANT_ENTRY}
-                            otherContestant={DEFAULT_CONTESTANT_ENTRY}
-                            submitBoutDispatch={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
-                        />
+                    <BoutContainer
+                        challenger={DEFAULT_CONTESTANT_ENTRY}
+                        otherContestant={DEFAULT_CONTESTANT_ENTRY}
+                        submitBoutDispatch={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
+                    />
                     {/* </div> */}
                     <div className="tile is-parent is-vertical is-3">
                         <ContestantList
@@ -139,6 +150,8 @@ export function mapStateToProps(state: StoreState) {
         categories: state.categories,
 
         boutMode: state.boutMode,
+
+        contestantModal: state.contestantModal,
 
         challenger: state.contestants.challenger,
         contestantsEntries: state.contestants.entries,

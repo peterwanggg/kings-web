@@ -3,6 +3,7 @@ import { AutoSizer, List, ListRowRenderer } from 'react-virtualized';
 import { ContestantEntry } from '../types/index';
 import 'react-virtualized/styles.css'; // only needs to be imported once
 import { toggleSkipContestantId } from '../actions/ContestantActions';
+import { setContestantModal } from '../actions/GlobalActions';
 import ContestantPreviewContainer from '../containers/ContestantPreviewContainer';
 import { findNextContestantIndex } from '../utils/ContestantUtils';
 import '../index.css'
@@ -20,16 +21,19 @@ const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number)
                 <div style={style} key={index}>
                     <ContestantPreviewContainer
                         key={contestants[index].contestant.contestantId}
+
                         contestant={contestants[index]}
-                        toggleSkipContestantId={toggleSkipContestantId}
                         isSkipped={false}
                         isPassed={currContestantIndex >= index}
+
+                        setContestantModal={setContestantModal}
+                        toggleSkipContestantId={toggleSkipContestantId}
                     />
                 </div>
             )
         }
 
-const ContestantList = ({ contestants, skipContestantIds, currContestantIndex}: ContestantListProps) => {
+const ContestantList = ({ contestants, skipContestantIds, currContestantIndex }: ContestantListProps) => {
     return (
         <div className="cList">
             <AutoSizer>
