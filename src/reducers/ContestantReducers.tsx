@@ -1,5 +1,5 @@
 import { RECEIVE_CONTESTANTS, SUBMIT_BOUT, CHANGE_BOUT_MODE, CHANGE_CHALLENGER, ROULETTE, RECEIVE_CHALLENGERS, CHANGE_CATEGORY_ID, TOGGLE_SKIP_CONTESTANT_ID } from '../constants';
-import { ContestantState, INITIAL_STATE } from '../types/index';
+import { ContestantState, INITIAL_STATE, ContestantEntry } from '../types/index';
 import { ReceiveContestantsResponseAction, SubmitBoutResponseAction, ChangeChallengerAction, ReceiveChallengersResponseAction, ToggleSkipContestantIdAction } from '../actions/ContestantActions';
 import { ChangeCategoryIdAction, ChangeBoutModeAction } from '../actions/GlobalActions';
 import * as _ from 'lodash';
@@ -24,7 +24,7 @@ export const contestants =
                         findNextContestantIndex(state.entries, state.skipContestantIds, state.currContestantIndex) !== -1 ?
                         _.concat(
                             _.take(state.entries, state.currContestantIndex + 1),
-                            _.shuffle(_.takeRight(state.entries, state.entries.length - state.currContestantIndex -1))
+                            _.shuffle(_.takeRight(state.entries, state.entries.length - state.currContestantIndex - 1))
                         ) : state.entries
                 }
             case TOGGLE_SKIP_CONTESTANT_ID:
@@ -58,10 +58,19 @@ export const contestants =
                     currContestantIndex: 1,
                 }
             case SUBMIT_BOUT:
+                let updatedEntries = state.entries;
+                updatedEntries[state.currContestantIndex] = updateContestantStats(
+                    updatedEntries[state.currContestantIndex],
+                    action.winnerContestantId === updatedEntries[state.currContestantIndex].contestant.contestantId)
+                let updatedChallenger = updateContestantStats(
+                    state.challenger,
+                    action.winnerContestantId === state.challenger.contestant.contestantId);
+
                 return {
                     ...state,
+                    entries: updatedEntries,
                     challenger: action.boutMode === ROULETTE ?
-                        state.entries[state.currContestantIndex] : state.challenger,
+                        updatedEntries[state.currContestantIndex] : updatedChallenger,
                     currContestantIndex: findNextContestantIndex(
                         state.entries, state.skipContestantIds, state.currContestantIndex)
                 }
@@ -70,3 +79,11 @@ export const contestants =
         }
     }
 
+const updateContestantStats = (contestantEntry: ContestantEntry, didWin: boolean): ContestantEntry => {
+    if (didWin) {
+        contestantEntry.contestantStats.winCount = contestantEntry.contestantStats.winCount + 1
+    } else {
+        contestantEntry.contestantStats.loseCount = contestantEntry.contestantStats.loseCount + 1
+    }
+    return contestantEntry
+}

@@ -1,5 +1,5 @@
 import { StoreState } from '../types/index';
-import { connect } from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 import ContestantPreview, { ContestantPreviewProps } from '../components/ContestantPreview'
 import { toggleSkipContestantId} from '../actions/ContestantActions';
 import * as _ from 'lodash';
@@ -11,7 +11,7 @@ export function mapStateToProps(state: StoreState, ownProps: ContestantPreviewPr
 }
 
 export function mapDispatchToProps(
-    dispatch: any,
+    dispatch: Dispatch<StoreState>,
     ownProps: ContestantPreviewProps,
 ) {
     return {

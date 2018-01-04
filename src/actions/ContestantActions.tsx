@@ -44,6 +44,7 @@ export interface ReceiveCategoriesResponseAction extends ActionType<RECEIVE_CATE
 export interface SubmitBoutResponseAction extends ActionType<SUBMIT_BOUT> {
     type: SUBMIT_BOUT,
     boutMode: BOUT_MODE_TYPE,
+    winnerContestantId: number,
 }
 
 export interface ChangeChallengerAction extends ActionType<CHANGE_CHALLENGER> {
@@ -121,7 +122,7 @@ export const submitBoutThunk: SubmitBoutCallType =
             if (findNextContestantIndex(state.contestants.entries, state.contestants.skipContestantIds, state.contestants.currContestantIndex) === -1) {
                 dispatch(requestChallengersThunk(state.latLon, challenger));
             }
-            dispatch(submitBout(state.boutMode))
+            dispatch(submitBout(state.boutMode, winnerContestantId))
             return fetch(
                 KINGS_API_BASE_URL + `/bout?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&category-id=${challenger.contestant.categoryId}`,
                 {
@@ -179,10 +180,11 @@ export const changeChallengerThunk: ChangeChallengerThunkType =
             dispatch(changeChallenger(nextChallenger))
         }
 
-const submitBout: (boutMode: BOUT_MODE_TYPE) => SubmitBoutResponseAction =
-    (boutMode) => ({
+const submitBout: (boutMode: BOUT_MODE_TYPE, winnerContestantId: number) => SubmitBoutResponseAction =
+    (boutMode, winnerContestantId) => ({
         type: SUBMIT_BOUT,
-        boutMode: boutMode
+        boutMode: boutMode,
+        winnerContestantId: winnerContestantId,
     })
 
 const receiveChallengers: (challenger: ContestantEntry, fetchContestantsResponse: ContestantEntry[]) => ReceiveChallengersResponseAction =
