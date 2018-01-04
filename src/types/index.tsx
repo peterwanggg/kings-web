@@ -1,4 +1,4 @@
-import { RESTAURANT, CATEGORY_TYPE, DEFAULT_CONTESTANT, DEFAULT_CATEGORY_ID, BOUT_MODE_TYPE, ROULETTE } from "../constants/index";
+import { RESTAURANT, CATEGORY_TYPE, DEFAULT_CONTESTANT_ENTRY, DEFAULT_CATEGORY_ID, BOUT_MODE_TYPE, ROULETTE } from "../constants/index";
 
 export interface StoreState {
     latLon: LatLon;
@@ -24,12 +24,24 @@ export interface ActionType<T extends string> {
 }
 
 export interface ContestantEntry {
+    contestant: Contestant;
+    contestantStats: ContestantStats;
+}
+
+export interface Contestant {
     apiProviderId: string;
     apiProviderType: string;
     categoryId: number;
     contestantId: number;
     contestantName: string;
     imageUrl: string;
+}
+
+export interface ContestantStats {
+    categoryId: number;
+    contestantId: number;
+    winCount: number;
+    loseCount: number;
 }
 
 export type LatLon = {
@@ -55,7 +67,7 @@ export const INITIAL_STATE: StoreState = {
     contestants: {
         entries: [],
         currContestantIndex: 0,
-        challenger: DEFAULT_CONTESTANT,
+        challenger: DEFAULT_CONTESTANT_ENTRY,
         skipContestantIds: []
     },
 }

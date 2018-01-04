@@ -1,4 +1,4 @@
-import { ContestantEntry } from '../types/index';
+import { ContestantEntry, Contestant, ContestantStats } from '../types/index';
 
 // Actions: Contestant
 export const REQUEST_CONTESTANTS = 'REQUEST_CONTESTANTS';
@@ -48,12 +48,21 @@ export type CATEGORY_TYPE = RESTAURANT_TYPE;
 export const DEFAULT_CATEGORY_NAME = 'Drinks Only';
 export const DEFAULT_CATEGORY_ID = -1;
 export const DEFAULT_CONTESTANT_ID = -1;
-
-export const DEFAULT_CONTESTANT: ContestantEntry = {
+export const DEFAULT_CONTESTANT: Contestant = {
     contestantId: DEFAULT_CONTESTANT_ID,
     categoryId: 0,
     contestantName: "",
     imageUrl: "",
     apiProviderType: "",
     apiProviderId: ""
+}
+export const DEFAULT_CONTESTANT_STATS: ContestantStats = {
+    contestantId: DEFAULT_CONTESTANT_ID,
+    categoryId: 0,
+    winCount: 0,
+    loseCount: 0,
+}
+export const DEFAULT_CONTESTANT_ENTRY: ContestantEntry = {
+    contestant: DEFAULT_CONTESTANT,
+    contestantStats: DEFAULT_CONTESTANT_STATS
 }

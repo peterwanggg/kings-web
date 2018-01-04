@@ -19,7 +19,7 @@ const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number)
             return (
                 <div style={style} key={index}>
                     <ContestantPreviewContainer
-                        key={contestants[index].contestantId}
+                        key={contestants[index].contestant.contestantId}
                         contestant={contestants[index]}
                         toggleSkipContestantId={toggleSkipContestantId}
                         isSkipped={false}

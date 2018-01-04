@@ -87,9 +87,9 @@ export type ToggleSkipContestantIdType =
 export const requestChallengersThunk: RequestChallengersCallType =
     (latLon, challenger) =>
         (dispatch) => {
-            dispatch(requestChallengers(latLon, challenger.contestantId))
+            dispatch(requestChallengers(latLon, challenger.contestant.contestantId))
             return fetch(
-                KINGS_API_BASE_URL + `/contestants/challenger?lat=${latLon.lat}&lon=${latLon.lon}&challenger-contestant-id=${challenger.contestantId}`,
+                KINGS_API_BASE_URL + `/contestants/challenger?lat=${latLon.lat}&lon=${latLon.lon}&challenger-contestant-id=${challenger.contestant.contestantId}`,
                 {
                     method: 'GET',
                     credentials: "same-origin",
@@ -123,7 +123,7 @@ export const submitBoutThunk: SubmitBoutCallType =
             }
             dispatch(submitBout(state.boutMode))
             return fetch(
-                KINGS_API_BASE_URL + `/bout?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&category-id=${challenger.categoryId}`,
+                KINGS_API_BASE_URL + `/bout?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&category-id=${challenger.contestant.categoryId}`,
                 {
                     method: 'POST',
                     credentials: "same-origin",

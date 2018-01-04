@@ -1,6 +1,6 @@
 import * as React from 'react'
 import BoutContainer from '../containers/BoutContainer'
-import { CATEGORY_TYPE, DEFAULT_CATEGORY_ID, DEFAULT_CONTESTANT_ID, DEFAULT_CONTESTANT, BOUT_MODE_TYPE, CHALLENGER } from '../constants/index'
+import { CATEGORY_TYPE, DEFAULT_CATEGORY_ID, DEFAULT_CONTESTANT_ID, DEFAULT_CONTESTANT_ENTRY, BOUT_MODE_TYPE, CHALLENGER } from '../constants/index'
 import { StoreState, LatLon, ContestantEntry, Category } from '../types/index'
 import { connect, Dispatch } from 'react-redux';
 import {
@@ -60,7 +60,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
     public componentDidUpdate(prevProps: BoutRouteProps) {
         if (prevProps.categoryId !== this.props.categoryId
             && this.props.categoryId !== DEFAULT_CATEGORY_ID
-            && (_.isNil(this.props.challenger) || this.props.challenger.contestantId === DEFAULT_CONTESTANT_ID)
+            && (_.isNil(this.props.challenger) || this.props.challenger.contestant.contestantId === DEFAULT_CONTESTANT_ID)
         ) {
             this.props.dispatch(requestContestantsThunk(this.props.latLon, this.props.categoryId))
         }
@@ -112,8 +112,8 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                 <div className="tile is-ancestor is-fullwidth">
                     {/* <div className="tile box"> */}
                         <BoutContainer
-                            challenger={DEFAULT_CONTESTANT}
-                            otherContestant={DEFAULT_CONTESTANT}
+                            challenger={DEFAULT_CONTESTANT_ENTRY}
+                            otherContestant={DEFAULT_CONTESTANT_ENTRY}
                             submitBoutDispatch={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
                         />
                     {/* </div> */}

@@ -29,9 +29,9 @@ const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) =>
             <div className="tile is-child">
                 <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
                     challenger,
-                    challenger.contestantId,
-                    otherContestant.contestantId)} >
-                    Challenger: 👑 {challenger.contestantName} 👑
+                    challenger.contestant.contestantId,
+                    otherContestant.contestant.contestantId)} >
+                    Challenger: 👑 {challenger.contestant.contestantName} 👑
                         </button>
                 <Contestant contestant={challenger} />
             </div>
@@ -39,9 +39,9 @@ const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) =>
             <div className="tile is-child">
                 <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
                     challenger,
-                    otherContestant.contestantId,
-                    challenger.contestantId)} >
-                    Other Contestant: 👑 {otherContestant.contestantName} 👑
+                    otherContestant.contestant.contestantId,
+                    challenger.contestant.contestantId)} >
+                    Other Contestant: 👑 {otherContestant.contestant.contestantName} 👑
                         </button>
                 <Contestant contestant={otherContestant} />
             </div>

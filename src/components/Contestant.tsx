@@ -8,7 +8,7 @@ export interface ContestantProps {
 const Contestant = ({ contestant }: ContestantProps) => {
     return (
         <div>
-            <img src={contestant.imageUrl} />
+            <img src={contestant.contestant.imageUrl} />
         </div>
     );
 }

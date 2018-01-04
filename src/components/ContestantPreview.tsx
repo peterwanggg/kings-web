@@ -18,11 +18,11 @@ const ContestantPreview = ({ contestant, isSkipped, isPassed, toggleSkipContesta
                 disabled={isPassed}
                 type="checkbox"
                 checked={!isSkipped}
-                onChange={() => toggleSkipContestantId(contestant.contestantId)}
+                onChange={() => toggleSkipContestantId(contestant.contestant.contestantId)}
             />
-            {contestant.contestantName}
+            {contestant.contestant.contestantName}
             <figure className="image is-96x96">
-                <img src={contestant.imageUrl} />
+                <img src={contestant.contestant.imageUrl} />
             </figure>
         </div>
 

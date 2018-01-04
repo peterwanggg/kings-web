@@ -26,7 +26,7 @@ export const categoryId =
     (state: number = INITIAL_STATE.categoryId, action: ReceiveCategoriesResponseAction | ChangeCategoryIdAction | ReceiveChallengersResponseAction) => {
         switch (action.type) {
             case RECEIVE_CHALLENGERS:
-                return action.challenger.categoryId;
+                return action.challenger.contestant.categoryId;
             case CHANGE_CATEGORY_ID:
                 return action.nextCategoryId;
             case RECEIVE_CATEGORIES:

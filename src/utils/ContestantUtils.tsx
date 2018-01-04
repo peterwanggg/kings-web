@@ -8,6 +8,6 @@ export const findNextContestantIndex =
         }
         return _.findIndex(
             contestants,
-            contestant => !_.includes(skipContestantIds, contestant.contestantId),
+            contestant => !_.includes(skipContestantIds, contestant.contestant.contestantId),
             currContestantIndex + 1);
     }
