@@ -5,27 +5,34 @@ import 'react-virtualized/styles.css'; // only needs to be imported once
 import { toggleSkipContestantId } from '../actions/ContestantActions';
 import { setContestantModal } from '../actions/GlobalActions';
 import ContestantPreviewContainer from '../containers/ContestantPreviewContainer';
-import { findNextContestantIndex } from '../utils/ContestantUtils';
+import { findNextContestantIndex, isPassed } from '../utils/ContestantUtils';
 import '../index.css'
+// import * as _ from 'lodash';
 
 export interface ContestantListProps {
     contestants: ContestantEntry[];
     skipContestantIds: number[]
     currContestantIndex: number;
+    challengerContestantId: number;
 }
 
-const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number) => ListRowRenderer =
-    (contestants, currContestantIndex) =>
+const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number, challengerContestantId: number) => ListRowRenderer =
+    (contestants, currContestantIndex, challengerContestantId) =>
         ({ index, isScrolling, key, style }) => {
             return (
                 <div style={style} key={index}>
                     <ContestantPreviewContainer
                         key={contestants[index].contestant.contestantId}
-
                         contestant={contestants[index]}
                         isSkipped={false}
-                        isPassed={currContestantIndex >= index}
-
+                        isPassed={isPassed(
+                            contestants[index].contestant.contestantId,
+                            contestants,
+                            challengerContestantId,
+                            currContestantIndex)}
+                        isInBout={
+                            index === currContestantIndex || contestants[index].contestant.contestantId === challengerContestantId
+                        }
                         setContestantModal={setContestantModal}
                         toggleSkipContestantId={toggleSkipContestantId}
                     />
@@ -33,7 +40,8 @@ const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number)
             )
         }
 
-const ContestantList = ({ contestants, skipContestantIds, currContestantIndex }: ContestantListProps) => {
+
+const ContestantList = ({ contestants, skipContestantIds, currContestantIndex, challengerContestantId }: ContestantListProps) => {
     return (
         <div className="cList">
             <AutoSizer>
@@ -44,10 +52,11 @@ const ContestantList = ({ contestants, skipContestantIds, currContestantIndex }:
                         rowCount={contestants.length}
                         rowHeight={140}
                         style={({ outline: 'none' })}
-                        rowRenderer={rowRenderer(contestants, currContestantIndex)}
+                        rowRenderer={rowRenderer(contestants, currContestantIndex, challengerContestantId)}
                         width={width}
-                        scrollToIndex={findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) !== -1 ?
-                            currContestantIndex + 1 : currContestantIndex}
+                        scrollToIndex={
+                            Math.max(0, (findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) !== -1 ?
+                                currContestantIndex + 1 : currContestantIndex) - 3)}
                         scrollToAlignment={"start"}
                     />
                 )}

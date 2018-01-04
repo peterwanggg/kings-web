@@ -4,6 +4,7 @@ import { ContestantEntry } from '../types/index';
 import Contestant from './Contestant';
 import * as _ from 'lodash';
 import { SetContestantModalType } from '../actions/GlobalActions';
+import ContestantStats from './ContestantStats';
 
 export interface ContestantModalProps {
     contestant: ContestantEntry;
@@ -28,12 +29,15 @@ const ContestantModal = ({ contestant, showStats, setContestantModal }: Contesta
                 isOpen={!_.isNil(contestant)}
                 onRequestClose={closeModal}
             >
-
                 <a className="button is-rounded is-clearfixed is-pulled-right" onClick={closeModal}>Close</a>
-
 
                 <Contestant contestant={contestant} />
 
+                {showStats ?
+                    <ContestantStats stats={contestant.contestantStats} />
+                    :
+                    <div>Submit bout to see this contestant's stats!</div>
+                }
             </ReactModal>
         </div>
     )

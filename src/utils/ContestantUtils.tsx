@@ -11,3 +11,7 @@ export const findNextContestantIndex =
             contestant => !_.includes(skipContestantIds, contestant.contestant.contestantId),
             currContestantIndex + 1);
     }
+
+export const isPassed = (contestantId: number, contestantsEntries: ContestantEntry[], challengerContestantId: number, currContestantIndex: number): boolean =>
+    _.findIndex(contestantsEntries, cE => cE.contestant.contestantId == contestantId) < currContestantIndex
+    && contestantId != challengerContestantId

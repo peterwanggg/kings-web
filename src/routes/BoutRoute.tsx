@@ -19,6 +19,7 @@ import * as _ from 'lodash';
 import Select, { Options, Option, Async } from 'react-select'
 import BoutModeSelector from '../components/BoutModeSelector';
 import ContestantModal from '../components/ContestantModal';
+import { isPassed } from '../utils/ContestantUtils';
 
 export interface BoutRouteProps {
     latLon: LatLon;
@@ -54,7 +55,7 @@ const transformCategoriesToSelectOptions =
         label: category.categoryName
     }))
 
-// const noOption: Option = null typeof Option;
+
 
 class BoutRoute extends React.Component<BoutRouteProps> {
     public componentDidMount() {
@@ -77,9 +78,13 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                     contestant={this.props.contestantModal}
                     setContestantModal={(contestant: ContestantEntry | null) => this.props.dispatch(setContestantModal(contestant))}
                     showStats={
-                        !_.isNil(this.props.contestantModal)
-                        && _.findIndex(this.props.contestantsEntries, cE => cE.contestant.contestantId == this.props.contestantModal.contestant.contestantId) < this.props.currContestantIndex
-                        && this.props.contestantModal.contestant.contestantId != this.props.contestantModal.contestant.contestantId}
+                        !_.isNil(this.props.contestantModal) &&
+                        isPassed(
+                            this.props.contestantModal.contestant.contestantId,
+                            this.props.contestantsEntries,
+                            this.props.challenger.contestant.contestantId,
+                            this.props.currContestantIndex)
+                    }
                 />
                 <section className="section">
                     <div className="tile is-ancestor">
@@ -131,6 +136,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                             contestants={this.props.contestantsEntries}
                             skipContestantIds={this.props.skipContestantIds}
                             currContestantIndex={this.props.currContestantIndex}
+                            challengerContestantId={this.props.challenger.contestant.contestantId}
                         />
                     </div>
                 </div>

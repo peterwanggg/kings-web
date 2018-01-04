@@ -18,7 +18,7 @@ export interface BoutProps {
 const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) => {
     if (_.isNil(otherContestant)) {
         return (
-            <div>No more contestants!</div>
+            <div className="tile is-parent">No more contestants!</div>
         )
     }
 
