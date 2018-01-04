@@ -41,7 +41,7 @@ const ContestantList = ({ contestants, skipContestantIds, currContestantIndex}: 
                         rowHeight={140}
                         rowRenderer={rowRenderer(contestants, currContestantIndex)}
                         width={width}
-                        scrollToIndex={findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) != -1 ?
+                        scrollToIndex={findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) !== -1 ?
                             currContestantIndex + 1 : currContestantIndex}
                         scrollToAlignment={"start"}
                     />

@@ -84,7 +84,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                                 <Async
                                     name="challenger"
                                     value={this.props.boutMode === CHALLENGER ?
-                                        this.props.challenger : false}
+                                        this.props.challenger.contestant : false}
                                     placeholder="Select a Challenger..."
                                     clearable={false}
                                     onChange={(value: ContestantEntry) => this.props.dispatch(changeChallengerThunk(value))}
