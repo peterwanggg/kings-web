@@ -7,10 +7,10 @@ import {
     changeCategoryId,
     changeBoutMode,
     setContestantModal,
+    requestCategoriesThunk,
 } from '../actions/GlobalActions';
 import {
     requestContestantsThunk,
-    requestCategoriesThunk,
     changeChallengerThunk,
     searchContestantsCall,
 } from '../actions/ContestantActions';
@@ -54,8 +54,6 @@ const transformCategoriesToSelectOptions =
         value: category.categoryId,
         label: category.categoryName
     }))
-
-
 
 class BoutRoute extends React.Component<BoutRouteProps> {
     public componentDidMount() {

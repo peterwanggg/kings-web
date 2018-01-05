@@ -18,7 +18,6 @@ import {
     SET_CONTESTANT_MODAL
 } from '../constants/index';
 import {
-    ReceiveCategoriesResponseAction,
     ReceiveChallengersResponseAction,
     ChangeChallengerAction
 } from '../actions/ContestantActions';
@@ -26,6 +25,7 @@ import {
     ChangeCategoryIdAction,
     ChangeBoutModeAction,
     SetContestantModalAction,
+    ReceiveCategoriesResponseAction,
 } from '../actions/GlobalActions';
 import * as _ from 'lodash';
 

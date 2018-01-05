@@ -5,24 +5,16 @@ import {
     REQUEST_CHALLENGERS,
     SUBMIT_BOUT,
     CATEGORY_TYPE,
-    RECEIVE_CATEGORIES,
     CHANGE_CHALLENGER,
     TOGGLE_SKIP_CONTESTANT_ID,
     BOUT_MODE_TYPE,
 } from '../constants'
-import { ActionType, StoreState, ContestantEntry, LatLon, Category } from '../types/index'
+import { ActionType, StoreState, ContestantEntry, LatLon } from '../types/index'
 import { Dispatch } from 'redux'
 import * as _ from 'lodash'
 import { findNextContestantIndex } from '../utils/ContestantUtils'
+import { KINGS_API_BASE_URL, DEFAULT_HEADERS } from '../constants/ApiConstants';
 
-
-const AUTH_TOKEN = "Basic cGV0ZTo=";
-const KINGS_API_BASE_URL = "http://localhost:8080";
-const DEFAULT_HEADERS = {
-    Authorization: AUTH_TOKEN,
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-};
 
 /*** TYPES: ACTION **/
 export interface ReceiveContestantsResponseAction extends ActionType<RECEIVE_CONTESTANTS> {
@@ -35,12 +27,6 @@ export interface ReceiveChallengersResponseAction extends ActionType<RECEIVE_CHA
     challenger: ContestantEntry,
     contestants: ContestantEntry[]
 }
-
-export interface ReceiveCategoriesResponseAction extends ActionType<RECEIVE_CATEGORIES> {
-    type: RECEIVE_CATEGORIES,
-    categories: Category[]
-}
-
 export interface SubmitBoutResponseAction extends ActionType<SUBMIT_BOUT> {
     type: SUBMIT_BOUT,
     boutMode: BOUT_MODE_TYPE,
@@ -65,10 +51,6 @@ export type RequestContestantsCallType =
 export type RequestChallengersCallType =
     (latLon: LatLon, challenger: ContestantEntry) =>
         (dispatch: Dispatch<StoreState>) => Promise<ReceiveChallengersResponseAction>
-
-export type RequestCategoriesCallType =
-    (latLon: LatLon, categoryType: CATEGORY_TYPE) =>
-        (dispatch: Dispatch<StoreState>) => Promise<ReceiveCategoriesResponseAction>
 
 export type SubmitBoutCallType =
     (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) =>
@@ -133,20 +115,6 @@ export const submitBoutThunk: SubmitBoutCallType =
                 .then(response => { })
         }
 
-export const requestCategoriesThunk: RequestCategoriesCallType =
-    (latLon, categoryType) =>
-        (dispatch) => {
-            return fetch(
-                KINGS_API_BASE_URL + `/categories?lat=${latLon.lat}&lon=${latLon.lon}&category-type=${categoryType}`,
-                {
-                    method: 'GET',
-                    credentials: "same-origin",
-                    headers: DEFAULT_HEADERS,
-                })
-                .then(response => response.json())
-                .then(json => dispatch(receiveCategories(json)))
-        }
-
 export const searchContestantsCall: (latLon: LatLon, categoryType: CATEGORY_TYPE, contestantName: string) => Promise<ContestantEntry[]> =
     (latLon, categoryType, contestantName) =>
         fetch(
@@ -198,12 +166,6 @@ const receiveContestants: (categoryId: number, fetchContestantsResponse: Contest
     (categoryId: number, fetchContestantsResponse: ContestantEntry[]) => ({
         type: RECEIVE_CONTESTANTS,
         contestants: fetchContestantsResponse
-    })
-
-const receiveCategories: (requestCategoriesResponse: Category[]) => ReceiveCategoriesResponseAction =
-    (requestCategoriesResponse: Category[]) => ({
-        type: RECEIVE_CATEGORIES,
-        categories: requestCategoriesResponse,
     })
 
 // these two are probably useless, unless you add a loading screen
