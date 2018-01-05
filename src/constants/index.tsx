@@ -33,6 +33,11 @@ export type CHANGE_BOUT_MODE = typeof CHANGE_BOUT_MODE;
 export const SET_CONTESTANT_MODAL = 'SET_CONTESTANT_MODAL';
 export type SET_CONTESTANT_MODAL = typeof SET_CONTESTANT_MODAL;
 
+// RankTypes
+export const WIN_PERCENT = 'winPercent';
+export type WIN_PERCENT_RANK_TYPE = typeof WIN_PERCENT;
+export type RANK_TYPE = WIN_PERCENT_RANK_TYPE;
+
 // BoutModes
 export const CHALLENGER = 'CHALLENGER';
 export type CHALLENGER_MODE_TYPE = typeof CHALLENGER;
@@ -58,10 +63,9 @@ export const DEFAULT_CONTESTANT: Contestant = {
     apiProviderId: ""
 }
 export const DEFAULT_CONTESTANT_STATS: ContestantStats = {
-    contestantId: DEFAULT_CONTESTANT_ID,
-    categoryId: 0,
     winCount: 0,
     loseCount: 0,
+    ranks: {winPercent: 0}
 }
 export const DEFAULT_CONTESTANT_ENTRY: ContestantEntry = {
     contestant: DEFAULT_CONTESTANT,

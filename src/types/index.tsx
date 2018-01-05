@@ -1,4 +1,4 @@
-import { RESTAURANT, CATEGORY_TYPE, DEFAULT_CONTESTANT_ENTRY, DEFAULT_CATEGORY_ID, BOUT_MODE_TYPE, ROULETTE } from "../constants/index";
+import { RESTAURANT, CATEGORY_TYPE, DEFAULT_CONTESTANT_ENTRY, DEFAULT_CATEGORY_ID, BOUT_MODE_TYPE, ROULETTE, RANK_TYPE, WIN_PERCENT } from "../constants/index";
 
 export interface StoreState {
     latLon: LatLon;
@@ -9,6 +9,7 @@ export interface StoreState {
     categoriesTop: CategorySummary[];
 
     boutMode: BOUT_MODE_TYPE;
+    rankType: RANK_TYPE;
 
     contestantModal: ContestantEntry | null;
 
@@ -46,11 +47,12 @@ export interface Contestant {
 }
 
 export interface ContestantStats {
-    categoryId: number;
-    contestantId: number;
     winCount: number;
     loseCount: number;
+    ranks: ContestantRanks;
 }
+
+export type ContestantRanks = {[rankType in RANK_TYPE]: number}
 
 export type LatLon = {
     lat: number,
@@ -77,6 +79,7 @@ export const INITIAL_STATE: StoreState = {
     categoryType: RESTAURANT,
 
     boutMode: ROULETTE,
+    rankType: WIN_PERCENT,
 
     contestantModal: null,
 

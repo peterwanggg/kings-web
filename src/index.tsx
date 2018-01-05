@@ -11,7 +11,7 @@ import logger from 'redux-logger';
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
 
 import { contestants } from './reducers/ContestantReducers'
-import { latLon, categoryType, categoryId, categories, boutMode, contestantModal } from './reducers/GlobalReducers'
+import { latLon, categoryType, categoryId, categories, boutMode, contestantModal, categoriesTop, rankType, } from './reducers/GlobalReducers'
 import { Link } from 'react-router-dom';
 import BoutRoute from './routes/BoutRoute';
 import CategoriesRoute from './routes/CategoriesRoute';
@@ -29,11 +29,13 @@ const store = createStore(
     contestants,
 
     latLon,
+    categoriesTop,
     categoryType,
     categoryId,
     categories,
 
     boutMode,
+    rankType,
 
     contestantModal,
     router: routerReducer

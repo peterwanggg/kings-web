@@ -16,7 +16,8 @@ import {
     CHALLENGER,
     DEFAULT_CATEGORY_NAME,
     SET_CONTESTANT_MODAL,
-    RECEIVE_TOP_CATEGORIES
+    RECEIVE_TOP_CATEGORIES,
+    RANK_TYPE
 } from '../constants/index';
 import {
     ReceiveChallengersResponseAction,
@@ -93,6 +94,15 @@ export const boutMode =
                 return CHALLENGER;
             case CHANGE_BOUT_MODE:
                 return action.nextBoutMode;
+            default:
+                return state;
+        }
+    }
+
+// TODO: type action
+export const rankType =
+    (state: RANK_TYPE = INITIAL_STATE.rankType, action: any) => {
+        switch (action.type) {
             default:
                 return state;
         }

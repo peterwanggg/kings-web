@@ -20,6 +20,7 @@ import Select, { Options, Option, Async } from 'react-select'
 import BoutModeSelector from '../components/BoutModeSelector';
 import ContestantModal from '../components/ContestantModal';
 import { isPassed } from '../utils/ContestantUtils';
+import { Link } from 'react-router-dom';
 
 export interface BoutRouteProps {
     latLon: LatLon;
@@ -84,6 +85,9 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                             this.props.currContestantIndex)
                     }
                 />
+                <Link to={`/categories`}>
+                    <span className="fa fa-arrow-left" /> Top Categories
+                </Link>
                 <section className="section">
                     <div className="tile is-ancestor">
                         <div className="tile is-child is-2">
