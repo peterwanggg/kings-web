@@ -1,7 +1,7 @@
 import { RECEIVE_CONTESTANTS, SUBMIT_BOUT, CHANGE_BOUT_MODE, CHANGE_CHALLENGER, ROULETTE, RECEIVE_CHALLENGERS, CHANGE_CATEGORY_ID, TOGGLE_SKIP_CONTESTANT_ID } from '../constants';
 import { ContestantState, INITIAL_STATE, ContestantEntry } from '../types/index';
-import { ReceiveContestantsResponseAction, SubmitBoutResponseAction, ChangeChallengerAction, ReceiveChallengersResponseAction, ToggleSkipContestantIdAction } from '../actions/ContestantActions';
-import { ChangeCategoryIdAction, ChangeBoutModeAction } from '../actions/GlobalActions';
+import { SubmitBoutResponseAction, ChangeChallengerAction, ReceiveChallengersResponseAction, ToggleSkipContestantIdAction } from '../actions/ContestantActions';
+import { ChangeCategoryIdAction, ChangeBoutModeAction, ReceiveContestantsResponseAction } from '../actions/GlobalActions';
 import * as _ from 'lodash';
 import { findNextContestantIndex } from '../utils/ContestantUtils';
 

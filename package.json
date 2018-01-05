@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react-sidebar": "^2.2.2",
     "@types/react-virtualized": "^9.7.10",
     "bulma": "^0.6.1",
     "font-awesome": "^4.7.0",
@@ -15,6 +16,7 @@
     "react-redux": "^5.0.6",
     "react-scripts-ts": "2.8.0",
     "react-select": "^1.1.0",
+    "react-sidebar": "^2.3.2",
     "react-virtualized": "^9.15.0",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",

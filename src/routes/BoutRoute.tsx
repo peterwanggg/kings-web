@@ -7,9 +7,9 @@ import {
     changeCategoryId,
     changeBoutMode,
     setContestantModal,
+    requestContestantsThunk,
 } from '../actions/GlobalActions';
 import {
-    requestContestantsThunk,
     requestCategoriesThunk,
     changeChallengerThunk,
     searchContestantsCall,
@@ -49,13 +49,12 @@ const searchContestants =
                 return { options: entries }
             })
     }
+
 const transformCategoriesToSelectOptions =
     (categories: Category[]): Options => _.map(categories, category => ({
         value: category.categoryId,
         label: category.categoryName
     }))
-
-
 
 class BoutRoute extends React.Component<BoutRouteProps> {
     public componentDidMount() {
