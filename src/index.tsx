@@ -15,6 +15,7 @@ import { latLon, categoryType, categoryId, categories, boutMode, contestantModal
 import { Link } from 'react-router-dom';
 import BoutRoute from './routes/BoutRoute';
 import CategoriesRoute from './routes/CategoriesRoute';
+import { BOUT_ROUTE, CATEGORIES_ROUTE } from './constants/index';
 
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createHistory()
@@ -63,16 +64,16 @@ const App = () => (
   </div>
 )
 
-// Now you can dispatch navigation actions from anywhere!
-store.dispatch(push('/categories'))
+// default route
+store.dispatch(push(CATEGORIES_ROUTE))
 
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
       <div>
         <Route exact path="/" component={App} />
-        <Route path="/bouts" component={BoutRoute} />
-        <Route path="/categories" component={CategoriesRoute} />
+        <Route path={BOUT_ROUTE} component={BoutRoute} />
+        <Route path={CATEGORIES_ROUTE} component={CategoriesRoute} />
       </div>
     </ConnectedRouter>
   </Provider>,

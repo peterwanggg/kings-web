@@ -1,6 +1,9 @@
-body {
+body {}
+
+.cList {
+  height: 80vh;
 }
 
-.cList{
-  height: 80vh;
+.hoverable {
+  cursor: pointer;
 }

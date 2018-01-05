@@ -1,10 +1,9 @@
 import * as React from 'react'
 import BoutContainer from '../containers/BoutContainer'
-import { CATEGORY_TYPE, DEFAULT_CATEGORY_ID, DEFAULT_CONTESTANT_ID, DEFAULT_CONTESTANT_ENTRY, BOUT_MODE_TYPE, CHALLENGER } from '../constants/index'
+import { CATEGORY_TYPE, DEFAULT_CATEGORY_ID, DEFAULT_CONTESTANT_ID, DEFAULT_CONTESTANT_ENTRY, BOUT_MODE_TYPE, CHALLENGER, CATEGORIES_ROUTE } from '../constants/index'
 import { StoreState, LatLon, ContestantEntry, Category, Contestant } from '../types/index'
 import { connect, Dispatch } from 'react-redux';
 import {
-    changeCategoryId,
     changeBoutMode,
     setContestantModal,
     requestCategoriesThunk,
@@ -65,6 +64,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
         if (prevProps.categoryId !== this.props.categoryId
             && this.props.categoryId !== DEFAULT_CATEGORY_ID
             && (_.isNil(this.props.challenger) || this.props.challenger.contestant.contestantId === DEFAULT_CONTESTANT_ID)
+
         ) {
             this.props.dispatch(requestContestantsThunk(this.props.categoryId))
         }
@@ -85,8 +85,8 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                             this.props.currContestantIndex)
                     }
                 />
-                <Link to={`/categories`}>
-                    <span className="fa fa-arrow-left" /> Top Categories
+                <Link to={CATEGORIES_ROUTE}>
+                    <span className="fa fa-arrow-left" /> Top Categories 👑
                 </Link>
                 <section className="section">
                     <div className="tile is-ancestor">
@@ -105,7 +105,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                                         this.props.challenger.contestant : false}
                                     placeholder="Select a Challenger..."
                                     clearable={false}
-                                    onChange={(value: Contestant) => this.props.dispatch(requestChallengersThunk(this.props.latLon, value))}
+                                    onChange={(value: Contestant) => this.props.dispatch(requestChallengersThunk(value))}
                                     valueKey="contestantId" labelKey="contestantName"
                                     loadOptions={(input: string) => searchContestants(
                                         this.props.latLon, this.props.categoryType, input)}
@@ -117,7 +117,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                                     value={this.props.categoryId}
                                     clearable={false}
                                     onChange={(selectedOption: Option) => !_.isNil(selectedOption) && _.isNumber(selectedOption.value) ?
-                                        this.props.dispatch(changeCategoryId(Number(selectedOption.value))) : null
+                                        this.props.dispatch(requestContestantsThunk(Number(selectedOption.value))) : null
                                     }
                                     options={transformCategoriesToSelectOptions(this.props.categories)}
                                 />

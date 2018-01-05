@@ -1,22 +1,55 @@
 import * as React from 'react';
-import { CategorySummary, ContestantEntry } from '../types/index';
+import { CategorySummary, ContestantEntry, Contestant } from '../types/index';
 import * as _ from 'lodash';
-import { RANK_TYPE } from '../constants/index';
+import { RANK_TYPE, ROUTE_TYPE, BOUT_ROUTE } from '../constants/index';
 import * as numeral from 'numeral'
+import { ReceiveChallengersResponseAction, ReceiveContestantsResponseAction } from '../actions/ContestantActions';
+
+type dispatchChangeRoute = (route: ROUTE_TYPE) => void;
+type dispatchRequestChallengersThunk = (challenger: Contestant) => Promise<ReceiveChallengersResponseAction>
+type dispatchRequestContestantsThunk = (categoryId: number) => Promise<ReceiveContestantsResponseAction>
 
 export interface CategorySummaryProps {
     rankType: RANK_TYPE;
     categorySummary: CategorySummary;
+    dispatchChangeRoute: dispatchChangeRoute;
+    dispatchRequestChallengersThunk: dispatchRequestChallengersThunk;
+    dispatchRequestContestantsThunk: dispatchRequestContestantsThunk
+    // dispatchChangeCategoryId: dispatchChangeCategoryId;
 }
 
-const renderContestantRow = (rankType: RANK_TYPE, entry: ContestantEntry) => {
+const judgeChallenger = (challenger: Contestant,
+    dispatchChangeRoute: dispatchChangeRoute,
+    dispatchRequestChallengersThunk: dispatchRequestChallengersThunk) => {
+
+    dispatchChangeRoute(BOUT_ROUTE);
+    dispatchRequestChallengersThunk(challenger);
+}
+
+const judgeCategory = (categoryId: number,
+    dispatchChangeRoute: dispatchChangeRoute,
+    dispatchRequestContestantsThunk: dispatchRequestContestantsThunk) => {
+
+    dispatchChangeRoute(BOUT_ROUTE);
+    dispatchRequestContestantsThunk(categoryId);
+}
+
+const renderContestantRow = (rankType: RANK_TYPE,
+    entry: ContestantEntry,
+    dispatchChangeRoute: dispatchChangeRoute,
+    dispatchRequestChallengersThunk: dispatchRequestChallengersThunk) => {
+
     let contestant = entry.contestant;
     let stats = entry.contestantStats;
     let bouts = stats.winCount + stats.loseCount;
+    let rank = _.get(stats.ranks, rankType);
     return (
         <tr>
             <th>{_.get(stats.ranks, rankType)}</th>
-            <td>{contestant.contestantName}</td>
+            <th onClick={() => judgeChallenger(contestant, dispatchChangeRoute, dispatchRequestChallengersThunk)}>
+                <a className="button">⚔️️</a>
+            </th>
+            <td>{(rank === 1 ? "👑 " : "") + contestant.contestantName + (rank === 1 ? " 👑" : "")}</td>
             <td>{stats.winCount}</td>
             <td>{stats.loseCount}</td>
             <td>{bouts}</td>
@@ -25,19 +58,29 @@ const renderContestantRow = (rankType: RANK_TYPE, entry: ContestantEntry) => {
     );
 }
 
-const CategorySummarySection = ({ rankType, categorySummary }: CategorySummaryProps) => {
+const CategorySummarySection = ({
+    rankType,
+    categorySummary,
+    dispatchChangeRoute,
+    dispatchRequestChallengersThunk,
+    dispatchRequestContestantsThunk }: CategorySummaryProps) => {
     return (
         <section className="hero">
             <div className="hero-body">
                 <div className="container">
-                    <h1 className="title">
-                        {categorySummary.category.categoryName}
+                    <h1 className="title hoverable" onClick={() => judgeCategory(
+                        categorySummary.category.categoryId,
+                        dispatchChangeRoute,
+                        dispatchRequestContestantsThunk
+                    )}>
+                        ⚔️ {categorySummary.category.categoryName}
                     </h1>
 
-                    <table className="table">
+                    <table className="table is-striped">
                         <thead>
                             <tr>
                                 <th>Rank</th>
+                                <th>Judge Now</th>
                                 <th>Contestant</th>
                                 <th>Wins</th>
                                 <th>Losses</th>
@@ -48,7 +91,7 @@ const CategorySummarySection = ({ rankType, categorySummary }: CategorySummaryPr
                         <tbody>
                             {
                                 _.map(categorySummary.contestantEntries,
-                                    entry => renderContestantRow(rankType, entry))
+                                    entry => renderContestantRow(rankType, entry, dispatchChangeRoute, dispatchRequestChallengersThunk))
                             }
                         </tbody>
                     </table>

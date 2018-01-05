@@ -17,13 +17,13 @@ import {
     DEFAULT_CATEGORY_NAME,
     SET_CONTESTANT_MODAL,
     RECEIVE_TOP_CATEGORIES,
-    RANK_TYPE
+    RANK_TYPE,
+    DEFAULT_CATEGORY_ID
 } from '../constants/index';
 import {
-    ReceiveChallengersResponseAction,
+    ReceiveChallengersResponseAction, ChangeCategoryIdAction,
 } from '../actions/ContestantActions';
 import {
-    ChangeCategoryIdAction,
     ChangeBoutModeAction,
     SetContestantModalAction,
     ReceiveCategoriesResponseAction,
@@ -65,9 +65,11 @@ export const categoryId =
             case CHANGE_CATEGORY_ID:
                 return action.nextCategoryId;
             case RECEIVE_CATEGORIES:
-                if (action.categories.length !== 0) {
-                    let defaultCat = _.find(action.categories, category => category.categoryName === DEFAULT_CATEGORY_NAME);
-                    return _.isNil(defaultCat) ? action.categories[0].categoryId : defaultCat.categoryId;
+                if (action.categories.length !== 0 && state === DEFAULT_CATEGORY_ID) {
+                    let defaultCat = _.find(action.categories,
+                        category => category.categoryName === DEFAULT_CATEGORY_NAME);
+                    return _.isNil(defaultCat) ?
+                        action.categories[0].categoryId : defaultCat.categoryId;
                 }
                 return state;
             default:

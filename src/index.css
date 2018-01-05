@@ -1,2 +1,5 @@
 .cList {
   height: 80vh; }
+
+.hoverable {
+  cursor: pointer; }

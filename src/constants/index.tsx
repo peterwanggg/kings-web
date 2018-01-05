@@ -33,6 +33,9 @@ export type CHANGE_BOUT_MODE = typeof CHANGE_BOUT_MODE;
 export const SET_CONTESTANT_MODAL = 'SET_CONTESTANT_MODAL';
 export type SET_CONTESTANT_MODAL = typeof SET_CONTESTANT_MODAL;
 
+// export const CHANGE_ROUTE = 'CHANGE_ROUT';
+// export type CHANGE_ROUTE_ACTION = typeof CHANGE_ROUTE;
+
 // RankTypes
 export const WIN_PERCENT = 'winPercent';
 export type WIN_PERCENT_RANK_TYPE = typeof WIN_PERCENT;
@@ -49,6 +52,13 @@ export type BOUT_MODE_TYPE = CHALLENGER_MODE_TYPE | ROULETTE_MODE_TYPE;
 export const RESTAURANT = 'restaurant';
 export type RESTAURANT_TYPE = typeof RESTAURANT;
 export type CATEGORY_TYPE = RESTAURANT_TYPE;
+
+// Routes
+export const BOUT_ROUTE = '/bouts'
+export type BOUT_ROUTE_TYPE = typeof BOUT_ROUTE;
+export const CATEGORIES_ROUTE = '/categories'
+export type CATEGORIES_ROUTE_TYPE = typeof CATEGORIES_ROUTE;
+export type ROUTE_TYPE = BOUT_ROUTE_TYPE | CATEGORIES_ROUTE_TYPE;
 
 // DEFAULT VALUES
 export const DEFAULT_CATEGORY_NAME = 'Drinks Only';

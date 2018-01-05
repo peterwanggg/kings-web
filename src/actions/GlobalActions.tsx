@@ -1,22 +1,37 @@
-import { CHANGE_CATEGORY_ID, CHANGE_BOUT_MODE, BOUT_MODE_TYPE, SET_CONTESTANT_MODAL, CATEGORY_TYPE, RECEIVE_CATEGORIES, RECEIVE_TOP_CATEGORIES } from '../constants';
-import { ActionType, ContestantEntry, LatLon, StoreState, Category, CategorySummary } from '../types';
+import {
+    CHANGE_BOUT_MODE,
+    BOUT_MODE_TYPE,
+    SET_CONTESTANT_MODAL,
+    CATEGORY_TYPE,
+    RECEIVE_CATEGORIES,
+    RECEIVE_TOP_CATEGORIES
+} from '../constants';
+import {
+    ActionType,
+    ContestantEntry,
+    LatLon,
+    StoreState,
+    Category,
+    CategorySummary
+} from '../types';
 import { Dispatch } from 'react-redux';
-import { KINGS_API_BASE_URL, DEFAULT_HEADERS, TOP_CATEGORIES_LIMIT, TOP_CONTESTANTS_LIMIT } from '../constants/ApiConstants';
+import {
+    KINGS_API_BASE_URL,
+    DEFAULT_HEADERS,
+    TOP_CATEGORIES_LIMIT,
+    TOP_CONTESTANTS_LIMIT
+} from '../constants/ApiConstants';
 
 /*** TYPES: ACTION **/
 export interface ReceiveCategoriesResponseAction extends ActionType<RECEIVE_CATEGORIES> {
     type: RECEIVE_CATEGORIES,
+
     categories: Category[]
 }
 
 export interface ReceiveTopCategoriesResponseAction extends ActionType<RECEIVE_TOP_CATEGORIES> {
     type: RECEIVE_TOP_CATEGORIES;
     categorySummaries: CategorySummary[];
-}
-
-export interface ChangeCategoryIdAction extends ActionType<CHANGE_CATEGORY_ID> {
-    type: CHANGE_CATEGORY_ID;
-    nextCategoryId: number;
 }
 
 export interface ChangeBoutModeAction extends ActionType<CHANGE_BOUT_MODE> {
@@ -37,9 +52,6 @@ export type RequestCategoriesCallType =
 export type RequestTopCategoriesCallType =
     (latLon: LatLon, categoryType: CATEGORY_TYPE) =>
         (dispatch: Dispatch<StoreState>) => Promise<ReceiveTopCategoriesResponseAction>
-
-export type ChangeCategoryIdType =
-    (nextCategoryId: number) => ChangeCategoryIdAction;
 
 export type ChangeBoutModeType =
     (nextBoutMode: BOUT_MODE_TYPE) => ChangeBoutModeAction;
@@ -88,12 +100,6 @@ const receiveTopCategories: (requestCategoriesResponse: CategorySummary[]) => Re
     (requestCategoriesResponse: CategorySummary[]) => ({
         type: RECEIVE_TOP_CATEGORIES,
         categorySummaries: requestCategoriesResponse,
-    })
-
-export const changeCategoryId: ChangeCategoryIdType =
-    (nextCategoryId) => ({
-        type: CHANGE_CATEGORY_ID,
-        nextCategoryId: nextCategoryId,
     })
 
 export const changeBoutMode: ChangeBoutModeType =

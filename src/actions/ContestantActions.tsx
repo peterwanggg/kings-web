@@ -7,6 +7,7 @@ import {
     CATEGORY_TYPE,
     TOGGLE_SKIP_CONTESTANT_ID,
     BOUT_MODE_TYPE,
+    CHANGE_CATEGORY_ID,
 } from '../constants'
 import { ActionType, StoreState, ContestantEntry, LatLon, Contestant, ChallengerResponse } from '../types/index'
 import { Dispatch } from 'redux'
@@ -26,6 +27,7 @@ export interface ReceiveChallengersResponseAction extends ActionType<RECEIVE_CHA
     challenger: ContestantEntry,
     contestants: ContestantEntry[]
 }
+
 export interface SubmitBoutResponseAction extends ActionType<SUBMIT_BOUT> {
     type: SUBMIT_BOUT,
     boutMode: BOUT_MODE_TYPE,
@@ -37,14 +39,20 @@ export interface ToggleSkipContestantIdAction extends ActionType<TOGGLE_SKIP_CON
     skipContestantId: number;
 }
 
+export interface ChangeCategoryIdAction extends ActionType<CHANGE_CATEGORY_ID> {
+    type: CHANGE_CATEGORY_ID;
+    nextCategoryId: number;
+}
+
+
 /*** TYPES: CALL **/
 export type RequestContestantsCallType =
     (categoryId: number) =>
         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<ReceiveContestantsResponseAction>
 
 export type RequestChallengersCallType =
-    (latLon: LatLon, challenger: Contestant) =>
-        (dispatch: Dispatch<StoreState>) => Promise<ReceiveChallengersResponseAction>
+    (challenger: Contestant) =>
+        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<ReceiveChallengersResponseAction>
 
 export type SubmitBoutCallType =
     (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) =>
@@ -55,8 +63,9 @@ export type ToggleSkipContestantIdType =
 
 /*** API CALL ACTIONS ***/
 export const requestChallengersThunk: RequestChallengersCallType =
-    (latLon, challenger) =>
-        (dispatch) => {
+    (challenger) =>
+        (dispatch, getState) => {
+            let latLon = getState().latLon;
             dispatch(requestChallengers(latLon, challenger.contestantId))
             return fetch(
                 KINGS_API_BASE_URL + `/contestants/challenger?lat=${latLon.lat}&lon=${latLon.lon}&challenger-contestant-id=${challenger.contestantId}`,
@@ -74,6 +83,7 @@ export const requestContestantsThunk: RequestContestantsCallType =
     (categoryId) =>
         (dispatch, getState) => {
             let latLon: LatLon = getState().latLon;
+            dispatch(changeCategoryId(categoryId))
             dispatch(requestContestants(latLon, categoryId))
             return fetch(
                 KINGS_API_BASE_URL + `/contestants/category?lat=${latLon.lat}&lon=${latLon.lon}&category-id=${categoryId}`,
@@ -91,7 +101,7 @@ export const submitBoutThunk: SubmitBoutCallType =
         (dispatch, getState) => {
             let state: StoreState = getState();
             if (findNextContestantIndex(state.contestants.entries, state.contestants.skipContestantIds, state.contestants.currContestantIndex) === -1) {
-                dispatch(requestChallengersThunk(state.latLon, challenger.contestant));
+                dispatch(requestChallengersThunk(challenger.contestant));
             }
             dispatch(submitBout(state.boutMode, winnerContestantId))
             return fetch(
@@ -123,6 +133,13 @@ export const toggleSkipContestantId: ToggleSkipContestantIdType =
         type: TOGGLE_SKIP_CONTESTANT_ID,
         skipContestantId: skipContestantId
     })
+
+const changeCategoryId: (nextCategoryId: number) => ChangeCategoryIdAction =
+    (nextCategoryId) => ({
+        type: CHANGE_CATEGORY_ID,
+        nextCategoryId: nextCategoryId,
+    })
+
 
 const submitBout: (boutMode: BOUT_MODE_TYPE, winnerContestantId: number) => SubmitBoutResponseAction =
     (boutMode, winnerContestantId) => ({

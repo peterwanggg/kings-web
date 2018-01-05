@@ -33,9 +33,11 @@ const skipCheckbox = (contestant: ContestantEntry,
                 isSkipped ? "fa fa-minus" : "fa fa-check"
 
     return (
-        <span className={spanClassName(isSkipped, isPassed, isInBout)} onClick={() => toggleSkipContestantId(contestant.contestant.contestantId)}>
-            <i className={iClassName(isSkipped, isPassed, isInBout)} />
-        </span>
+        <a className="button" onClick={() => toggleSkipContestantId(contestant.contestant.contestantId)}>
+            <span className={spanClassName(isSkipped, isPassed, isInBout)}>
+                <i className={iClassName(isSkipped, isPassed, isInBout)} />
+            </span>
+        </a>
     )
 }
 
@@ -46,11 +48,10 @@ const ContestantPreview = ({ contestant, isSkipped, isPassed, isInBout, toggleSk
                 {skipCheckbox(contestant, isSkipped, isPassed, isInBout, toggleSkipContestantId)}
             </div>
 
-            <div className="tile is-parent" onClick={() => { setContestantModal(contestant) }} >
-
+            <div className="tile is-parent hoverable" onClick={() => { setContestantModal(contestant) }} >
                 <div className="tile">
                     <figure className="image is-96x96">
-                        <img src={contestant.contestant.imageUrl} onClick={() => { setContestantModal(contestant) }} />
+                        <img src={contestant.contestant.imageUrl}/>
                     </figure>
                 </div>
 
