@@ -1,7 +1,7 @@
 import * as React from 'react'
 import BoutContainer from '../containers/BoutContainer'
 import { CATEGORY_TYPE, DEFAULT_CATEGORY_ID, DEFAULT_CONTESTANT_ID, DEFAULT_CONTESTANT_ENTRY, BOUT_MODE_TYPE, CHALLENGER } from '../constants/index'
-import { StoreState, LatLon, ContestantEntry, Category } from '../types/index'
+import { StoreState, LatLon, ContestantEntry, Category, Contestant } from '../types/index'
 import { connect, Dispatch } from 'react-redux';
 import {
     changeCategoryId,
@@ -11,8 +11,8 @@ import {
 } from '../actions/GlobalActions';
 import {
     requestContestantsThunk,
-    changeChallengerThunk,
     searchContestantsCall,
+    requestChallengersThunk,
 } from '../actions/ContestantActions';
 import ContestantList from '../components/ContestantList'
 import * as _ from 'lodash';
@@ -45,7 +45,7 @@ const searchContestants =
             return Promise.resolve({ options: [] })
         }
         return searchContestantsCall(latLon, categoryType, searchString)
-            .then((entries: ContestantEntry[]) => {
+            .then((entries: Contestant[]) => {
                 return { options: entries }
             })
     }
@@ -101,7 +101,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                                         this.props.challenger.contestant : false}
                                     placeholder="Select a Challenger..."
                                     clearable={false}
-                                    onChange={(value: ContestantEntry) => this.props.dispatch(changeChallengerThunk(value))}
+                                    onChange={(value: Contestant) => this.props.dispatch(requestChallengersThunk(this.props.latLon, value))}
                                     valueKey="contestantId" labelKey="contestantName"
                                     loadOptions={(input: string) => searchContestants(
                                         this.props.latLon, this.props.categoryType, input)}

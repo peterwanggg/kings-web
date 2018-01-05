@@ -30,6 +30,11 @@ export interface ContestantEntry {
     contestantStats: ContestantStats;
 }
 
+export interface ChallengerResponse {
+    challenger: ContestantEntry;
+    contestants: ContestantEntry[];
+}
+
 export interface Contestant {
     apiProviderId: string;
     apiProviderType: string;

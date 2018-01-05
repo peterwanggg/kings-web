@@ -1,6 +1,6 @@
-import { RECEIVE_CONTESTANTS, SUBMIT_BOUT, CHANGE_BOUT_MODE, CHANGE_CHALLENGER, ROULETTE, RECEIVE_CHALLENGERS, CHANGE_CATEGORY_ID, TOGGLE_SKIP_CONTESTANT_ID } from '../constants';
+import { RECEIVE_CONTESTANTS, SUBMIT_BOUT, CHANGE_BOUT_MODE, ROULETTE, RECEIVE_CHALLENGERS, CHANGE_CATEGORY_ID, TOGGLE_SKIP_CONTESTANT_ID, DEFAULT_CONTESTANT_ENTRY } from '../constants';
 import { ContestantState, INITIAL_STATE, ContestantEntry } from '../types/index';
-import { ReceiveContestantsResponseAction, SubmitBoutResponseAction, ChangeChallengerAction, ReceiveChallengersResponseAction, ToggleSkipContestantIdAction } from '../actions/ContestantActions';
+import { ReceiveContestantsResponseAction, SubmitBoutResponseAction, ReceiveChallengersResponseAction, ToggleSkipContestantIdAction } from '../actions/ContestantActions';
 import { ChangeCategoryIdAction, ChangeBoutModeAction } from '../actions/GlobalActions';
 import * as _ from 'lodash';
 import { findNextContestantIndex } from '../utils/ContestantUtils';
@@ -9,7 +9,6 @@ export const contestants =
     (state: ContestantState = INITIAL_STATE.contestants, action:
         ReceiveContestantsResponseAction |
         SubmitBoutResponseAction |
-        ChangeChallengerAction |
         ReceiveChallengersResponseAction |
         ChangeCategoryIdAction |
         ToggleSkipContestantIdAction |
@@ -39,14 +38,10 @@ export const contestants =
                     ...state,
                     challenger: INITIAL_STATE.contestants.challenger,
                 }
-            case CHANGE_CHALLENGER:
-                return {
-                    ...state,
-                    challenger: action.nextChallenger,
-                }
             case RECEIVE_CHALLENGERS:
                 return {
                     ...state,
+                    challenger: action.challenger,
                     entries: action.contestants,
                     currContestantIndex: 0,
                 }
@@ -54,8 +49,10 @@ export const contestants =
                 return {
                     ...state,
                     entries: action.contestants,
-                    challenger: action.contestants[0],
-                    currContestantIndex: 1,
+                    challenger: action.contestants.length > 1 ?
+                        action.contestants[0] : DEFAULT_CONTESTANT_ENTRY,
+                    currContestantIndex: action.contestants.length > 1 ?
+                        1 : INITIAL_STATE.contestants.currContestantIndex,
                 }
             case SUBMIT_BOUT:
                 let updatedEntries = state.entries;

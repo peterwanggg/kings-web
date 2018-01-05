@@ -13,13 +13,13 @@ import {
     CHANGE_BOUT_MODE,
     ROULETTE,
     CHALLENGER,
-    CHANGE_CHALLENGER,
+    // CHANGE_CHALLENGER,
     DEFAULT_CATEGORY_NAME,
     SET_CONTESTANT_MODAL
 } from '../constants/index';
 import {
     ReceiveChallengersResponseAction,
-    ChangeChallengerAction
+    // ChangeChallengerAction
 } from '../actions/ContestantActions';
 import {
     ChangeCategoryIdAction,
@@ -75,11 +75,11 @@ export const categories =
     }
 
 export const boutMode =
-    (state: BOUT_MODE_TYPE = INITIAL_STATE.boutMode, action: ChangeBoutModeAction | ChangeChallengerAction | ChangeCategoryIdAction) => {
+    (state: BOUT_MODE_TYPE = INITIAL_STATE.boutMode, action: ChangeBoutModeAction | ChangeCategoryIdAction | ReceiveChallengersResponseAction) => {
         switch (action.type) {
             case CHANGE_CATEGORY_ID:
                 return ROULETTE;
-            case CHANGE_CHALLENGER:
+            case RECEIVE_CHALLENGERS:
                 return CHALLENGER;
             case CHANGE_BOUT_MODE:
                 return action.nextBoutMode;

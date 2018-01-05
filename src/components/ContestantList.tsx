@@ -7,7 +7,6 @@ import { setContestantModal } from '../actions/GlobalActions';
 import ContestantPreviewContainer from '../containers/ContestantPreviewContainer';
 import { findNextContestantIndex, isPassed } from '../utils/ContestantUtils';
 import '../index.css'
-// import * as _ from 'lodash';
 
 export interface ContestantListProps {
     contestants: ContestantEntry[];
@@ -19,20 +18,21 @@ export interface ContestantListProps {
 const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number, challengerContestantId: number) => ListRowRenderer =
     (contestants, currContestantIndex, challengerContestantId) =>
         ({ index, isScrolling, key, style }) => {
+            let contestantEntry: ContestantEntry = contestants[index];
+
             return (
                 <div style={style} key={index}>
                     <ContestantPreviewContainer
-                        key={contestants[index].contestant.contestantId}
-                        contestant={contestants[index]}
+                        key={contestantEntry.contestant.contestantId}
+                        contestant={contestantEntry}
                         isSkipped={false}
                         isPassed={isPassed(
-                            contestants[index].contestant.contestantId,
+                            contestantEntry.contestant.contestantId,
                             contestants,
                             challengerContestantId,
                             currContestantIndex)}
-                        isInBout={
-                            index === currContestantIndex || contestants[index].contestant.contestantId === challengerContestantId
-                        }
+                        isInBout={index === currContestantIndex ||
+                            contestantEntry.contestant.contestantId === challengerContestantId}
                         setContestantModal={setContestantModal}
                         toggleSkipContestantId={toggleSkipContestantId}
                     />
@@ -54,8 +54,9 @@ const ContestantList = ({ contestants, skipContestantIds, currContestantIndex, c
                         style={({ outline: 'none' })}
                         rowRenderer={rowRenderer(contestants, currContestantIndex, challengerContestantId)}
                         width={width}
-                        scrollToIndex={
-                            Math.max(0, (findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) !== -1 ?
+                        scrollToIndex={Math.max(
+                            0,
+                            (findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) !== -1 ?
                                 currContestantIndex + 1 : currContestantIndex) - 3)}
                         scrollToAlignment={"start"}
                     />

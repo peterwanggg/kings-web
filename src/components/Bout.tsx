@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { ContestantEntry } from "../types/index"
 import Contestant from './Contestant';
-import * as _ from 'lodash'
 import 'react-select/dist/react-select.css';
 import 'bulma/css/bulma.css'
+import { isNilContestant } from '../utils/ContestantUtils';
 
 export interface BoutProps {
     // contestants
@@ -16,7 +16,9 @@ export interface BoutProps {
 }
 
 const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) => {
-    if (_.isNil(otherContestant)) {
+    if (isNilContestant(otherContestant)
+        || isNilContestant(challenger)
+        || challenger.contestant.contestantId === otherContestant.contestant.contestantId) {
         return (
             <div className="tile is-parent">No more contestants!</div>
         )
