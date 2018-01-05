@@ -57,7 +57,7 @@ const transformCategoriesToSelectOptions =
 
 class BoutRoute extends React.Component<BoutRouteProps> {
     public componentDidMount() {
-        this.props.dispatch(requestCategoriesThunk(this.props.latLon, this.props.categoryType))
+        this.props.dispatch(requestCategoriesThunk(this.props.categoryType))
     }
 
     public componentDidUpdate(prevProps: BoutRouteProps) {
@@ -65,7 +65,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
             && this.props.categoryId !== DEFAULT_CATEGORY_ID
             && (_.isNil(this.props.challenger) || this.props.challenger.contestant.contestantId === DEFAULT_CONTESTANT_ID)
         ) {
-            this.props.dispatch(requestContestantsThunk(this.props.latLon, this.props.categoryId))
+            this.props.dispatch(requestContestantsThunk(this.props.categoryId))
         }
     }
 

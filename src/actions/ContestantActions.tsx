@@ -39,8 +39,8 @@ export interface ToggleSkipContestantIdAction extends ActionType<TOGGLE_SKIP_CON
 
 /*** TYPES: CALL **/
 export type RequestContestantsCallType =
-    (latLon: LatLon, categoryId: number) =>
-        (dispatch: Dispatch<StoreState>) => Promise<ReceiveContestantsResponseAction>
+    (categoryId: number) =>
+        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<ReceiveContestantsResponseAction>
 
 export type RequestChallengersCallType =
     (latLon: LatLon, challenger: Contestant) =>
@@ -71,8 +71,9 @@ export const requestChallengersThunk: RequestChallengersCallType =
         }
 
 export const requestContestantsThunk: RequestContestantsCallType =
-    (latLon, categoryId) =>
-        (dispatch) => {
+    (categoryId) =>
+        (dispatch, getState) => {
+            let latLon: LatLon = getState().latLon;
             dispatch(requestContestants(latLon, categoryId))
             return fetch(
                 KINGS_API_BASE_URL + `/contestants/category?lat=${latLon.lat}&lon=${latLon.lon}&category-id=${categoryId}`,

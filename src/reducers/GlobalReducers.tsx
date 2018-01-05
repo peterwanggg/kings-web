@@ -4,6 +4,7 @@ import {
     INITIAL_STATE,
     Category,
     ContestantEntry,
+    CategorySummary,
 } from '../types/index';
 import {
     CATEGORY_TYPE, RECEIVE_CATEGORIES,
@@ -13,19 +14,19 @@ import {
     CHANGE_BOUT_MODE,
     ROULETTE,
     CHALLENGER,
-    // CHANGE_CHALLENGER,
     DEFAULT_CATEGORY_NAME,
-    SET_CONTESTANT_MODAL
+    SET_CONTESTANT_MODAL,
+    RECEIVE_TOP_CATEGORIES
 } from '../constants/index';
 import {
     ReceiveChallengersResponseAction,
-    // ChangeChallengerAction
 } from '../actions/ContestantActions';
 import {
     ChangeCategoryIdAction,
     ChangeBoutModeAction,
     SetContestantModalAction,
     ReceiveCategoriesResponseAction,
+    ReceiveTopCategoriesResponseAction,
 } from '../actions/GlobalActions';
 import * as _ from 'lodash';
 
@@ -33,6 +34,15 @@ import * as _ from 'lodash';
 export const latLon =
     (state: LatLon = INITIAL_STATE.latLon, action: any) => {
         switch (action.type) {
+            default:
+                return state;
+        }
+    }
+export const categoriesTop =
+    (state: CategorySummary[] = INITIAL_STATE.categoriesTop, action: ReceiveTopCategoriesResponseAction) => {
+        switch (action.type) {
+            case RECEIVE_TOP_CATEGORIES:
+                return action.categorySummaries;
             default:
                 return state;
         }

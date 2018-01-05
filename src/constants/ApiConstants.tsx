@@ -5,3 +5,6 @@ export const DEFAULT_HEADERS = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
 };
+
+export const TOP_CATEGORIES_LIMIT = 5;
+export const TOP_CONTESTANTS_LIMIT = 5;

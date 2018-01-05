@@ -6,6 +6,7 @@ export interface StoreState {
     categories: Category[];
     categoryId: number;
     categoryType: CATEGORY_TYPE;
+    categoriesTop: CategorySummary[];
 
     boutMode: BOUT_MODE_TYPE;
 
@@ -53,7 +54,7 @@ export interface ContestantStats {
 
 export type LatLon = {
     lat: number,
-    lon: number
+    lon: number,
 }
 
 export type Category = {
@@ -62,9 +63,15 @@ export type Category = {
     categoryType: string;
 }
 
+export type CategorySummary = {
+    category: Category;
+    contestantEntries: ContestantEntry[];
+}
+
 export const INITIAL_STATE: StoreState = {
     latLon: { lat: 47.6522155000, lon: -122.3543657000 },
 
+    categoriesTop: [],
     categoryId: DEFAULT_CATEGORY_ID,
     categories: [],
     categoryType: RESTAURANT,
