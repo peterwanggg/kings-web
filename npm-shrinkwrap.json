@@ -1355,13 +1355,18 @@
         "object-assign": "4.1.1",
         "os-homedir": "1.0.2",
         "parse-json": "2.2.0",
-        "require-from-string": "1.2.1"
+        "require-from-string": "2.0.2"
       },
       "dependencies": {
         "minimist": {
           "version": "1.2.0",
           "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.0.tgz",
           "integrity": "sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ="
+        },
+        "require-from-string": {
+          "version": "2.0.2",
+          "resolved": "https://registry.npmjs.org/require-from-string/-/require-from-string-2.0.2.tgz",
+          "integrity": "sha512-kJjj+Pl9OA1vwhjwIr6tVjYyiWU6wmBPVCHQ3VeYkdv/h23l3gkFHffnyQWO32FSh2SlAe9gx5Su/5vpT27OlQ=="
         }
       }
     },
@@ -8047,11 +8052,6 @@
       "version": "2.1.1",
       "resolved": "https://registry.npmjs.org/require-directory/-/require-directory-2.1.1.tgz",
       "integrity": "sha1-jGStX9MNqxyXbiNE/+f3kqam30I="
-    },
-    "require-from-string": {
-      "version": "1.2.1",
-      "resolved": "https://registry.npmjs.org/require-from-string/-/require-from-string-1.2.1.tgz",
-      "integrity": "sha1-UpyczvJzgK3+yaL5ZbZJu+5jZBg="
     },
     "require-main-filename": {
       "version": "1.0.1",
