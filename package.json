@@ -2,6 +2,9 @@
   "name": "typescript-app",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "9.3.x"
+  },
   "dependencies": {
     "@types/history": "^4.6.2",
     "@types/numeral": "0.0.22",
