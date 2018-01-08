@@ -1,7 +1,7 @@
 import { StoreState, ContestantEntry } from '../types/index';
 import { connect, Dispatch } from 'react-redux';
 import Bout, { BoutProps } from '../components/Bout';
-import { submitBoutThunk } from '../actions/ContestantActions';
+import { submitBoutThunk, skipContestantThunk } from '../actions/ContestantActions';
 
 export function mapStateToProps(state: StoreState, ownProps: BoutProps) {
     return {
@@ -15,11 +15,16 @@ export function mapDispatchToProps(
     ownProps: BoutProps,
 ) {
     return {
-        submitBoutDispatch: (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) =>
+        dispatchSubmitBout: (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) =>
             dispatch(submitBoutThunk(
                 challenger,
                 winnerContestantId,
                 loserContestantId
+            )),
+        dispatchSkipContestant: (skipContestantId: number, otherContestantId: number) =>
+            dispatch(skipContestantThunk(
+                skipContestantId,
+                otherContestantId
             )),
     };
 }

@@ -6,7 +6,8 @@ import {
     DEFAULT_CONTESTANT_ENTRY,
     BOUT_MODE_TYPE,
     CHALLENGER,
-    CATEGORIES_ROUTE
+    CATEGORIES_ROUTE,
+    SKIP_CONTESTANT
 } from '../constants/index';
 import {
     StoreState,
@@ -118,7 +119,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                                         this.props.challenger.contestant : false}
                                     placeholder="Select a Challenger..."
                                     clearable={false}
-                                    onChange={(value: Contestant) => this.props.dispatch(requestChallengersThunk(value))}
+                                    onChange={(value: Contestant) => this.props.dispatch(requestChallengersThunk(value.contestantId))}
                                     valueKey="contestantId" labelKey="contestantName"
                                     loadOptions={(input: string) => searchContestants(
                                         this.props.latLon, this.props.categoryType, input)}
@@ -144,7 +145,8 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                     <BoutContainer
                         challenger={DEFAULT_CONTESTANT_ENTRY}
                         otherContestant={DEFAULT_CONTESTANT_ENTRY}
-                        submitBoutDispatch={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
+                        dispatchSubmitBout={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
+                        dispatchSkipContestant={(skipContestantId: number, otherContestantId: number) => ({type: SKIP_CONTESTANT, skipContestantId: DEFAULT_CONTESTANT_ID})}
                     />
                     <div className="tile is-parent is-vertical is-3">
                         <ContestantList

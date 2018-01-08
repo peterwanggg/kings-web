@@ -8,13 +8,13 @@ import {
     TOGGLE_SKIP_CONTESTANT_ID,
     BOUT_MODE_TYPE,
     CHANGE_CATEGORY_ID,
+    SKIP_CONTESTANT,
 } from '../constants'
 import { ActionType, StoreState, ContestantEntry, LatLon, Contestant, ChallengerResponse } from '../types/index'
 import { Dispatch } from 'redux'
 import * as _ from 'lodash'
 import { findNextContestantIndex } from '../utils/ContestantUtils'
 import { KINGS_API_BASE_URL, DEFAULT_HEADERS } from '../constants/ApiConstants';
-
 
 /*** TYPES: ACTION **/
 export interface ReceiveContestantsResponseAction extends ActionType<RECEIVE_CONTESTANTS> {
@@ -34,6 +34,11 @@ export interface SubmitBoutResponseAction extends ActionType<SUBMIT_BOUT> {
     winnerContestantId: number,
 }
 
+export interface SkipContestantAction extends ActionType<SKIP_CONTESTANT> {
+    type: SKIP_CONTESTANT;
+    skipContestantId: number;
+}
+
 export interface ToggleSkipContestantIdAction extends ActionType<TOGGLE_SKIP_CONTESTANT_ID> {
     type: TOGGLE_SKIP_CONTESTANT_ID;
     skipContestantId: number;
@@ -44,31 +49,34 @@ export interface ChangeCategoryIdAction extends ActionType<CHANGE_CATEGORY_ID> {
     nextCategoryId: number;
 }
 
-
 /*** TYPES: CALL **/
 export type RequestContestantsCallType =
     (categoryId: number) =>
         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<ReceiveContestantsResponseAction>
 
 export type RequestChallengersCallType =
-    (challenger: Contestant) =>
+    (challengerContestantId: number) =>
         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<ReceiveChallengersResponseAction>
 
 export type SubmitBoutCallType =
     (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) =>
         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<void>
 
+export type SkipContestantThunkCallType =
+    (skipContestantId: number, otherContestantId: number) =>
+        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => SkipContestantAction
+
 export type ToggleSkipContestantIdType =
     (skipContestantId: number) => ToggleSkipContestantIdAction
 
 /*** API CALL ACTIONS ***/
 export const requestChallengersThunk: RequestChallengersCallType =
-    (challenger) =>
+    (challengerContestantId) =>
         (dispatch, getState) => {
             let latLon = getState().latLon;
-            dispatch(requestChallengers(latLon, challenger.contestantId))
+            dispatch(requestChallengers(latLon, challengerContestantId))
             return fetch(
-                KINGS_API_BASE_URL + `/contestants/challenger?lat=${latLon.lat}&lon=${latLon.lon}&challenger-contestant-id=${challenger.contestantId}`,
+                KINGS_API_BASE_URL + `/contestants/challenger?lat=${latLon.lat}&lon=${latLon.lon}&challenger-contestant-id=${challengerContestantId}`,
                 {
                     method: 'GET',
                     credentials: "same-origin",
@@ -100,9 +108,12 @@ export const submitBoutThunk: SubmitBoutCallType =
     (challenger, winnerContestantId, loserContestantId) =>
         (dispatch, getState) => {
             let state: StoreState = getState();
-            if (findNextContestantIndex(state.contestants.entries, state.contestants.skipContestantIds, state.contestants.currContestantIndex) === -1) {
-                dispatch(requestChallengersThunk(challenger.contestant));
-            }
+            requestChallengersIfNeeded(
+                dispatch,
+                challenger.contestant.contestantId,
+                state.contestants.entries,
+                state.contestants.skipContestantIds,
+                state.contestants.currContestantIndex);
             dispatch(submitBout(state.boutMode, winnerContestantId))
             return fetch(
                 KINGS_API_BASE_URL + `/bout?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&category-id=${challenger.contestant.categoryId}`,
@@ -126,6 +137,34 @@ export const searchContestantsCall: (latLon: LatLon, categoryType: CATEGORY_TYPE
             .then(response => response.json())
             .then(json => _.values(json))
 
+export const skipContestantThunk: SkipContestantThunkCallType =
+    (skipContestantId, otherContestantId) =>
+        (dispatch, getState) => {
+            let state: StoreState = getState();
+            requestChallengersIfNeeded(
+                dispatch,
+                otherContestantId,
+                state.contestants.entries,
+                state.contestants.skipContestantIds,
+                state.contestants.currContestantIndex);
+            return ({
+                type: SKIP_CONTESTANT,
+                skipContestantId: skipContestantId
+            })
+        }
+
+const requestChallengersIfNeeded = (dispatch: Dispatch<StoreState>,
+    challengerContestantId: number,
+    entries: ContestantEntry[],
+    skipContestantIds: number[],
+    currContestantIndex: number) => {
+    if (findNextContestantIndex(
+        entries,
+        skipContestantIds,
+        currContestantIndex) === -1) {
+        dispatch(requestChallengersThunk(challengerContestantId));
+    }
+}
 
 /*** LOCAL ACTIONS **/
 export const toggleSkipContestantId: ToggleSkipContestantIdType =

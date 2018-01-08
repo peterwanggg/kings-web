@@ -6,7 +6,8 @@ import {
     RECEIVE_CHALLENGERS,
     CHANGE_CATEGORY_ID,
     TOGGLE_SKIP_CONTESTANT_ID,
-    DEFAULT_CONTESTANT_ENTRY
+    DEFAULT_CONTESTANT_ENTRY,
+    SKIP_CONTESTANT
 } from '../constants';
 import {
     ContestantState,
@@ -18,7 +19,8 @@ import {
     SubmitBoutResponseAction,
     ReceiveChallengersResponseAction,
     ToggleSkipContestantIdAction,
-    ChangeCategoryIdAction
+    ChangeCategoryIdAction,
+    SkipContestantAction
 } from '../actions/ContestantActions';
 import { ChangeBoutModeAction } from '../actions/GlobalActions';
 import * as _ from 'lodash';
@@ -33,7 +35,8 @@ export const contestants =
         ReceiveChallengersResponseAction |
         ChangeCategoryIdAction |
         ToggleSkipContestantIdAction |
-        ChangeBoutModeAction
+        ChangeBoutModeAction |
+        SkipContestantAction
     ) => {
         switch (action.type) {
             case CHANGE_BOUT_MODE:
@@ -74,6 +77,13 @@ export const contestants =
                     currContestantIndex: action.contestants.length > 1 ?
                         1 : INITIAL_STATE.contestants.currContestantIndex,
                 }
+            case SKIP_CONTESTANT:
+                return {
+                    ...state,
+                    challenger: action.skipContestantId === state.challenger.contestant.contestantId ?
+                        state.entries[state.currContestantIndex] : state.challenger,
+                    currContestantIndex: findNextContestantIndex(state.entries, state.skipContestantIds, state.currContestantIndex)
+                }
             case SUBMIT_BOUT:
                 let updatedEntries = state.entries;
                 updatedEntries[state.currContestantIndex] = updateContestantStats(
@@ -92,15 +102,15 @@ export const contestants =
                         state.entries, state.skipContestantIds, state.currContestantIndex)
                 }
             default:
-                return state
+                return state;
         }
     }
 
 const updateContestantStats = (contestantEntry: ContestantEntry, didWin: boolean): ContestantEntry => {
     if (didWin) {
-        contestantEntry.contestantStats.winCount = contestantEntry.contestantStats.winCount + 1
+        contestantEntry.contestantStats.winCount = contestantEntry.contestantStats.winCount + 1;
     } else {
-        contestantEntry.contestantStats.loseCount = contestantEntry.contestantStats.loseCount + 1
+        contestantEntry.contestantStats.loseCount = contestantEntry.contestantStats.loseCount + 1;
     }
-    return contestantEntry
+    return contestantEntry;
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { requestTopCategoriesThunk } from '../actions/GlobalActions';
-import { StoreState, LatLon, CategorySummary, Contestant } from '../types/index';
+import { StoreState, LatLon, CategorySummary } from '../types/index';
 import { Dispatch } from 'redux';
 import { CATEGORY_TYPE, RANK_TYPE, BOUT_ROUTE, ROUTE_TYPE } from '../constants/index';
 import * as _ from 'lodash';
@@ -39,8 +39,8 @@ class CategoriesRoute extends React.Component<CategoriesRouteProps> {
                                 categorySummary={topCat}
                                 rankType={this.props.rankType}
                                 dispatchChangeRoute={(route: ROUTE_TYPE) => this.props.dispatch(push(route))}
-                                dispatchRequestChallengersThunk={(challenger: Contestant) =>
-                                    this.props.dispatch(requestChallengersThunk(challenger))}
+                                dispatchRequestChallengersThunk={(challengerContestantId: number) =>
+                                    this.props.dispatch(requestChallengersThunk(challengerContestantId))}
                                 dispatchRequestContestantsThunk={(categoryId: number) =>
                                     this.props.dispatch(requestContestantsThunk(categoryId))}
                             />

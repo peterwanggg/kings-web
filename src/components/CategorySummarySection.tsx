@@ -6,7 +6,7 @@ import * as numeral from 'numeral'
 import { ReceiveChallengersResponseAction, ReceiveContestantsResponseAction } from '../actions/ContestantActions';
 
 type dispatchChangeRoute = (route: ROUTE_TYPE) => void;
-type dispatchRequestChallengersThunk = (challenger: Contestant) => Promise<ReceiveChallengersResponseAction>
+type dispatchRequestChallengersThunk = (challengerContestantId: number) => Promise<ReceiveChallengersResponseAction>
 type dispatchRequestContestantsThunk = (categoryId: number) => Promise<ReceiveContestantsResponseAction>
 
 export interface CategorySummaryProps {
@@ -23,7 +23,7 @@ const judgeChallenger = (challenger: Contestant,
     dispatchRequestChallengersThunk: dispatchRequestChallengersThunk) => {
 
     dispatchChangeRoute(BOUT_ROUTE);
-    dispatchRequestChallengersThunk(challenger);
+    dispatchRequestChallengersThunk(challenger.contestantId);
 }
 
 const judgeCategory = (categoryId: number,

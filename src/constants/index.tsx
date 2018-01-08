@@ -23,6 +23,9 @@ export type RECEIVE_TOP_CATEGORIES = typeof RECEIVE_TOP_CATEGORIES;
 export const TOGGLE_SKIP_CONTESTANT_ID = 'TOGGLE_SKIP_CONTESTANT_ID';
 export type TOGGLE_SKIP_CONTESTANT_ID = typeof TOGGLE_SKIP_CONTESTANT_ID;
 
+export const SKIP_CONTESTANT = 'SKIP_CONTESTANT';
+export type SKIP_CONTESTANT = typeof SKIP_CONTESTANT;
+
 // Actions: Global
 export const CHANGE_CATEGORY_ID = 'CHANGE_CATEGORY_ID';
 export type CHANGE_CATEGORY_ID = typeof CHANGE_CATEGORY_ID;
@@ -75,7 +78,7 @@ export const DEFAULT_CONTESTANT: Contestant = {
 export const DEFAULT_CONTESTANT_STATS: ContestantStats = {
     winCount: 0,
     loseCount: 0,
-    ranks: {winPercent: 0}
+    ranks: { winPercent: 0 }
 };
 export const DEFAULT_CONTESTANT_ENTRY: ContestantEntry = {
     contestant: DEFAULT_CONTESTANT,

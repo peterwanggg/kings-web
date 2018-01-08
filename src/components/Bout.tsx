@@ -4,6 +4,7 @@ import Contestant from './Contestant';
 import 'react-select/dist/react-select.css';
 import 'bulma/css/bulma.css'
 import { isNilContestant } from '../utils/ContestantUtils';
+import { SkipContestantAction } from '../actions/ContestantActions';
 
 export interface BoutProps {
     // contestants
@@ -11,11 +12,11 @@ export interface BoutProps {
     otherContestant: ContestantEntry;
 
     // dispatch functions
-    submitBoutDispatch: (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise<void>;
-
+    dispatchSubmitBout: (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise<void>;
+    dispatchSkipContestant: (skipContestantId: number, otherContestantId: number) => SkipContestantAction;
 }
 
-const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) => {
+const Bout = ({ challenger, otherContestant, dispatchSubmitBout, dispatchSkipContestant }: BoutProps) => {
     if (isNilContestant(otherContestant)
         || isNilContestant(challenger)
         || challenger.contestant.contestantId === otherContestant.contestant.contestantId) {
@@ -26,29 +27,40 @@ const Bout = ({ challenger, otherContestant, submitBoutDispatch }: BoutProps) =>
 
     return (
         <div className="tile is-parent">
-            <div className="tile is-child">
-                <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
-                    challenger,
+            <div className="tile is-child hoverable" onClick={() => dispatchSubmitBout(
+                challenger,
+                challenger.contestant.contestantId,
+                otherContestant.contestant.contestantId)}
+            >
+                <h2>Challenger: {challenger.contestant.contestantName}
+                <a className="button" onClick={() => dispatchSkipContestant(
                     challenger.contestant.contestantId,
-                    otherContestant.contestant.contestantId)} >
-                    Challenger: 👑 {challenger.contestant.contestantName} 👑
-                        </button>
+                    otherContestant.contestant.contestantId)}
+                >
+                    Skip
+                </a></h2>
                 <Contestant contestant={challenger} />
             </div>
 
-            <div className="tile is-child">
-                <button className="button is-fullwidth is-large" onClick={() => submitBoutDispatch(
-                    challenger,
-                    otherContestant.contestant.contestantId,
-                    challenger.contestant.contestantId)} >
-                    Other Contestant: 👑 {otherContestant.contestant.contestantName} 👑
-                        </button>
+            <div className="tile is-child hoverable" onClick={() => dispatchSubmitBout(
+                challenger,
+                otherContestant.contestant.contestantId,
+                challenger.contestant.contestantId)}
+            >
+                <h2>Contestant: {otherContestant.contestant.contestantName}
+                <a
+                    className="button"
+                    onClick={() => dispatchSkipContestant(
+                        otherContestant.contestant.contestantId,
+                        challenger.contestant.contestantId)}
+                >
+                    Skip
+                </a></h2>
                 <Contestant contestant={otherContestant} />
             </div>
         </div>
 
     );
 }
-
 
 export default Bout;
