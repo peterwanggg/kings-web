@@ -111,7 +111,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                                     this.props.dispatch(changeBoutMode(nextBoutMode))}
                             />
                         </div>
-                        <div className="tile is-vertical">
+                        <div className="tile is-vertical is-6">
                             <div className="tile is-child">
                                 <Async
                                     name="challenger"
@@ -145,6 +145,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                     <BoutContainer
                         challenger={DEFAULT_CONTESTANT_ENTRY}
                         otherContestant={DEFAULT_CONTESTANT_ENTRY}
+                        boutMode={this.props.boutMode}
                         dispatchSubmitBout={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
                         dispatchSkipContestant={(skipContestantId: number, otherContestantId: number) => ({type: SKIP_CONTESTANT, skipContestantId: DEFAULT_CONTESTANT_ID})}
                     />

@@ -82,5 +82,6 @@ export const DEFAULT_CONTESTANT_STATS: ContestantStats = {
 };
 export const DEFAULT_CONTESTANT_ENTRY: ContestantEntry = {
     contestant: DEFAULT_CONTESTANT,
-    contestantStats: DEFAULT_CONTESTANT_STATS
+    contestantStats: DEFAULT_CONTESTANT_STATS,
+    bouts: []
 };

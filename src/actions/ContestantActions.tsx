@@ -10,7 +10,7 @@ import {
     CHANGE_CATEGORY_ID,
     SKIP_CONTESTANT,
 } from '../constants'
-import { ActionType, StoreState, ContestantEntry, LatLon, Contestant, ChallengerResponse } from '../types/index'
+import { ActionType, StoreState, ContestantEntry, LatLon, Contestant, ChallengerResponse, ContestantsResponse } from '../types/index'
 import { Dispatch } from 'redux'
 import * as _ from 'lodash'
 import { findNextContestantIndex } from '../utils/ContestantUtils'
@@ -101,7 +101,8 @@ export const requestContestantsThunk: RequestContestantsCallType =
                     headers: DEFAULT_HEADERS,
                 })
                 .then(response => response.json())
-                .then(json => dispatch(receiveContestants(categoryId, json)))
+                .then((response: ContestantsResponse) =>
+                    dispatch(receiveContestants(categoryId, response.contestants)))
         }
 
 export const submitBoutThunk: SubmitBoutCallType =
@@ -147,6 +148,7 @@ export const skipContestantThunk: SkipContestantThunkCallType =
                 state.contestants.entries,
                 state.contestants.skipContestantIds,
                 state.contestants.currContestantIndex);
+            dispatch(toggleSkipContestantId(skipContestantId));
             return ({
                 type: SKIP_CONTESTANT,
                 skipContestantId: skipContestantId

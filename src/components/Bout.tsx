@@ -5,18 +5,20 @@ import 'react-select/dist/react-select.css';
 import 'bulma/css/bulma.css'
 import { isNilContestant } from '../utils/ContestantUtils';
 import { SkipContestantAction } from '../actions/ContestantActions';
+import { BOUT_MODE_TYPE, CHALLENGER } from '../constants/index';
 
 export interface BoutProps {
     // contestants
     challenger: ContestantEntry;
     otherContestant: ContestantEntry;
+    boutMode: BOUT_MODE_TYPE;
 
     // dispatch functions
     dispatchSubmitBout: (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise<void>;
     dispatchSkipContestant: (skipContestantId: number, otherContestantId: number) => SkipContestantAction;
 }
 
-const Bout = ({ challenger, otherContestant, dispatchSubmitBout, dispatchSkipContestant }: BoutProps) => {
+const Bout = ({ challenger, otherContestant, boutMode, dispatchSubmitBout, dispatchSkipContestant }: BoutProps) => {
     if (isNilContestant(otherContestant)
         || isNilContestant(challenger)
         || challenger.contestant.contestantId === otherContestant.contestant.contestantId) {
@@ -33,12 +35,15 @@ const Bout = ({ challenger, otherContestant, dispatchSubmitBout, dispatchSkipCon
                 otherContestant.contestant.contestantId)}
             >
                 <h2>Challenger: {challenger.contestant.contestantName}
-                <a className="button" onClick={() => dispatchSkipContestant(
-                    challenger.contestant.contestantId,
-                    otherContestant.contestant.contestantId)}
-                >
-                    Skip
-                </a></h2>
+                    {boutMode === CHALLENGER ? <div /> :
+                        <a className="button" onClick={() => dispatchSkipContestant(
+                            challenger.contestant.contestantId,
+                            otherContestant.contestant.contestantId)}
+                        >
+                            Skip
+                        </a>
+                    }
+                </h2>
                 <Contestant contestant={challenger} />
             </div>
 
@@ -48,13 +53,13 @@ const Bout = ({ challenger, otherContestant, dispatchSubmitBout, dispatchSkipCon
                 challenger.contestant.contestantId)}
             >
                 <h2>Contestant: {otherContestant.contestant.contestantName}
-                <a
-                    className="button"
-                    onClick={() => dispatchSkipContestant(
-                        otherContestant.contestant.contestantId,
-                        challenger.contestant.contestantId)}
-                >
-                    Skip
+                    <a
+                        className="button"
+                        onClick={() => dispatchSkipContestant(
+                            otherContestant.contestant.contestantId,
+                            challenger.contestant.contestantId)}
+                    >
+                        Skip
                 </a></h2>
                 <Contestant contestant={otherContestant} />
             </div>

@@ -27,14 +27,24 @@ export interface ActionType<T extends string> {
     type: T;
 }
 
-export interface ContestantEntry {
-    contestant: Contestant;
-    contestantStats: ContestantStats;
-}
-
 export interface ChallengerResponse {
     challenger: ContestantEntry;
     contestants: ContestantEntry[];
+}
+
+export interface ContestantsResponse {
+    contestants: ContestantEntry[];
+}
+
+export interface Bout {
+    winnerContestantId: number;
+    loserContestantId: number;
+}
+
+export interface ContestantEntry {
+    contestant: Contestant;
+    contestantStats: ContestantStats;
+    bouts: Bout[];
 }
 
 export interface Contestant {
