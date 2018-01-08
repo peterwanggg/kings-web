@@ -54,9 +54,9 @@ export type RESTAURANT_TYPE = typeof RESTAURANT;
 export type CATEGORY_TYPE = RESTAURANT_TYPE;
 
 // Routes
-export const BOUT_ROUTE = '/bouts'
+export const BOUT_ROUTE = '/bouts';
 export type BOUT_ROUTE_TYPE = typeof BOUT_ROUTE;
-export const CATEGORIES_ROUTE = '/categories'
+export const CATEGORIES_ROUTE = '/categories';
 export type CATEGORIES_ROUTE_TYPE = typeof CATEGORIES_ROUTE;
 export type ROUTE_TYPE = BOUT_ROUTE_TYPE | CATEGORIES_ROUTE_TYPE;
 
@@ -67,17 +67,17 @@ export const DEFAULT_CONTESTANT_ID = -1;
 export const DEFAULT_CONTESTANT: Contestant = {
     contestantId: DEFAULT_CONTESTANT_ID,
     categoryId: 0,
-    contestantName: "",
-    imageUrl: "",
-    apiProviderType: "",
-    apiProviderId: ""
-}
+    contestantName: '',
+    imageUrl: '',
+    apiProviderType: '',
+    apiProviderId: ''
+};
 export const DEFAULT_CONTESTANT_STATS: ContestantStats = {
     winCount: 0,
     loseCount: 0,
     ranks: {winPercent: 0}
-}
+};
 export const DEFAULT_CONTESTANT_ENTRY: ContestantEntry = {
     contestant: DEFAULT_CONTESTANT,
     contestantStats: DEFAULT_CONTESTANT_STATS
-}
+};

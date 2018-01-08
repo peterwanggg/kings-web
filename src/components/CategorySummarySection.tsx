@@ -44,7 +44,7 @@ const renderContestantRow = (rankType: RANK_TYPE,
     let bouts = stats.winCount + stats.loseCount;
     let rank = _.get(stats.ranks, rankType);
     return (
-        <tr>
+        <tr key={entry.contestant.contestantId}>
             <th>{_.get(stats.ranks, rankType)}</th>
             <th onClick={() => judgeChallenger(contestant, dispatchChangeRoute, dispatchRequestChallengersThunk)}>
                 <a className="button">⚔️️</a>

@@ -24,7 +24,7 @@ export interface ContestantState {
 }
 
 export interface ActionType<T extends string> {
-    type: T
+    type: T;
 }
 
 export interface ContestantEntry {
@@ -52,23 +52,23 @@ export interface ContestantStats {
     ranks: ContestantRanks;
 }
 
-export type ContestantRanks = {[rankType in RANK_TYPE]: number}
+export type ContestantRanks = {[rankType in RANK_TYPE]: number};
 
 export type LatLon = {
     lat: number,
     lon: number,
-}
+};
 
 export type Category = {
     categoryId: number;
     categoryName: string;
     categoryType: string;
-}
+};
 
 export type CategorySummary = {
     category: Category;
     contestantEntries: ContestantEntry[];
-}
+};
 
 export const INITIAL_STATE: StoreState = {
     latLon: { lat: 47.6522155000, lon: -122.3543657000 },
@@ -89,4 +89,4 @@ export const INITIAL_STATE: StoreState = {
         challenger: DEFAULT_CONTESTANT_ENTRY,
         skipContestantIds: []
     },
-}
+};

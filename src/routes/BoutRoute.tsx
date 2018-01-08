@@ -1,7 +1,20 @@
-import * as React from 'react'
-import BoutContainer from '../containers/BoutContainer'
-import { CATEGORY_TYPE, DEFAULT_CATEGORY_ID, DEFAULT_CONTESTANT_ID, DEFAULT_CONTESTANT_ENTRY, BOUT_MODE_TYPE, CHALLENGER, CATEGORIES_ROUTE } from '../constants/index'
-import { StoreState, LatLon, ContestantEntry, Category, Contestant } from '../types/index'
+import * as React from 'react';
+import BoutContainer from '../containers/BoutContainer';
+import {
+    CATEGORY_TYPE, DEFAULT_CATEGORY_ID,
+    DEFAULT_CONTESTANT_ID,
+    DEFAULT_CONTESTANT_ENTRY,
+    BOUT_MODE_TYPE,
+    CHALLENGER,
+    CATEGORIES_ROUTE
+} from '../constants/index';
+import {
+    StoreState,
+    LatLon,
+    ContestantEntry,
+    Category,
+    Contestant
+} from '../types/index'
 import { connect, Dispatch } from 'react-redux';
 import {
     changeBoutMode,

@@ -1,12 +1,31 @@
-import { RECEIVE_CONTESTANTS, SUBMIT_BOUT, CHANGE_BOUT_MODE, ROULETTE, RECEIVE_CHALLENGERS, CHANGE_CATEGORY_ID, TOGGLE_SKIP_CONTESTANT_ID, DEFAULT_CONTESTANT_ENTRY } from '../constants';
-import { ContestantState, INITIAL_STATE, ContestantEntry } from '../types/index';
-import { ReceiveContestantsResponseAction, SubmitBoutResponseAction, ReceiveChallengersResponseAction, ToggleSkipContestantIdAction, ChangeCategoryIdAction } from '../actions/ContestantActions';
+import {
+    RECEIVE_CONTESTANTS,
+    SUBMIT_BOUT,
+    CHANGE_BOUT_MODE,
+    ROULETTE,
+    RECEIVE_CHALLENGERS,
+    CHANGE_CATEGORY_ID,
+    TOGGLE_SKIP_CONTESTANT_ID,
+    DEFAULT_CONTESTANT_ENTRY
+} from '../constants';
+import {
+    ContestantState,
+    INITIAL_STATE,
+    ContestantEntry
+} from '../types/index';
+import {
+    ReceiveContestantsResponseAction,
+    SubmitBoutResponseAction,
+    ReceiveChallengersResponseAction,
+    ToggleSkipContestantIdAction,
+    ChangeCategoryIdAction
+} from '../actions/ContestantActions';
 import { ChangeBoutModeAction } from '../actions/GlobalActions';
 import * as _ from 'lodash';
 import { findNextContestantIndex } from '../utils/ContestantUtils';
 
-// do not split this up into separate reducers, `contestants` is much easier to reason about in terms individual actions than
-// the same action split up into multiple `contestant.XXX` reducers
+// do not split this up into separate reducers, `contestants` is much easier to reason about
+// in terms individual actions than the same action split up into multiple `contestant.XXX` reducers
 export const contestants =
     (state: ContestantState = INITIAL_STATE.contestants, action:
         ReceiveContestantsResponseAction |
@@ -26,7 +45,7 @@ export const contestants =
                             _.take(state.entries, state.currContestantIndex + 1),
                             _.shuffle(_.takeRight(state.entries, state.entries.length - state.currContestantIndex - 1))
                         ) : state.entries
-                }
+                };
             case TOGGLE_SKIP_CONTESTANT_ID:
                 return {
                     ...state,

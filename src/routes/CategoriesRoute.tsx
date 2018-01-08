@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { requestTopCategoriesThunk } from '../actions/GlobalActions';
 import { StoreState, LatLon, CategorySummary, Contestant } from '../types/index';
@@ -15,7 +15,7 @@ export interface CategoriesRouteProps {
     rankType: RANK_TYPE;
     categoryType: CATEGORY_TYPE;
 
-    categoriesTop: CategorySummary[]
+    categoriesTop: CategorySummary[];
 
     dispatch: Dispatch<StoreState>;
 }
@@ -35,6 +35,7 @@ class CategoriesRoute extends React.Component<CategoriesRouteProps> {
                     _.map(this.props.categoriesTop, topCat => {
                         return (
                             <CategorySummarySection
+                                key={topCat.category.categoryId}
                                 categorySummary={topCat}
                                 rankType={this.props.rankType}
                                 dispatchChangeRoute={(route: ROUTE_TYPE) => this.props.dispatch(push(route))}
@@ -43,12 +44,11 @@ class CategoriesRoute extends React.Component<CategoriesRouteProps> {
                                 dispatchRequestContestantsThunk={(categoryId: number) =>
                                     this.props.dispatch(requestContestantsThunk(categoryId))}
                             />
-                        )
+                        );
                     })
                 }
             </div>
-
-        )
+        );
     }
 }
 export function mapStateToProps(state: StoreState) {

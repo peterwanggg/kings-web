@@ -15,25 +15,27 @@ export interface ContestantPreviewProps {
     setContestantModal: SetContestantModalType;
 }
 
+const aClassName = (isInBout: boolean, isPassed: boolean) => isInBout || isPassed ? "" : "button";
+
+const spanClassName = (isSkipped: boolean, isPassed: boolean, isInBout: boolean) =>
+    "icon is-large " +
+    (isInBout ? "has-text-danger" :
+        (isPassed ? "has-text-info" :
+            (isSkipped ? "has-text-warning" : "has-text-success")))
+
+const iClassName = (isSkipped: boolean, isPassed: boolean, isInBout: boolean) =>
+    isInBout ? "fa fa-arrow-left" :
+        isPassed ? "fa fa-repeat" :
+            isSkipped ? "fa fa-minus" : "fa fa-check"
+
 const skipCheckbox = (contestant: ContestantEntry,
     isSkipped: boolean,
     isPassed: boolean,
     isInBout: boolean,
     toggleSkipContestantId: ToggleSkipContestantIdType) => {
 
-    const spanClassName = (isSkipped: boolean, isPassed: boolean, isInBout: boolean) =>
-        "icon is-large " +
-        (isInBout ? "has-text-danger" :
-            (isPassed ? "has-text-info" :
-                (isSkipped ? "has-text-warning" : "has-text-success")))
-
-    const iClassName = (isSkipped: boolean, isPassed: boolean, isInBout: boolean) =>
-        isInBout ? "fa fa-arrow-left" :
-            isPassed ? "fa fa-repeat" :
-                isSkipped ? "fa fa-minus" : "fa fa-check"
-
     return (
-        <a className="button" onClick={() => toggleSkipContestantId(contestant.contestant.contestantId)}>
+        <a className={aClassName(isInBout, isPassed)} onClick={() => toggleSkipContestantId(contestant.contestant.contestantId)}>
             <span className={spanClassName(isSkipped, isPassed, isInBout)}>
                 <i className={iClassName(isSkipped, isPassed, isInBout)} />
             </span>
@@ -51,7 +53,7 @@ const ContestantPreview = ({ contestant, isSkipped, isPassed, isInBout, toggleSk
             <div className="tile is-parent hoverable" onClick={() => { setContestantModal(contestant) }} >
                 <div className="tile">
                     <figure className="image is-96x96">
-                        <img src={contestant.contestant.imageUrl}/>
+                        <img src={contestant.contestant.imageUrl} />
                     </figure>
                 </div>
 

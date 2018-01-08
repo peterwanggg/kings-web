@@ -6,17 +6,17 @@ import { toggleSkipContestantId } from '../actions/ContestantActions';
 import { setContestantModal } from '../actions/GlobalActions';
 import ContestantPreviewContainer from '../containers/ContestantPreviewContainer';
 import { findNextContestantIndex, isPassed } from '../utils/ContestantUtils';
-import '../index.css'
+import '../index.css';
 
 export interface ContestantListProps {
     contestants: ContestantEntry[];
-    skipContestantIds: number[]
+    skipContestantIds: number[];
     currContestantIndex: number;
     challengerContestantId: number;
 }
 
-const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number, challengerContestantId: number) => ListRowRenderer =
-    (contestants, currContestantIndex, challengerContestantId) =>
+const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number, challengerContestantId: number)
+    => ListRowRenderer = (contestants, currContestantIndex, challengerContestantId) =>
         ({ index, isScrolling, key, style }) => {
             let contestantEntry: ContestantEntry = contestants[index];
 
@@ -37,34 +37,34 @@ const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number,
                         toggleSkipContestantId={toggleSkipContestantId}
                     />
                 </div>
-            )
-        }
+            );
+        };
 
+const ContestantList =
+    ({ contestants, skipContestantIds, currContestantIndex, challengerContestantId }: ContestantListProps) => {
+        return (
+            <div className="cList">
+                <AutoSizer>
+                    {({ height, width }) => (
+                        <List
+                            height={height}
+                            // noRowsRenderer={this._noRowsRenderer}
+                            rowCount={contestants.length}
+                            rowHeight={140}
+                            style={({ outline: 'none' })}
+                            rowRenderer={rowRenderer(contestants, currContestantIndex, challengerContestantId)}
+                            width={width}
+                            scrollToIndex={Math.max(
+                                0,
+                                (findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) !== -1 ?
+                                    currContestantIndex + 1 : currContestantIndex) - 3)}
+                            scrollToAlignment={"start"}
+                        />
+                    )}
+                </AutoSizer>
+            </div>
 
-const ContestantList = ({ contestants, skipContestantIds, currContestantIndex, challengerContestantId }: ContestantListProps) => {
-    return (
-        <div className="cList">
-            <AutoSizer>
-                {({ height, width }) => (
-                    <List
-                        height={height}
-                        // noRowsRenderer={this._noRowsRenderer}
-                        rowCount={contestants.length}
-                        rowHeight={140}
-                        style={({ outline: 'none' })}
-                        rowRenderer={rowRenderer(contestants, currContestantIndex, challengerContestantId)}
-                        width={width}
-                        scrollToIndex={Math.max(
-                            0,
-                            (findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) !== -1 ?
-                                currContestantIndex + 1 : currContestantIndex) - 3)}
-                        scrollToAlignment={"start"}
-                    />
-                )}
-            </AutoSizer>
-        </div>
+        );
+    };
 
-    );
-}
-
-export default ContestantList
+export default ContestantList;
