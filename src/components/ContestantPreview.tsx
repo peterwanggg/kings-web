@@ -32,10 +32,16 @@ const skipCheckbox = (contestant: ContestantEntry,
     isSkipped: boolean,
     isPassed: boolean,
     isInBout: boolean,
-    toggleSkipContestantId: ToggleSkipContestantIdType) => {
+    toggleSkipContestantId: ToggleSkipContestantIdType,
+    setContestantModal: SetContestantModalType) => {
 
     return (
-        <a className={aClassName(isInBout, isPassed)} onClick={() => toggleSkipContestantId(contestant.contestant.contestantId)}>
+        <a
+            className={aClassName(isInBout, isPassed)}
+            onClick={() => !isInBout && !isPassed ?
+                toggleSkipContestantId(contestant.contestant.contestantId) :
+                setContestantModal(contestant)}
+        >
             <span className={spanClassName(isSkipped, isPassed, isInBout)}>
                 <i className={iClassName(isSkipped, isPassed, isInBout)} />
             </span>
@@ -47,7 +53,7 @@ const ContestantPreview = ({ contestant, isSkipped, isPassed, isInBout, toggleSk
     return (
         <div className="tile is-ancestor box">
             <div className="tile is-1">
-                {skipCheckbox(contestant, isSkipped, isPassed, isInBout, toggleSkipContestantId)}
+                {skipCheckbox(contestant, isSkipped, isPassed, isInBout, toggleSkipContestantId, setContestantModal)}
             </div>
 
             <div className="tile is-parent hoverable" onClick={() => { setContestantModal(contestant) }} >
