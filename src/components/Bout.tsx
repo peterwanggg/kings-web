@@ -29,38 +29,38 @@ const Bout = ({ challenger, otherContestant, boutMode, dispatchSubmitBout, dispa
 
     return (
         <div className="tile is-parent">
+            {boutMode === CHALLENGER ? <div /> :
+                <a className="button" onClick={() => dispatchSkipContestant(
+                    challenger.contestant.contestantId,
+                    otherContestant.contestant.contestantId)}
+                >
+                    Skip
+                        </a>
+            }
             <div className="tile is-child hoverable" onClick={() => dispatchSubmitBout(
                 challenger,
                 challenger.contestant.contestantId,
                 otherContestant.contestant.contestantId)}
             >
-                <h2>Challenger: {challenger.contestant.contestantName}
-                    {boutMode === CHALLENGER ? <div /> :
-                        <a className="button" onClick={() => dispatchSkipContestant(
-                            challenger.contestant.contestantId,
-                            otherContestant.contestant.contestantId)}
-                        >
-                            Skip
-                        </a>
-                    }
-                </h2>
+                <h2>Challenger: {challenger.contestant.contestantName}</h2>
                 <Contestant contestant={challenger} />
             </div>
 
+
+            <a
+                className="button"
+                onClick={() => dispatchSkipContestant(
+                    otherContestant.contestant.contestantId,
+                    challenger.contestant.contestantId)}
+            >
+                Skip
+                </a>
             <div className="tile is-child hoverable" onClick={() => dispatchSubmitBout(
                 challenger,
                 otherContestant.contestant.contestantId,
                 challenger.contestant.contestantId)}
             >
-                <h2>Contestant: {otherContestant.contestant.contestantName}
-                    <a
-                        className="button"
-                        onClick={() => dispatchSkipContestant(
-                            otherContestant.contestant.contestantId,
-                            challenger.contestant.contestantId)}
-                    >
-                        Skip
-                </a></h2>
+                <h2>Contestant: {otherContestant.contestant.contestantName}</h2>
                 <Contestant contestant={otherContestant} />
             </div>
         </div>

@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import CategorySummarySection from '../components/CategorySummarySection';
 import { Link } from 'react-router-dom';
 import { push } from 'react-router-redux';
-import { requestChallengersThunk, requestContestantsThunk } from '../actions/ContestantActions';
+import { changeCategoryIdThunk, changeChallengerThunk } from '../actions/ContestantActions';
 
 export interface CategoriesRouteProps {
     latLon: LatLon;
@@ -39,10 +39,10 @@ class CategoriesRoute extends React.Component<CategoriesRouteProps> {
                                 categorySummary={topCat}
                                 rankType={this.props.rankType}
                                 dispatchChangeRoute={(route: ROUTE_TYPE) => this.props.dispatch(push(route))}
-                                dispatchRequestChallengersThunk={(challengerContestantId: number) =>
-                                    this.props.dispatch(requestChallengersThunk(challengerContestantId))}
-                                dispatchRequestContestantsThunk={(categoryId: number) =>
-                                    this.props.dispatch(requestContestantsThunk(categoryId))}
+                                dispatchChangeChallengerIdThunk={(challengerContestantId: number) =>
+                                    this.props.dispatch(changeChallengerThunk(challengerContestantId))}
+                                dispatchChangeCategoryIdThunk={(categoryId: number) =>
+                                    this.props.dispatch(changeCategoryIdThunk(categoryId))}
                             />
                         );
                     })
@@ -58,8 +58,7 @@ export function mapStateToProps(state: StoreState) {
 
         categoryType: state.categoryType,
         categoriesTop: state.categoriesTop,
-    }
+    };
 }
-
 
 export default connect(mapStateToProps)(CategoriesRoute);

@@ -3,41 +3,42 @@ import { CategorySummary, ContestantEntry, Contestant } from '../types/index';
 import * as _ from 'lodash';
 import { RANK_TYPE, ROUTE_TYPE, BOUT_ROUTE } from '../constants/index';
 import * as numeral from 'numeral'
-import { ReceiveChallengersResponseAction, ReceiveContestantsResponseAction } from '../actions/ContestantActions';
+// import { ChangeCategoryIdThunkAction, ChangeChallengerIdThunkAction } from '../actions/ContestantActions';
 
 type dispatchChangeRoute = (route: ROUTE_TYPE) => void;
-type dispatchRequestChallengersThunk = (challengerContestantId: number) => Promise<ReceiveChallengersResponseAction>
-type dispatchRequestContestantsThunk = (categoryId: number) => Promise<ReceiveContestantsResponseAction>
+type dispatchChangeChallengerIdThunk = (challengerContestantId: number) => void;
+type dispatchChangeCategoryIdThunk = (categoryId: number) => void;
+
 
 export interface CategorySummaryProps {
     rankType: RANK_TYPE;
     categorySummary: CategorySummary;
+
     dispatchChangeRoute: dispatchChangeRoute;
-    dispatchRequestChallengersThunk: dispatchRequestChallengersThunk;
-    dispatchRequestContestantsThunk: dispatchRequestContestantsThunk
-    // dispatchChangeCategoryId: dispatchChangeCategoryId;
+    dispatchChangeChallengerIdThunk: dispatchChangeChallengerIdThunk;
+    dispatchChangeCategoryIdThunk: dispatchChangeCategoryIdThunk;
 }
 
 const judgeChallenger = (challenger: Contestant,
     dispatchChangeRoute: dispatchChangeRoute,
-    dispatchRequestChallengersThunk: dispatchRequestChallengersThunk) => {
+    dispatchChangeChallengerIdThunk: dispatchChangeChallengerIdThunk) => {
 
     dispatchChangeRoute(BOUT_ROUTE);
-    dispatchRequestChallengersThunk(challenger.contestantId);
+    dispatchChangeChallengerIdThunk(challenger.contestantId);
 }
 
 const judgeCategory = (categoryId: number,
     dispatchChangeRoute: dispatchChangeRoute,
-    dispatchRequestContestantsThunk: dispatchRequestContestantsThunk) => {
+    dispatchChangeCategoryIdThunk: dispatchChangeCategoryIdThunk) => {
 
     dispatchChangeRoute(BOUT_ROUTE);
-    dispatchRequestContestantsThunk(categoryId);
+    dispatchChangeCategoryIdThunk(categoryId);
 }
 
 const renderContestantRow = (rankType: RANK_TYPE,
     entry: ContestantEntry,
     dispatchChangeRoute: dispatchChangeRoute,
-    dispatchRequestChallengersThunk: dispatchRequestChallengersThunk) => {
+    dispatchChangeChallengerIdThunk: dispatchChangeChallengerIdThunk) => {
 
     let contestant = entry.contestant;
     let stats = entry.contestantStats;
@@ -46,7 +47,7 @@ const renderContestantRow = (rankType: RANK_TYPE,
     return (
         <tr key={entry.contestant.contestantId}>
             <th>{_.get(stats.ranks, rankType)}</th>
-            <th onClick={() => judgeChallenger(contestant, dispatchChangeRoute, dispatchRequestChallengersThunk)}>
+            <th onClick={() => judgeChallenger(contestant, dispatchChangeRoute, dispatchChangeChallengerIdThunk)}>
                 <a className="button">⚔️️</a>
             </th>
             <td>{(rank === 1 ? "👑 " : "") + contestant.contestantName + (rank === 1 ? " 👑" : "")}</td>
@@ -62,8 +63,8 @@ const CategorySummarySection = ({
     rankType,
     categorySummary,
     dispatchChangeRoute,
-    dispatchRequestChallengersThunk,
-    dispatchRequestContestantsThunk }: CategorySummaryProps) => {
+    dispatchChangeChallengerIdThunk,
+    dispatchChangeCategoryIdThunk }: CategorySummaryProps) => {
     return (
         <section className="hero">
             <div className="hero-body">
@@ -71,7 +72,7 @@ const CategorySummarySection = ({
                     <h1 className="title hoverable" onClick={() => judgeCategory(
                         categorySummary.category.categoryId,
                         dispatchChangeRoute,
-                        dispatchRequestContestantsThunk
+                        dispatchChangeCategoryIdThunk
                     )}>
                         ⚔️ {categorySummary.category.categoryName}
                     </h1>
@@ -91,7 +92,7 @@ const CategorySummarySection = ({
                         <tbody>
                             {
                                 _.map(categorySummary.contestantEntries,
-                                    entry => renderContestantRow(rankType, entry, dispatchChangeRoute, dispatchRequestChallengersThunk))
+                                    entry => renderContestantRow(rankType, entry, dispatchChangeRoute, dispatchChangeChallengerIdThunk))
                             }
                         </tbody>
                     </table>

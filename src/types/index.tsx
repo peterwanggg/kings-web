@@ -1,4 +1,13 @@
-import { RESTAURANT, CATEGORY_TYPE, DEFAULT_CONTESTANT_ENTRY, DEFAULT_CATEGORY_ID, BOUT_MODE_TYPE, ROULETTE, RANK_TYPE, WIN_PERCENT } from "../constants/index";
+import {
+    RESTAURANT,
+    CATEGORY_TYPE,
+    DEFAULT_CONTESTANT_ENTRY,
+    DEFAULT_CATEGORY_ID,
+    BOUT_MODE_TYPE,
+    ROULETTE,
+    RANK_TYPE,
+    WIN_PERCENT
+} from '../constants/index';
 
 export interface StoreState {
     latLon: LatLon;
@@ -19,6 +28,7 @@ export interface StoreState {
 export interface ContestantState {
     currContestantIndex: number;
     entries: ContestantEntry[];
+    entryPage: number;
     challenger: ContestantEntry;
     skipContestantIds: number[];
 }
@@ -95,6 +105,7 @@ export const INITIAL_STATE: StoreState = {
 
     contestants: {
         entries: [],
+        entryPage: 0,
         currContestantIndex: 0,
         challenger: DEFAULT_CONTESTANT_ENTRY,
         skipContestantIds: []

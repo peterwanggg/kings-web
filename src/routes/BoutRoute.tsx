@@ -25,7 +25,8 @@ import {
 import {
     requestContestantsThunk,
     searchContestantsCall,
-    requestChallengersThunk,
+    changeChallengerThunk,
+    changeCategoryIdThunk,
 } from '../actions/ContestantActions';
 import ContestantList from '../components/ContestantList'
 import * as _ from 'lodash';
@@ -80,7 +81,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
             && (_.isNil(this.props.challenger) || this.props.challenger.contestant.contestantId === DEFAULT_CONTESTANT_ID)
 
         ) {
-            this.props.dispatch(requestContestantsThunk(this.props.categoryId))
+            this.props.dispatch(requestContestantsThunk(this.props.categoryId, 1))
         }
     }
 
@@ -119,7 +120,9 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                                         this.props.challenger.contestant : false}
                                     placeholder="Select a Challenger..."
                                     clearable={false}
-                                    onChange={(value: Contestant) => this.props.dispatch(requestChallengersThunk(value.contestantId))}
+                                    onChange={(value: Contestant) => {
+                                        this.props.dispatch(changeChallengerThunk(value.contestantId))
+                                    }}
                                     valueKey="contestantId" labelKey="contestantName"
                                     loadOptions={(input: string) => searchContestants(
                                         this.props.latLon, this.props.categoryType, input)}
@@ -131,7 +134,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                                     value={this.props.categoryId}
                                     clearable={false}
                                     onChange={(selectedOption: Option) => !_.isNil(selectedOption) && _.isNumber(selectedOption.value) ?
-                                        this.props.dispatch(requestContestantsThunk(Number(selectedOption.value))) : null
+                                        this.props.dispatch(changeCategoryIdThunk(Number(selectedOption.value))) : null
                                     }
                                     options={transformCategoriesToSelectOptions(this.props.categories)}
                                 />
@@ -147,7 +150,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                         otherContestant={DEFAULT_CONTESTANT_ENTRY}
                         boutMode={this.props.boutMode}
                         dispatchSubmitBout={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
-                        dispatchSkipContestant={(skipContestantId: number, otherContestantId: number) => ({type: SKIP_CONTESTANT, skipContestantId: DEFAULT_CONTESTANT_ID})}
+                        dispatchSkipContestant={(skipContestantId: number, otherContestantId: number) => ({ type: SKIP_CONTESTANT, skipContestantId: DEFAULT_CONTESTANT_ID })}
                     />
                     <div className="tile is-parent is-vertical is-3">
                         <ContestantList

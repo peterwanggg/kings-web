@@ -4,10 +4,11 @@ import {
     CHANGE_BOUT_MODE,
     ROULETTE,
     RECEIVE_CHALLENGERS,
-    CHANGE_CATEGORY_ID,
+    // CHANGE_CATEGORY_ID,
     TOGGLE_SKIP_CONTESTANT_ID,
     DEFAULT_CONTESTANT_ENTRY,
-    SKIP_CONTESTANT
+    SKIP_CONTESTANT,
+    CHALLENGER
 } from '../constants';
 import {
     ContestantState,
@@ -19,7 +20,7 @@ import {
     SubmitBoutResponseAction,
     ReceiveChallengersResponseAction,
     ToggleSkipContestantIdAction,
-    ChangeCategoryIdAction,
+    // ChangeCategoryIdThunkAction,
     SkipContestantAction
 } from '../actions/ContestantActions';
 import { ChangeBoutModeAction } from '../actions/GlobalActions';
@@ -33,7 +34,7 @@ export const contestants =
         ReceiveContestantsResponseAction |
         SubmitBoutResponseAction |
         ReceiveChallengersResponseAction |
-        ChangeCategoryIdAction |
+        // ChangeCategoryIdThunkAction |
         ToggleSkipContestantIdAction |
         ChangeBoutModeAction |
         SkipContestantAction
@@ -55,27 +56,39 @@ export const contestants =
                     skipContestantIds: _.includes(state.skipContestantIds, action.skipContestantId) ?
                         _.pull(state.skipContestantIds, action.skipContestantId) :
                         _.concat(state.skipContestantIds, action.skipContestantId)
-                }
-            case CHANGE_CATEGORY_ID:
-                return {
-                    ...state,
-                    challenger: INITIAL_STATE.contestants.challenger,
-                }
+                };
+            // case CHANGE_CATEGORY_ID:
+            //     return {
+            //         ...state,
+
+            //         challenger: INITIAL_STATE.contestants.challenger,
+            //     }
             case RECEIVE_CHALLENGERS:
                 return {
                     ...state,
+                    entryPage: action.page,
+                    entries: action.page === 1 ?
+                        action.contestants : _.concat(state.entries, action.contestants),
                     challenger: action.challenger,
-                    entries: action.contestants,
-                    currContestantIndex: 0,
-                }
+                    currContestantIndex: action.page === 1 ?
+                        0
+                        : action.contestants.length > 0 ? state.entries.length : 0
+                };
             case RECEIVE_CONTESTANTS:
                 return {
                     ...state,
-                    entries: action.contestants,
+                    entryPage: action.page,
+                    entries: action.page === 1 ?
+                        action.contestants :
+                        _.concat(state.entries, action.contestants),
                     challenger: action.contestants.length > 1 ?
-                        action.contestants[0] : DEFAULT_CONTESTANT_ENTRY,
-                    currContestantIndex: action.contestants.length > 1 ?
-                        1 : INITIAL_STATE.contestants.currContestantIndex,
+                        action.contestants[0] :
+                        DEFAULT_CONTESTANT_ENTRY,
+                    currContestantIndex: action.page === 1 ?
+                        action.contestants.length > 1 ?
+                            1
+                            : INITIAL_STATE.contestants.currContestantIndex
+                        : action.contestants.length > 0 ? state.entries.length : 0
                 }
             case SKIP_CONTESTANT:
                 return {
@@ -83,7 +96,7 @@ export const contestants =
                     challenger: action.skipContestantId === state.challenger.contestant.contestantId ?
                         state.entries[state.currContestantIndex] : state.challenger,
                     currContestantIndex: findNextContestantIndex(state.entries, state.skipContestantIds, state.currContestantIndex)
-                }
+                };
             case SUBMIT_BOUT:
                 let updatedEntries = state.entries;
                 updatedEntries[state.currContestantIndex] = updateContestantStats(
@@ -96,11 +109,13 @@ export const contestants =
                 return {
                     ...state,
                     entries: updatedEntries,
-                    challenger: action.boutMode === ROULETTE ?
-                        updatedEntries[state.currContestantIndex] : updatedChallenger,
+                    challenger: action.boutMode === CHALLENGER ?
+                        updatedChallenger :
+                        state.challenger.contestant.contestantId === action.winnerContestantId ?
+                            updatedChallenger : updatedEntries[state.currContestantIndex],
                     currContestantIndex: findNextContestantIndex(
                         state.entries, state.skipContestantIds, state.currContestantIndex)
-                }
+                };
             default:
                 return state;
         }

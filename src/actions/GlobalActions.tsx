@@ -47,11 +47,11 @@ export interface SetContestantModalAction extends ActionType<SET_CONTESTANT_MODA
 /*** TYPES: CALL **/
 export type RequestCategoriesCallType =
     (categoryType: CATEGORY_TYPE) =>
-        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<ReceiveCategoriesResponseAction>
+        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<ReceiveCategoriesResponseAction>;
 
 export type RequestTopCategoriesCallType =
     (latLon: LatLon, categoryType: CATEGORY_TYPE) =>
-        (dispatch: Dispatch<StoreState>) => Promise<ReceiveTopCategoriesResponseAction>
+        (dispatch: Dispatch<StoreState>) => Promise<ReceiveTopCategoriesResponseAction>;
 
 export type ChangeBoutModeType =
     (nextBoutMode: BOUT_MODE_TYPE) => ChangeBoutModeAction;
@@ -73,7 +73,7 @@ export const requestCategoriesThunk: RequestCategoriesCallType =
                 })
                 .then(response => response.json())
                 .then(json => dispatch(receiveCategories(json)))
-        }
+        };
 
 export const requestTopCategoriesThunk: RequestTopCategoriesCallType =
     (latLon, categoryType) =>

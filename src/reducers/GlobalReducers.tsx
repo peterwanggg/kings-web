@@ -1,4 +1,3 @@
-
 import {
     LatLon,
     INITIAL_STATE,
@@ -18,10 +17,11 @@ import {
     SET_CONTESTANT_MODAL,
     RECEIVE_TOP_CATEGORIES,
     RANK_TYPE,
-    DEFAULT_CATEGORY_ID
+    DEFAULT_CATEGORY_ID,
+    CHANGE_CHALLENGER_ID
 } from '../constants/index';
 import {
-    ReceiveChallengersResponseAction, ChangeCategoryIdAction,
+    ReceiveChallengersResponseAction, ChangeCategoryIdThunkAction, ChangeChallengerIdThunkAction,
 } from '../actions/ContestantActions';
 import {
     ChangeBoutModeAction,
@@ -58,7 +58,7 @@ export const categoryType =
     }
 
 export const categoryId =
-    (state: number = INITIAL_STATE.categoryId, action: ReceiveCategoriesResponseAction | ChangeCategoryIdAction | ReceiveChallengersResponseAction) => {
+    (state: number = INITIAL_STATE.categoryId, action: ReceiveCategoriesResponseAction | ChangeCategoryIdThunkAction | ReceiveChallengersResponseAction) => {
         switch (action.type) {
             case RECEIVE_CHALLENGERS:
                 return action.challenger.contestant.categoryId;
@@ -88,11 +88,11 @@ export const categories =
     }
 
 export const boutMode =
-    (state: BOUT_MODE_TYPE = INITIAL_STATE.boutMode, action: ChangeBoutModeAction | ChangeCategoryIdAction | ReceiveChallengersResponseAction) => {
+    (state: BOUT_MODE_TYPE = INITIAL_STATE.boutMode, action: ChangeBoutModeAction | ChangeCategoryIdThunkAction | ChangeChallengerIdThunkAction) => {
         switch (action.type) {
             case CHANGE_CATEGORY_ID:
                 return ROULETTE;
-            case RECEIVE_CHALLENGERS:
+            case CHANGE_CHALLENGER_ID:
                 return CHALLENGER;
             case CHANGE_BOUT_MODE:
                 return action.nextBoutMode;
