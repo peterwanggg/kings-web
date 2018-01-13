@@ -42,7 +42,7 @@ class CategoriesRoute extends React.Component<CategoriesRouteProps> {
                                 dispatchChangeChallengerIdThunk={(challengerContestantId: number) =>
                                     this.props.dispatch(changeChallengerThunk(challengerContestantId))}
                                 dispatchChangeCategoryIdThunk={(categoryId: number) =>
-                                    this.props.dispatch(changeCategoryIdThunk(categoryId))}
+                                    this.props.dispatch(changeCategoryIdThunk(categoryId, this.props.categoryType))}
                             />
                         );
                     })

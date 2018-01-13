@@ -10,7 +10,7 @@ import { Route } from 'react-router';
 import logger from 'redux-logger';
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 
-import { contestants } from './reducers/ContestantReducers';
+import { match, contestants } from './reducers/ContestantReducers';
 import {
   latLon,
   categoryType,
@@ -36,6 +36,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore(
   combineReducers({
+    match,
     contestants,
 
     latLon,

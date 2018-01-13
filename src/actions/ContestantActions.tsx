@@ -10,14 +10,20 @@ import {
     CHANGE_CATEGORY_ID,
     SKIP_CONTESTANT,
     CHANGE_CHALLENGER_ID,
+    RECEIVE_MATCH,
 } from '../constants'
-import { ActionType, StoreState, ContestantEntry, LatLon, Contestant, ChallengerResponse, ContestantsResponse } from '../types/index'
+import { ActionType, StoreState, ContestantEntry, LatLon, Contestant, ChallengerResponse, ContestantsResponse, GetMatchResponse } from '../types/index'
 import { Dispatch } from 'redux'
 import * as _ from 'lodash'
 import { findNextContestantIndex } from '../utils/ContestantUtils'
 import { KINGS_API_BASE_URL, DEFAULT_HEADERS } from '../constants/ApiConstants';
 
 /*** TYPES: ACTION **/
+export interface ReceiveMatchResponseAction extends ActionType<RECEIVE_MATCH> {
+    type: RECEIVE_MATCH;
+    response: GetMatchResponse;
+}
+
 export interface ReceiveContestantsResponseAction extends ActionType<RECEIVE_CONTESTANTS> {
     type: RECEIVE_CONTESTANTS;
     contestants: ContestantEntry[];
@@ -57,8 +63,12 @@ export interface ChangeChallengerIdThunkAction extends ActionType<CHANGE_CHALLEN
 }
 
 /*** TYPES: CALL **/
+export type GetMatchThunkType =
+    (categoryId: number, categoryType: CATEGORY_TYPE) =>
+        (dispatch: Dispatch<StoreState>) => Promise<ReceiveMatchResponseAction>
+
 export type ChangeCategoryIdThunkType =
-    (categoryId: number) =>
+    (categoryId: number, categoryType: CATEGORY_TYPE) =>
         (dispatch: Dispatch<StoreState>) => void
 
 export type ChangeChallengerIdThunkType =
@@ -85,6 +95,20 @@ export type ToggleSkipContestantIdType =
     (skipContestantId: number) => ToggleSkipContestantIdAction
 
 /*** API CALL ACTIONS ***/
+export const getMatchThunk: GetMatchThunkType =
+    (categoryId, categoryType) =>
+        (dispatch) => {
+            return fetch(
+                KINGS_API_BASE_URL + `/bout/category/${categoryType}/${categoryId}`,
+                {
+                    method: 'GET',
+                    credentials: "same-origin",
+                    headers: DEFAULT_HEADERS,
+                })
+                .then(response => response.json())
+                .then((response: GetMatchResponse) => dispatch(receiveMatch(response)))
+        }
+
 export const requestChallengersThunk: RequestChallengersCallType =
     (challengerContestantId, page) =>
         (dispatch, getState) => {
@@ -108,7 +132,7 @@ export const requestContestantsThunk: RequestContestantsCallType =
             let latLon: LatLon = getState().latLon;
             dispatch(requestContestants(latLon, categoryId))
             return fetch(
-                KINGS_API_BASE_URL + `/contestants/category?lat=${latLon.lat}&lon=${latLon.lon}&category-id=${categoryId}&page=${page}`,
+                KINGS_API_BASE_URL + `/contestants/category/${getState().categoryType}?lat=${latLon.lat}&lon=${latLon.lon}&category-id=${categoryId}&page=${page}`,
                 {
                     method: 'GET',
                     credentials: "same-origin",
@@ -120,9 +144,10 @@ export const requestContestantsThunk: RequestContestantsCallType =
         }
 
 export const changeCategoryIdThunk: ChangeCategoryIdThunkType =
-    (nextCategoryId) =>
+    (nextCategoryId, categoryType) =>
         (dispatch) => {
             dispatch(requestContestantsThunk(nextCategoryId, 1))
+            dispatch(getMatchThunk(nextCategoryId, categoryType))
             dispatch({ type: CHANGE_CATEGORY_ID, nextCategoryId: nextCategoryId })
         }
 
@@ -132,7 +157,6 @@ export const changeChallengerThunk: ChangeChallengerIdThunkType =
             dispatch(requestChallengersThunk(challengerContestantId, 1))
             dispatch({ type: CHANGE_CHALLENGER_ID })
         }
-
 
 export const submitBoutThunk: SubmitBoutCallType =
     (challenger, winnerContestantId, loserContestantId) =>
@@ -159,7 +183,7 @@ export const submitBoutThunk: SubmitBoutCallType =
 export const searchContestantsCall: (latLon: LatLon, categoryType: CATEGORY_TYPE, contestantName: string) => Promise<Contestant[]> =
     (latLon, categoryType, contestantName) =>
         fetch(
-            KINGS_API_BASE_URL + `/contestants/search?lat=${latLon.lat}&lon=${latLon.lon}&category-type=${categoryType}&contestant-name=${contestantName}`,
+            KINGS_API_BASE_URL + `/contestants/search/${categoryType}?lat=${latLon.lat}&lon=${latLon.lon}&contestant-name=${contestantName}`,
             {
                 method: 'GET',
                 credentials: "same-origin",
@@ -204,12 +228,18 @@ export const toggleSkipContestantId: ToggleSkipContestantIdType =
         skipContestantId: skipContestantId
     })
 
+const receiveMatch: (response: GetMatchResponse) => ReceiveMatchResponseAction =
+    (response: GetMatchResponse) => ({
+        type: RECEIVE_MATCH,
+        response: response,
+    });
+
 const submitBout: (boutMode: BOUT_MODE_TYPE, winnerContestantId: number) => SubmitBoutResponseAction =
     (boutMode, winnerContestantId) => ({
         type: SUBMIT_BOUT,
         boutMode: boutMode,
         winnerContestantId: winnerContestantId,
-    })
+    });
 
 const receiveChallengers: (challenger: ContestantEntry, fetchContestantsResponse: ContestantEntry[], page: number) => ReceiveChallengersResponseAction =
     (challenger: ContestantEntry, fetchContestantsResponse: ContestantEntry[], page: number) => ({
@@ -217,24 +247,24 @@ const receiveChallengers: (challenger: ContestantEntry, fetchContestantsResponse
         challenger: challenger,
         contestants: fetchContestantsResponse,
         page: page,
-    })
+    });
 
 const receiveContestants: (categoryId: number, fetchContestantsResponse: ContestantEntry[], page: number) => ReceiveContestantsResponseAction =
     (categoryId: number, fetchContestantsResponse: ContestantEntry[], page: number) => ({
         type: RECEIVE_CONTESTANTS,
         contestants: fetchContestantsResponse,
         page: page,
-    })
+    });
 
 // these two are probably useless, unless you add a loading screen
 const requestChallengers = (latLon: LatLon, challengerContestantId: number) => ({
     type: REQUEST_CHALLENGERS,
     latLon: latLon,
     challengerContestantId: challengerContestantId,
-})
+});
 
 const requestContestants = (latLon: LatLon, categoryId: number) => ({
     type: REQUEST_CONTESTANTS,
     latLon: latLon,
     categoryId: categoryId,
-})
+});

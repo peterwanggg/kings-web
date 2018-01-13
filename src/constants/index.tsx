@@ -1,6 +1,9 @@
 import { ContestantEntry, Contestant, ContestantStats } from '../types/index';
 
 // Actions: Contestant
+export const RECEIVE_MATCH = 'RECEIVE_MATCH';
+export type RECEIVE_MATCH = typeof RECEIVE_MATCH;
+
 export const REQUEST_CONTESTANTS = 'REQUEST_CONTESTANTS';
 export type REQUEST_CONTESTANTS = typeof REQUEST_CONTESTANTS;
 export const RECEIVE_CONTESTANTS = 'RECEIVE_CONTESTANTS';
@@ -86,5 +89,4 @@ export const DEFAULT_CONTESTANT_STATS: ContestantStats = {
 export const DEFAULT_CONTESTANT_ENTRY: ContestantEntry = {
     contestant: DEFAULT_CONTESTANT,
     contestantStats: DEFAULT_CONTESTANT_STATS,
-    bouts: []
 };

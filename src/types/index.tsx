@@ -12,6 +12,8 @@ import {
 export interface StoreState {
     latLon: LatLon;
 
+    match: MatchState;
+
     categories: Category[];
     categoryId: number;
     categoryType: CATEGORY_TYPE;
@@ -33,6 +35,11 @@ export interface ContestantState {
     skipContestantIds: number[];
 }
 
+export interface MatchState {
+    left: ContestantEntry;
+    right: ContestantEntry;
+}
+
 export interface ActionType<T extends string> {
     type: T;
 }
@@ -41,6 +48,10 @@ export interface ChallengerResponse {
     challenger: ContestantEntry;
     contestants: ContestantEntry[];
 }
+
+export type GetMatchResponse = {
+    match: ContestantEntryPair | null;
+};
 
 export interface ContestantsResponse {
     contestants: ContestantEntry[];
@@ -51,10 +62,14 @@ export interface Bout {
     loserContestantId: number;
 }
 
+export type ContestantEntryPair = {
+    left: ContestantEntry;
+    right: ContestantEntry;
+}
+
 export interface ContestantEntry {
     contestant: Contestant;
     contestantStats: ContestantStats;
-    bouts: Bout[];
 }
 
 export interface Contestant {
@@ -92,6 +107,11 @@ export type CategorySummary = {
 
 export const INITIAL_STATE: StoreState = {
     latLon: { lat: 47.6522155000, lon: -122.3543657000 },
+
+    match: {
+        left: DEFAULT_CONTESTANT_ENTRY,
+        right: DEFAULT_CONTESTANT_ENTRY
+    },
 
     categoriesTop: [],
     categoryId: DEFAULT_CATEGORY_ID,

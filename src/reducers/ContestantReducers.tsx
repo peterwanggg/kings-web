@@ -4,28 +4,44 @@ import {
     CHANGE_BOUT_MODE,
     ROULETTE,
     RECEIVE_CHALLENGERS,
-    // CHANGE_CATEGORY_ID,
     TOGGLE_SKIP_CONTESTANT_ID,
     DEFAULT_CONTESTANT_ENTRY,
     SKIP_CONTESTANT,
-    CHALLENGER
+    CHALLENGER,
+    RECEIVE_MATCH
 } from '../constants';
 import {
     ContestantState,
     INITIAL_STATE,
-    ContestantEntry
+    ContestantEntry,
+    MatchState,
 } from '../types/index';
 import {
     ReceiveContestantsResponseAction,
     SubmitBoutResponseAction,
     ReceiveChallengersResponseAction,
     ToggleSkipContestantIdAction,
-    // ChangeCategoryIdThunkAction,
-    SkipContestantAction
+    SkipContestantAction,
+    ReceiveMatchResponseAction
 } from '../actions/ContestantActions';
 import { ChangeBoutModeAction } from '../actions/GlobalActions';
 import * as _ from 'lodash';
 import { findNextContestantIndex } from '../utils/ContestantUtils';
+
+export const match = (state: MatchState = INITIAL_STATE.match, action: ReceiveMatchResponseAction): MatchState => {
+    switch (action.type) {
+        case RECEIVE_MATCH:
+            if (_.isNil(action.response.match)) {
+                return INITIAL_STATE.match;
+            }
+            return {
+                left: action.response.match.left,
+                right: action.response.match.right,
+            }
+        default:
+            return state;
+    }
+}
 
 // do not split this up into separate reducers, `contestants` is much easier to reason about
 // in terms individual actions than the same action split up into multiple `contestant.XXX` reducers
@@ -34,7 +50,6 @@ export const contestants =
         ReceiveContestantsResponseAction |
         SubmitBoutResponseAction |
         ReceiveChallengersResponseAction |
-        // ChangeCategoryIdThunkAction |
         ToggleSkipContestantIdAction |
         ChangeBoutModeAction |
         SkipContestantAction
@@ -57,12 +72,6 @@ export const contestants =
                         _.pull(state.skipContestantIds, action.skipContestantId) :
                         _.concat(state.skipContestantIds, action.skipContestantId)
                 };
-            // case CHANGE_CATEGORY_ID:
-            //     return {
-            //         ...state,
-
-            //         challenger: INITIAL_STATE.contestants.challenger,
-            //     }
             case RECEIVE_CHALLENGERS:
                 return {
                     ...state,
