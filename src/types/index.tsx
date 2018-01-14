@@ -53,6 +53,10 @@ export type GetMatchResponse = {
     match: ContestantEntryPair | null;
 };
 
+export type SubmitBoutResponse = {
+    nextContestant: ContestantEntry | null;
+}
+
 export interface ContestantsResponse {
     contestants: ContestantEntry[];
 }

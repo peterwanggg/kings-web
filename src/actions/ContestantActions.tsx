@@ -11,8 +11,10 @@ import {
     SKIP_CONTESTANT,
     CHANGE_CHALLENGER_ID,
     RECEIVE_MATCH,
+    RECEIVE_NEXT_CONTESTANT,
+    RECEIVE_NEXT_CONTESTANT_TYPE,
 } from '../constants'
-import { ActionType, StoreState, ContestantEntry, LatLon, Contestant, ChallengerResponse, ContestantsResponse, GetMatchResponse } from '../types/index'
+import { ActionType, StoreState, ContestantEntry, LatLon, Contestant, ChallengerResponse, ContestantsResponse, GetMatchResponse, SubmitBoutResponse, ContestantEntryPair } from '../types/index'
 import { Dispatch } from 'redux'
 import * as _ from 'lodash'
 import { findNextContestantIndex } from '../utils/ContestantUtils'
@@ -21,7 +23,13 @@ import { KINGS_API_BASE_URL, DEFAULT_HEADERS } from '../constants/ApiConstants';
 /*** TYPES: ACTION **/
 export interface ReceiveMatchResponseAction extends ActionType<RECEIVE_MATCH> {
     type: RECEIVE_MATCH;
-    response: GetMatchResponse;
+    match: ContestantEntryPair | null;
+}
+
+export interface ReceiveNextContestantAction extends ActionType<RECEIVE_NEXT_CONTESTANT_TYPE> {
+    type: RECEIVE_NEXT_CONTESTANT_TYPE;
+    stayOnContestantId: number;
+    nextContestant: ContestantEntry | null;
 }
 
 export interface ReceiveContestantsResponseAction extends ActionType<RECEIVE_CONTESTANTS> {
@@ -84,8 +92,8 @@ export type RequestChallengersCallType =
         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<ReceiveChallengersResponseAction>
 
 export type SubmitBoutCallType =
-    (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) =>
-        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<void>
+    (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number, nextContestantId: number) =>
+        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<SubmitBoutResponse>
 
 export type SkipContestantThunkCallType =
     (skipContestantId: number, otherContestantId: number) =>
@@ -106,7 +114,7 @@ export const getMatchThunk: GetMatchThunkType =
                     headers: DEFAULT_HEADERS,
                 })
                 .then(response => response.json())
-                .then((response: GetMatchResponse) => dispatch(receiveMatch(response)))
+                .then((response: GetMatchResponse) => dispatch(receiveMatch(response.match)))
         }
 
 export const requestChallengersThunk: RequestChallengersCallType =
@@ -159,7 +167,7 @@ export const changeChallengerThunk: ChangeChallengerIdThunkType =
         }
 
 export const submitBoutThunk: SubmitBoutCallType =
-    (challenger, winnerContestantId, loserContestantId) =>
+    (challenger, winnerContestantId, loserContestantId, nextContestantId) =>
         (dispatch, getState) => {
             let state: StoreState = getState();
             requestChallengersIfNeeded(
@@ -171,13 +179,15 @@ export const submitBoutThunk: SubmitBoutCallType =
                 state.contestants.currContestantIndex);
             dispatch(submitBout(state.boutMode, winnerContestantId))
             return fetch(
-                KINGS_API_BASE_URL + `/bout?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&category-id=${challenger.contestant.categoryId}`,
+                KINGS_API_BASE_URL + `/bout/category/${state.categoryType}/${challenger.contestant.categoryId}?winner-contestant-id=${winnerContestantId}&loser-contestant-id=${loserContestantId}&next-contestant-id=${nextContestantId}`,
                 {
                     method: 'POST',
                     credentials: "same-origin",
                     headers: DEFAULT_HEADERS,
                 })
-                .then(response => { })
+                .then(response => response.json())
+                .then((response: SubmitBoutResponse) =>
+                    dispatch(receiveNextContestant(response.nextContestant, nextContestantId)));
         }
 
 export const searchContestantsCall: (latLon: LatLon, categoryType: CATEGORY_TYPE, contestantName: string) => Promise<Contestant[]> =
@@ -228,11 +238,18 @@ export const toggleSkipContestantId: ToggleSkipContestantIdType =
         skipContestantId: skipContestantId
     })
 
-const receiveMatch: (response: GetMatchResponse) => ReceiveMatchResponseAction =
-    (response: GetMatchResponse) => ({
+const receiveMatch: (match: ContestantEntryPair | null) => ReceiveMatchResponseAction =
+    (match) => ({
         type: RECEIVE_MATCH,
-        response: response,
+        match: match,
     });
+
+const receiveNextContestant: (nextContestant: ContestantEntry | null, stayOnContestantId: number) => ReceiveNextContestantAction =
+    (nextContestant, stayOnContestantId) => ({
+        type: RECEIVE_NEXT_CONTESTANT,
+        stayOnContestantId: stayOnContestantId,
+        nextContestant: nextContestant,
+    })
 
 const submitBout: (boutMode: BOUT_MODE_TYPE, winnerContestantId: number) => SubmitBoutResponseAction =
     (boutMode, winnerContestantId) => ({

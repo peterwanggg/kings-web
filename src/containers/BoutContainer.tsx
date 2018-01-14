@@ -2,11 +2,12 @@ import { StoreState, ContestantEntry } from '../types/index';
 import { connect, Dispatch } from 'react-redux';
 import Bout, { BoutProps } from '../components/Bout';
 import { submitBoutThunk, skipContestantThunk } from '../actions/ContestantActions';
+import { CHALLENGER } from '../constants/index';
 
 export function mapStateToProps(state: StoreState, ownProps: BoutProps) {
     return {
-        otherContestant: state.contestants.entries[state.contestants.currContestantIndex],
-        challenger: state.contestants.challenger,
+        left: state.match.left,
+        right: state.match.right,
     };
 }
 
@@ -19,7 +20,9 @@ export function mapDispatchToProps(
             dispatch(submitBoutThunk(
                 challenger,
                 winnerContestantId,
-                loserContestantId
+                loserContestantId,
+                ownProps.boutMode === CHALLENGER ?
+                    challenger.contestant.contestantId : winnerContestantId
             )),
         dispatchSkipContestant: (skipContestantId: number, otherContestantId: number) =>
             dispatch(skipContestantThunk(

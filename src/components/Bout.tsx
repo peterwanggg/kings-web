@@ -4,24 +4,24 @@ import Contestant from './Contestant';
 import 'react-select/dist/react-select.css';
 import 'bulma/css/bulma.css'
 import { isNilContestant } from '../utils/ContestantUtils';
-import { SkipContestantAction } from '../actions/ContestantActions';
+import { SkipContestantAction, ReceiveNextContestantAction } from '../actions/ContestantActions';
 import { BOUT_MODE_TYPE, CHALLENGER } from '../constants/index';
 
 export interface BoutProps {
     // contestants
-    challenger: ContestantEntry;
-    otherContestant: ContestantEntry;
+    left: ContestantEntry;
+    right: ContestantEntry;
     boutMode: BOUT_MODE_TYPE;
 
     // dispatch functions
-    dispatchSubmitBout: (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise<void>;
+    dispatchSubmitBout: (left: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise<ReceiveNextContestantAction>;
     dispatchSkipContestant: (skipContestantId: number, otherContestantId: number) => SkipContestantAction;
 }
 
-const Bout = ({ challenger, otherContestant, boutMode, dispatchSubmitBout, dispatchSkipContestant }: BoutProps) => {
-    if (isNilContestant(otherContestant)
-        || isNilContestant(challenger)
-        || challenger.contestant.contestantId === otherContestant.contestant.contestantId) {
+const Bout = ({ left, right, boutMode, dispatchSubmitBout, dispatchSkipContestant }: BoutProps) => {
+    if (isNilContestant(right)
+        || isNilContestant(left)
+        || left.contestant.contestantId === right.contestant.contestantId) {
         return (
             <div className="tile is-parent">No more contestants!</div>
         )
@@ -31,37 +31,31 @@ const Bout = ({ challenger, otherContestant, boutMode, dispatchSubmitBout, dispa
         <div className="tile is-parent">
             {boutMode === CHALLENGER ? <div /> :
                 <a className="button" onClick={() => dispatchSkipContestant(
-                    challenger.contestant.contestantId,
-                    otherContestant.contestant.contestantId)}
-                >
-                    Skip
-                        </a>
+                    left.contestant.contestantId,
+                    right.contestant.contestantId)}
+                >Skip</a>
             }
             <div className="tile is-child hoverable" onClick={() => dispatchSubmitBout(
-                challenger,
-                challenger.contestant.contestantId,
-                otherContestant.contestant.contestantId)}
+                left,
+                left.contestant.contestantId,
+                right.contestant.contestantId)}
             >
-                <h2>Challenger: {challenger.contestant.contestantName}</h2>
-                <Contestant contestant={challenger} />
+                <h2>Challenger: {left.contestant.contestantName}</h2>
+                <Contestant contestant={left} />
             </div>
 
 
-            <a
-                className="button"
-                onClick={() => dispatchSkipContestant(
-                    otherContestant.contestant.contestantId,
-                    challenger.contestant.contestantId)}
-            >
-                Skip
-                </a>
+            <a className="button" onClick={() => dispatchSkipContestant(
+                    right.contestant.contestantId,
+                    left.contestant.contestantId)}
+            >Skip</a>
             <div className="tile is-child hoverable" onClick={() => dispatchSubmitBout(
-                challenger,
-                otherContestant.contestant.contestantId,
-                challenger.contestant.contestantId)}
+                left,
+                right.contestant.contestantId,
+                left.contestant.contestantId)}
             >
-                <h2>Contestant: {otherContestant.contestant.contestantName}</h2>
-                <Contestant contestant={otherContestant} />
+                <h2>Contestant: {right.contestant.contestantName}</h2>
+                <Contestant contestant={right} />
             </div>
         </div>
 

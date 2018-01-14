@@ -7,7 +7,9 @@ import {
     BOUT_MODE_TYPE,
     CHALLENGER,
     CATEGORIES_ROUTE,
-    SKIP_CONTESTANT
+    SKIP_CONTESTANT,
+    RECEIVE_NEXT_CONTESTANT,
+
 } from '../constants/index';
 import {
     StoreState,
@@ -27,6 +29,7 @@ import {
     searchContestantsCall,
     changeChallengerThunk,
     changeCategoryIdThunk,
+    ReceiveNextContestantAction,
 } from '../actions/ContestantActions';
 import ContestantList from '../components/ContestantList'
 import * as _ from 'lodash';
@@ -149,11 +152,17 @@ class BoutRoute extends React.Component<BoutRouteProps> {
 
                 <div className="tile is-ancestor is-fullwidth">
                     <BoutContainer
-                        challenger={DEFAULT_CONTESTANT_ENTRY}
-                        otherContestant={DEFAULT_CONTESTANT_ENTRY}
+                        left={DEFAULT_CONTESTANT_ENTRY}
+                        right={DEFAULT_CONTESTANT_ENTRY}
                         boutMode={this.props.boutMode}
-                        dispatchSubmitBout={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) => Promise.resolve()}
-                        dispatchSkipContestant={(skipContestantId: number, otherContestantId: number) => ({ type: SKIP_CONTESTANT, skipContestantId: DEFAULT_CONTESTANT_ID })}
+                        dispatchSubmitBout={(challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number) =>
+                            Promise.resolve({
+                                type: RECEIVE_NEXT_CONTESTANT,
+                                stayOnContestantId: DEFAULT_CONTESTANT_ID,
+                                nextContestant: null
+                            } as ReceiveNextContestantAction)}
+                        dispatchSkipContestant={(skipContestantId: number, otherContestantId: number) =>
+                            ({ type: SKIP_CONTESTANT, skipContestantId: DEFAULT_CONTESTANT_ID })}
                     />
                     <div className="tile is-parent is-vertical is-3">
                         <ContestantList

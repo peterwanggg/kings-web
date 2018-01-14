@@ -4,6 +4,9 @@ import { ContestantEntry, Contestant, ContestantStats } from '../types/index';
 export const RECEIVE_MATCH = 'RECEIVE_MATCH';
 export type RECEIVE_MATCH = typeof RECEIVE_MATCH;
 
+export const RECEIVE_NEXT_CONTESTANT = 'RECEIVE_NEXT_CONTESTANT';
+export type RECEIVE_NEXT_CONTESTANT_TYPE = typeof RECEIVE_NEXT_CONTESTANT;
+
 export const REQUEST_CONTESTANTS = 'REQUEST_CONTESTANTS';
 export type REQUEST_CONTESTANTS = typeof REQUEST_CONTESTANTS;
 export const RECEIVE_CONTESTANTS = 'RECEIVE_CONTESTANTS';

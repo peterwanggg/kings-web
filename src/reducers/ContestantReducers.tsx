@@ -8,7 +8,8 @@ import {
     DEFAULT_CONTESTANT_ENTRY,
     SKIP_CONTESTANT,
     CHALLENGER,
-    RECEIVE_MATCH
+    RECEIVE_MATCH,
+    RECEIVE_NEXT_CONTESTANT
 } from '../constants';
 import {
     ContestantState,
@@ -22,26 +23,40 @@ import {
     ReceiveChallengersResponseAction,
     ToggleSkipContestantIdAction,
     SkipContestantAction,
-    ReceiveMatchResponseAction
+    ReceiveMatchResponseAction,
+    ReceiveNextContestantAction
 } from '../actions/ContestantActions';
 import { ChangeBoutModeAction } from '../actions/GlobalActions';
 import * as _ from 'lodash';
 import { findNextContestantIndex } from '../utils/ContestantUtils';
 
-export const match = (state: MatchState = INITIAL_STATE.match, action: ReceiveMatchResponseAction): MatchState => {
-    switch (action.type) {
-        case RECEIVE_MATCH:
-            if (_.isNil(action.response.match)) {
-                return INITIAL_STATE.match;
-            }
-            return {
-                left: action.response.match.left,
-                right: action.response.match.right,
-            }
-        default:
-            return state;
+export const match =
+    (state: MatchState = INITIAL_STATE.match,
+        action: ReceiveMatchResponseAction | ReceiveNextContestantAction
+    ): MatchState => {
+        switch (action.type) {
+            case RECEIVE_MATCH:
+                if (_.isNil(action.match)) {
+                    return INITIAL_STATE.match;
+                }
+                return {
+                    left: action.match.left,
+                    right: action.match.right,
+                }
+            case RECEIVE_NEXT_CONTESTANT:
+                if (_.isNil(action.nextContestant)) {
+                    return INITIAL_STATE.match;
+                }
+                return {
+                    left: state.left.contestant.contestantId === action.stayOnContestantId ?
+                        state.left : action.nextContestant,
+                    right: state.right.contestant.contestantId === action.stayOnContestantId ?
+                        state.right : action.nextContestant
+                }
+            default:
+                return state;
+        }
     }
-}
 
 // do not split this up into separate reducers, `contestants` is much easier to reason about
 // in terms individual actions than the same action split up into multiple `contestant.XXX` reducers
