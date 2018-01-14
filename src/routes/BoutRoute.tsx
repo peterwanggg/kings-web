@@ -36,7 +36,7 @@ import * as _ from 'lodash';
 import Select, { Options, Option, Async } from 'react-select'
 import BoutModeSelector from '../components/BoutModeSelector';
 import ContestantModal from '../components/ContestantModal';
-import { isPassed } from '../utils/ContestantUtils';
+// import { isPassed } from '../utils/ContestantUtils';
 import { Link } from 'react-router-dom';
 
 export interface BoutRouteProps {
@@ -49,10 +49,13 @@ export interface BoutRouteProps {
 
     contestantModal: ContestantEntry;
 
-    challenger: ContestantEntry;
+    // challenger: ContestantEntry;
     contestantsEntries: ContestantEntry[];
     skipContestantIds: number[];
-    currContestantIndex: number;
+
+    left: ContestantEntry;
+    right: ContestantEntry;
+    // currContestantIndex: number;
 
     dispatch: Dispatch<StoreState>;
 }
@@ -81,8 +84,7 @@ class BoutRoute extends React.Component<BoutRouteProps> {
     public componentDidUpdate(prevProps: BoutRouteProps) {
         if (prevProps.categoryId !== this.props.categoryId
             && this.props.categoryId !== DEFAULT_CATEGORY_ID
-            && (_.isNil(this.props.challenger) || this.props.challenger.contestant.contestantId === DEFAULT_CONTESTANT_ID)
-
+            // && (_.isNil(this.props.challenger) || this.props.challenger.contestant.contestantId === DEFAULT_CONTESTANT_ID)
         ) {
             this.props.dispatch(requestContestantsThunk(this.props.categoryId, 1))
         }
@@ -94,13 +96,13 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                 <ContestantModal
                     contestant={this.props.contestantModal}
                     setContestantModal={(contestant: ContestantEntry | null) => this.props.dispatch(setContestantModal(contestant))}
-                    showStats={
-                        !_.isNil(this.props.contestantModal) &&
-                        isPassed(
-                            this.props.contestantModal.contestant.contestantId,
-                            this.props.contestantsEntries,
-                            this.props.challenger.contestant.contestantId,
-                            this.props.currContestantIndex)
+                    showStats={true
+                        // !_.isNil(this.props.contestantModal) &&
+                        // isPassed(
+                        //     this.props.contestantModal.contestant.contestantId,
+                        //     this.props.contestantsEntries,
+                        //     this.props.challenger.contestant.contestantId,
+                        //     this.props.currContestantIndex)
                     }
                 />
                 <Link to={CATEGORIES_ROUTE}>
@@ -120,11 +122,11 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                                 <Async
                                     name="challenger"
                                     value={this.props.boutMode === CHALLENGER ?
-                                        this.props.challenger.contestant : false}
+                                        this.props.left.contestant : false} // TODO: use locked
                                     placeholder="Select a Challenger..."
                                     clearable={false}
                                     onChange={(value: Contestant) => {
-                                        this.props.dispatch(changeChallengerThunk(value.contestantId))
+                                        this.props.dispatch(changeChallengerThunk(value.contestantId, value.categoryId))
                                     }}
                                     valueKey="contestantId" labelKey="contestantName"
                                     loadOptions={(input: string) => searchContestants(
@@ -149,7 +151,6 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                     </div>
                 </section>
 
-
                 <div className="tile is-ancestor is-fullwidth">
                     <BoutContainer
                         left={DEFAULT_CONTESTANT_ENTRY}
@@ -168,8 +169,8 @@ class BoutRoute extends React.Component<BoutRouteProps> {
                         <ContestantList
                             contestants={this.props.contestantsEntries}
                             skipContestantIds={this.props.skipContestantIds}
-                            currContestantIndex={this.props.currContestantIndex}
-                            challengerContestantId={this.props.challenger.contestant.contestantId}
+                            leftContestantId={this.props.left.contestant.contestantId}
+                            rightContestantId={this.props.right.contestant.contestantId}
                         />
                     </div>
                 </div>
@@ -190,10 +191,13 @@ export function mapStateToProps(state: StoreState) {
 
         contestantModal: state.contestantModal,
 
-        challenger: state.contestants.challenger,
-        contestantsEntries: state.contestants.entries,
-        skipContestantIds: state.contestants.skipContestantIds,
-        currContestantIndex: state.contestants.currContestantIndex,
+        // challenger: state.match.left,
+        contestantsEntries: state.contestantEntries,
+        skipContestantIds: state.skipContestantIds,
+        // currContestantIndex: state.contestants.currContestantIndex,
+
+        left: state.match.left,
+        right: state.match.right,
     }
 }
 

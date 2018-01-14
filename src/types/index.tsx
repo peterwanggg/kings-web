@@ -6,13 +6,20 @@ import {
     BOUT_MODE_TYPE,
     ROULETTE,
     RANK_TYPE,
-    WIN_PERCENT
+    WIN_PERCENT,
+    LOCATION_TYPE,
+    DEFAULT_LAT_LON,
+    DEFAULT_LOCATION
 } from '../constants/index';
 
 export interface StoreState {
     latLon: LatLon;
+    location: KingsLocation;
 
     match: MatchState;
+    // contestantEntries: ContestantEntry[];
+    contestantEntries: ContestantEntryMap;
+    skipContestantIds: number[];
 
     categories: Category[];
     categoryId: number;
@@ -24,8 +31,10 @@ export interface StoreState {
 
     contestantModal: ContestantEntry | null;
 
-    contestants: ContestantState;
+    // contestants: ContestantState;
 }
+
+export type ContestantEntryMap = {[contestantId: number]: ContestantEntry}
 
 export interface ContestantState {
     currContestantIndex: number;
@@ -44,16 +53,16 @@ export interface ActionType<T extends string> {
     type: T;
 }
 
-export interface ChallengerResponse {
-    challenger: ContestantEntry;
-    contestants: ContestantEntry[];
-}
+// export interface ChallengerResponse {
+//     challenger: ContestantEntry;
+//     contestants: ContestantEntry[];
+// }
 
 export type GetMatchResponse = {
     match: ContestantEntryPair | null;
 };
 
-export type SubmitBoutResponse = {
+export type NextContestantResponse = {
     nextContestant: ContestantEntry | null;
 }
 
@@ -109,13 +118,23 @@ export type CategorySummary = {
     contestantEntries: ContestantEntry[];
 };
 
+export type KingsLocation = {
+    locationId: number;
+    locationName: string;
+    locationType: LOCATION_TYPE;
+    parentLocationId: number;
+}
+
 export const INITIAL_STATE: StoreState = {
-    latLon: { lat: 47.6522155000, lon: -122.3543657000 },
+    latLon: DEFAULT_LAT_LON,
+    location: DEFAULT_LOCATION,
 
     match: {
         left: DEFAULT_CONTESTANT_ENTRY,
         right: DEFAULT_CONTESTANT_ENTRY
     },
+    contestantEntries: {},
+    skipContestantIds: [],
 
     categoriesTop: [],
     categoryId: DEFAULT_CATEGORY_ID,
@@ -127,11 +146,11 @@ export const INITIAL_STATE: StoreState = {
 
     contestantModal: null,
 
-    contestants: {
-        entries: [],
-        entryPage: 0,
-        currContestantIndex: 0,
-        challenger: DEFAULT_CONTESTANT_ENTRY,
-        skipContestantIds: []
-    },
+    // contestants: {
+    //     entries: [],
+    //     entryPage: 0,
+    //     currContestantIndex: 0,
+    //     challenger: DEFAULT_CONTESTANT_ENTRY,
+    //     skipContestantIds: []
+    // },
 };

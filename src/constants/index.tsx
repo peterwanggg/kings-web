@@ -1,4 +1,4 @@
-import { ContestantEntry, Contestant, ContestantStats } from '../types/index';
+import { ContestantEntry, Contestant, ContestantStats, KingsLocation } from '../types/index';
 
 // Actions: Contestant
 export const RECEIVE_MATCH = 'RECEIVE_MATCH';
@@ -7,8 +7,8 @@ export type RECEIVE_MATCH = typeof RECEIVE_MATCH;
 export const RECEIVE_NEXT_CONTESTANT = 'RECEIVE_NEXT_CONTESTANT';
 export type RECEIVE_NEXT_CONTESTANT_TYPE = typeof RECEIVE_NEXT_CONTESTANT;
 
-export const REQUEST_CONTESTANTS = 'REQUEST_CONTESTANTS';
-export type REQUEST_CONTESTANTS = typeof REQUEST_CONTESTANTS;
+// export const REQUEST_CONTESTANTS = 'REQUEST_CONTESTANTS';
+// export type REQUEST_CONTESTANTS = typeof REQUEST_CONTESTANTS;
 export const RECEIVE_CONTESTANTS = 'RECEIVE_CONTESTANTS';
 export type RECEIVE_CONTESTANTS = typeof RECEIVE_CONTESTANTS;
 
@@ -45,8 +45,15 @@ export type CHANGE_BOUT_MODE = typeof CHANGE_BOUT_MODE;
 export const SET_CONTESTANT_MODAL = 'SET_CONTESTANT_MODAL';
 export type SET_CONTESTANT_MODAL = typeof SET_CONTESTANT_MODAL;
 
-// export const CHANGE_ROUTE = 'CHANGE_ROUT';
-// export type CHANGE_ROUTE_ACTION = typeof CHANGE_ROUTE;
+// LocationTypes
+export const ZONE = 'zone';
+export type ZONE_TYPE = typeof ZONE;
+export const CITY = 'city';
+export type CITY_TYPE = typeof CITY;
+export const SUBZONE = 'subzone';
+export type SUBZONE_TYPE = typeof SUBZONE;
+export type LOCATION_TYPE = ZONE_TYPE | CITY_TYPE | SUBZONE_TYPE;
+
 
 // RankTypes
 export const WIN_PERCENT = 'winPercent';
@@ -73,6 +80,13 @@ export type CATEGORIES_ROUTE_TYPE = typeof CATEGORIES_ROUTE;
 export type ROUTE_TYPE = BOUT_ROUTE_TYPE | CATEGORIES_ROUTE_TYPE;
 
 // DEFAULT VALUES
+export const DEFAULT_LAT_LON = { lat: 47.6522155000, lon: -122.3543657000 };
+export const DEFAULT_LOCATION: KingsLocation = {
+    locationId: 2,
+    locationName: "Fremont",
+    locationType: SUBZONE,
+    parentLocationId: 1,
+}
 export const DEFAULT_CATEGORY_NAME = 'Drinks Only';
 export const DEFAULT_CATEGORY_ID = -1;
 export const DEFAULT_CONTESTANT_ID = -1;

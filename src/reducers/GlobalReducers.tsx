@@ -4,6 +4,7 @@ import {
     Category,
     ContestantEntry,
     CategorySummary,
+    KingsLocation,
 } from '../types/index';
 import {
     CATEGORY_TYPE, RECEIVE_CATEGORIES,
@@ -31,6 +32,7 @@ import {
 } from '../actions/GlobalActions';
 import * as _ from 'lodash';
 
+
 // TODO: fix action type
 export const latLon =
     (state: LatLon = INITIAL_STATE.latLon, action: any) => {
@@ -39,6 +41,15 @@ export const latLon =
                 return state;
         }
     }
+
+export const location =
+    (state: KingsLocation = INITIAL_STATE.location, action: any): KingsLocation => {
+        switch (action.type) {
+            default:
+                return state;
+        }
+    }
+
 export const categoriesTop =
     (state: CategorySummary[] = INITIAL_STATE.categoriesTop, action: ReceiveTopCategoriesResponseAction) => {
         switch (action.type) {

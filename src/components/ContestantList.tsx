@@ -1,38 +1,44 @@
 import * as React from 'react';
 import { AutoSizer, List, ListRowRenderer } from 'react-virtualized';
-import { ContestantEntry } from '../types/index';
+import { ContestantEntry, ContestantEntryMap } from '../types/index';
 import 'react-virtualized/styles.css'; // only needs to be imported once
 import { toggleSkipContestantId } from '../actions/ContestantActions';
 import { setContestantModal } from '../actions/GlobalActions';
 import ContestantPreviewContainer from '../containers/ContestantPreviewContainer';
-import { findNextContestantIndex, isPassed } from '../utils/ContestantUtils';
 import '../index.css';
+import * as _ from 'lodash';
 
 export interface ContestantListProps {
-    contestants: ContestantEntry[];
+    contestants: ContestantEntryMap;
     skipContestantIds: number[];
-    currContestantIndex: number;
-    challengerContestantId: number;
+    // currContestantIndex: number;
+    // challengerContestantId: number;
+    leftContestantId: number;
+    rightContestantId: number;
 }
 
-const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number, challengerContestantId: number)
-    => ListRowRenderer = (contestants, currContestantIndex, challengerContestantId) =>
+const rowRenderer: (contestants: ContestantEntryMap,
+    leftContestantId: number,
+    rightContestantId: number
+) => ListRowRenderer =
+    (contestantsMap, leftContestantId, rightContestantId) =>
         ({ index, isScrolling, key, style }) => {
-            let contestantEntry: ContestantEntry = contestants[index];
-
+            let contestantEntry: ContestantEntry = _.values(contestantsMap)[index];
             return (
                 <div style={style} key={index}>
                     <ContestantPreviewContainer
                         key={contestantEntry.contestant.contestantId}
                         contestant={contestantEntry}
                         isSkipped={false}
-                        isPassed={isPassed(
-                            contestantEntry.contestant.contestantId,
-                            contestants,
-                            challengerContestantId,
-                            currContestantIndex)}
-                        isInBout={index === currContestantIndex ||
-                            contestantEntry.contestant.contestantId === challengerContestantId}
+                        isPassed={true
+                            // isPassed(
+                            // contestantEntry.contestant.contestantId,
+                            // contestants,
+                            // challengerContestantId,
+                            // currContestantIndex)
+                        }
+                        isInBout={contestantEntry.contestant.contestantId === leftContestantId ||
+                            contestantEntry.contestant.contestantId === rightContestantId}
                         setContestantModal={setContestantModal}
                         toggleSkipContestantId={toggleSkipContestantId}
                     />
@@ -41,7 +47,7 @@ const rowRenderer: (contestants: ContestantEntry[], currContestantIndex: number,
         };
 
 const ContestantList =
-    ({ contestants, skipContestantIds, currContestantIndex, challengerContestantId }: ContestantListProps) => {
+    ({ contestants, skipContestantIds, leftContestantId, rightContestantId }: ContestantListProps) => {
         return (
             <div className="cList">
                 <AutoSizer>
@@ -49,15 +55,15 @@ const ContestantList =
                         <List
                             height={height}
                             // noRowsRenderer={this._noRowsRenderer}
-                            rowCount={contestants.length}
+                            rowCount={_.size(contestants)}
                             rowHeight={140}
                             style={({ outline: 'none' })}
-                            rowRenderer={rowRenderer(contestants, currContestantIndex, challengerContestantId)}
+                            rowRenderer={rowRenderer(contestants, leftContestantId, rightContestantId)}
                             width={width}
-                            scrollToIndex={Math.max(
-                                0,
-                                (findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) !== -1 ?
-                                    currContestantIndex + 1 : currContestantIndex) - 3)}
+                            // scrollToIndex={Math.max(
+                            //     0,
+                            //     (findNextContestantIndex(contestants, skipContestantIds, currContestantIndex) !== -1 ?
+                            //         currContestantIndex + 1 : currContestantIndex) - 3)}
                             scrollToAlignment={"start"}
                         />
                     )}

@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 
 export function mapStateToProps(state: StoreState, ownProps: ContestantPreviewProps) {
     return {
-        isSkipped: _.includes(state.contestants.skipContestantIds, ownProps.contestant.contestant.contestantId)
+        isSkipped: _.includes(state.skipContestantIds, ownProps.contestant.contestant.contestantId)
     }
 }
 

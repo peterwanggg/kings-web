@@ -6,7 +6,7 @@ import * as numeral from 'numeral'
 // import { ChangeCategoryIdThunkAction, ChangeChallengerIdThunkAction } from '../actions/ContestantActions';
 
 type dispatchChangeRoute = (route: ROUTE_TYPE) => void;
-type dispatchChangeChallengerIdThunk = (challengerContestantId: number) => void;
+type dispatchChangeChallengerIdThunk = (challengerContestantId: number, categoryId: number) => void;
 type dispatchChangeCategoryIdThunk = (categoryId: number) => void;
 
 
@@ -24,7 +24,7 @@ const judgeChallenger = (challenger: Contestant,
     dispatchChangeChallengerIdThunk: dispatchChangeChallengerIdThunk) => {
 
     dispatchChangeRoute(BOUT_ROUTE);
-    dispatchChangeChallengerIdThunk(challenger.contestantId);
+    dispatchChangeChallengerIdThunk(challenger.contestantId, challenger.categoryId);
 }
 
 const judgeCategory = (categoryId: number,

@@ -39,8 +39,8 @@ class CategoriesRoute extends React.Component<CategoriesRouteProps> {
                                 categorySummary={topCat}
                                 rankType={this.props.rankType}
                                 dispatchChangeRoute={(route: ROUTE_TYPE) => this.props.dispatch(push(route))}
-                                dispatchChangeChallengerIdThunk={(challengerContestantId: number) =>
-                                    this.props.dispatch(changeChallengerThunk(challengerContestantId))}
+                                dispatchChangeChallengerIdThunk={(challengerContestantId: number, categoryId: number) =>
+                                    this.props.dispatch(changeChallengerThunk(challengerContestantId, categoryId))}
                                 dispatchChangeCategoryIdThunk={(categoryId: number) =>
                                     this.props.dispatch(changeCategoryIdThunk(categoryId, this.props.categoryType))}
                             />
