@@ -7,7 +7,6 @@ import 'font-awesome/css/font-awesome.css'
 export interface ContestantPreviewProps {
     contestant: ContestantEntry;
     isSkipped: boolean;
-    isPassed: boolean;
     isInBout: boolean;
 
     // action
@@ -15,45 +14,42 @@ export interface ContestantPreviewProps {
     setContestantModal: SetContestantModalType;
 }
 
-const aClassName = (isInBout: boolean, isPassed: boolean) => isInBout || isPassed ? "" : "button";
+const aClassName = (isInBout: boolean) => isInBout ? "" : "button";
 
-const spanClassName = (isSkipped: boolean, isPassed: boolean, isInBout: boolean) =>
+const spanClassName = (isSkipped: boolean, isInBout: boolean) =>
     "icon is-large " +
     (isInBout ? "has-text-danger" :
-        (isPassed ? "has-text-info" :
-            (isSkipped ? "has-text-warning" : "has-text-success")))
+        isSkipped ? "has-text-warning" : "has-text-success")
 
-const iClassName = (isSkipped: boolean, isPassed: boolean, isInBout: boolean) =>
+const iClassName = (isSkipped: boolean, isInBout: boolean) =>
     isInBout ? "fa fa-arrow-left" :
-        isPassed ? "fa fa-repeat" :
-            isSkipped ? "fa fa-minus" : "fa fa-check"
+        isSkipped ? "fa fa-minus" : "fa fa-check"
 
 const skipCheckbox = (contestant: ContestantEntry,
     isSkipped: boolean,
-    isPassed: boolean,
     isInBout: boolean,
     toggleSkipContestantId: ToggleSkipContestantIdType,
     setContestantModal: SetContestantModalType) => {
 
     return (
         <a
-            className={aClassName(isInBout, isPassed)}
-            onClick={() => !isInBout && !isPassed ?
+            className={aClassName(isInBout)}
+            onClick={() => !isInBout ?
                 toggleSkipContestantId(contestant.contestant.contestantId) :
                 setContestantModal(contestant)}
         >
-            <span className={spanClassName(isSkipped, isPassed, isInBout)}>
-                <i className={iClassName(isSkipped, isPassed, isInBout)} />
+            <span className={spanClassName(isSkipped, isInBout)}>
+                <i className={iClassName(isSkipped, isInBout)} />
             </span>
         </a>
     )
 }
 
-const ContestantPreview = ({ contestant, isSkipped, isPassed, isInBout, toggleSkipContestantId, setContestantModal }: ContestantPreviewProps) => {
+const ContestantPreview = ({ contestant, isSkipped, isInBout, toggleSkipContestantId, setContestantModal }: ContestantPreviewProps) => {
     return (
         <div className="tile is-ancestor box">
             <div className="tile is-1">
-                {skipCheckbox(contestant, isSkipped, isPassed, isInBout, toggleSkipContestantId, setContestantModal)}
+                {skipCheckbox(contestant, isSkipped, isInBout, toggleSkipContestantId, setContestantModal)}
             </div>
 
             <div className="tile is-parent hoverable" onClick={() => { setContestantModal(contestant) }} >
@@ -67,13 +63,9 @@ const ContestantPreview = ({ contestant, isSkipped, isPassed, isInBout, toggleSk
                     <div className="tile">
                         {contestant.contestant.contestantName}
                     </div>
-                    {isPassed ?
-                        <div className="tile">
-                            {contestant.contestantStats.winCount} - {contestant.contestantStats.loseCount}
-                        </div>
-                        :
-                        <div />
-                    }
+                    <div className="tile">
+                        {contestant.contestantStats.winCount} - {contestant.contestantStats.loseCount}
+                    </div>
                 </div>
             </div>
         </div>

@@ -11,8 +11,6 @@ import * as _ from 'lodash';
 export interface ContestantListProps {
     contestants: ContestantEntryMap;
     skipContestantIds: number[];
-    // currContestantIndex: number;
-    // challengerContestantId: number;
     leftContestantId: number;
     rightContestantId: number;
 }
@@ -30,13 +28,6 @@ const rowRenderer: (contestants: ContestantEntryMap,
                         key={contestantEntry.contestant.contestantId}
                         contestant={contestantEntry}
                         isSkipped={false}
-                        isPassed={true
-                            // isPassed(
-                            // contestantEntry.contestant.contestantId,
-                            // contestants,
-                            // challengerContestantId,
-                            // currContestantIndex)
-                        }
                         isInBout={contestantEntry.contestant.contestantId === leftContestantId ||
                             contestantEntry.contestant.contestantId === rightContestantId}
                         setContestantModal={setContestantModal}

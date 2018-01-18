@@ -116,23 +116,6 @@ export const getMatchThunk: GetMatchThunkType =
                 .then((response: GetMatchResponse) => dispatch(receiveMatch(response.match)))
         }
 
-// export const requestChallengersThunk: RequestChallengersCallType =
-//     (challengerContestantId, page) =>
-//         (dispatch, getState) => {
-//             let latLon = getState().latLon;
-//             dispatch(requestChallengers(latLon, challengerContestantId))
-//             return fetch(
-//                 KINGS_API_BASE_URL + `/contestants/challenger?lat=${latLon.lat}&lon=${latLon.lon}&challenger-contestant-id=${challengerContestantId}&page=${page}`,
-//                 {
-//                     method: 'GET',
-//                     credentials: "same-origin",
-//                     headers: DEFAULT_HEADERS,
-//                 })
-//                 .then(response => response.json())
-//                 .then((response: ChallengerResponse) =>
-//                     dispatch(receiveChallengers(response.challenger, response.contestants, page)))
-//         }
-
 export const requestContestantsThunk: RequestContestantsCallType =
     (categoryId, page) =>
         (dispatch, getState) => {
@@ -153,17 +136,21 @@ export const requestContestantsThunk: RequestContestantsCallType =
 export const changeCategoryIdThunk: ChangeCategoryIdThunkType =
     (nextCategoryId, categoryType) =>
         (dispatch) => {
-            dispatch(requestContestantsThunk(nextCategoryId, 1))
-            dispatch(getMatchThunk(nextCategoryId, "category", categoryType))
-            dispatch({ type: CHANGE_CATEGORY_ID, nextCategoryId: nextCategoryId })
+            dispatch(requestContestantsThunk(nextCategoryId, 1));
+            dispatch(getMatchThunk(nextCategoryId, "category", categoryType));
+            dispatch({ type: CHANGE_CATEGORY_ID, nextCategoryId: nextCategoryId });
         }
 
 export const changeChallengerThunk: ChangeChallengerIdThunkType =
     (challengerContestantId, nextCategoryId) =>
         (dispatch, getState) => {
-            dispatch(requestContestantsThunk(nextCategoryId, 1))
-            dispatch(getMatchThunk(challengerContestantId, "contestant", getState().categoryType))
-            dispatch({ type: CHANGE_CHALLENGER_ID })
+            if (nextCategoryId != getState().categoryId) {
+                dispatch({ type: CHANGE_CATEGORY_ID, nextCategoryId: nextCategoryId });
+            }
+            dispatch(requestContestantsThunk(nextCategoryId, 1));
+            dispatch(getMatchThunk(challengerContestantId, "contestant", getState().categoryType));
+            dispatch({ type: CHANGE_CHALLENGER_ID });
+
         }
 
 export const submitBoutThunk: SubmitBoutCallType =
@@ -198,14 +185,6 @@ export const searchContestantsCall: (latLon: LatLon, categoryType: CATEGORY_TYPE
 export const skipContestantThunk: SkipContestantThunkCallType =
     (skipContestantId, otherContestantId) =>
         (dispatch, getState) => {
-            // let state: StoreState = getState();
-            // requestChallengersIfNeeded(
-            //     dispatch,
-            //     otherContestantId,
-            //     state.contestants.entryPage + 1,
-            //     state.contestants.entries,
-            //     state.contestants.skipContestantIds,
-            //     state.contestants.currContestantIndex);
             dispatch(toggleSkipContestantId(skipContestantId));
             dispatch(getMatchThunk(otherContestantId, "contestant", getState().categoryType))
             dispatch({ type: SKIP_CONTESTANT, skipContestantId: skipContestantId })

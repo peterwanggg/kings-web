@@ -6,9 +6,6 @@
     "node": "9.3.x"
   },
   "dependencies": {
-    "@types/history": "^4.6.2",
-    "@types/numeral": "0.0.22",
-    "@types/react-virtualized": "^9.7.10",
     "bulma": "^0.6.1",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
@@ -40,6 +37,9 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
+    "@types/history": "^4.6.2",
+    "@types/numeral": "0.0.22",
+    "@types/react-virtualized": "^9.7.10",
     "@types/jest": "^20.0.0",
     "@types/lodash": "^4.14.91",
     "@types/node": "^8.5.2",
