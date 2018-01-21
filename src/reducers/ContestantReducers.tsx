@@ -3,7 +3,8 @@ import {
     SUBMIT_BOUT,
     TOGGLE_SKIP_CONTESTANT_ID,
     RECEIVE_MATCH,
-    RECEIVE_NEXT_CONTESTANT
+    RECEIVE_NEXT_CONTESTANT,
+    RECEIVE_CONTESTANT_SKIPS
 } from '../constants';
 import {
     INITIAL_STATE,
@@ -16,7 +17,8 @@ import {
     SubmitBoutResponseAction,
     ToggleSkipContestantIdAction,
     ReceiveMatchResponseAction,
-    ReceiveNextContestantAction
+    ReceiveNextContestantAction,
+    ReceiveContestantSkipsResponseAction
 } from '../actions/ContestantActions';
 import * as _ from 'lodash';
 
@@ -29,9 +31,16 @@ export const match =
                 if (_.isNil(action.match)) {
                     return INITIAL_STATE.match;
                 }
-                return {
-                    left: action.match.left,
-                    right: action.match.right,
+                if (state.right.contestant.contestantId === action.match.left.contestant.contestantId) {
+                    return {
+                        left: action.match.right,
+                        right: action.match.left,
+                    }
+                } else {
+                    return {
+                        left: action.match.left,
+                        right: action.match.right,
+                    }
                 }
             case RECEIVE_NEXT_CONTESTANT:
                 if (_.isNil(action.nextContestant)) {
@@ -75,13 +84,17 @@ export const contestantEntries =
 
 export const skipContestantIds =
     (state: number[] = INITIAL_STATE.skipContestantIds,
-        action: ToggleSkipContestantIdAction
+        action: ToggleSkipContestantIdAction | ReceiveContestantSkipsResponseAction
     ): number[] => {
         switch (action.type) {
+            case RECEIVE_CONTESTANT_SKIPS:
+                return action.contestantSkips;
             case TOGGLE_SKIP_CONTESTANT_ID:
-                return _.includes(state, action.skipContestantId) ?
-                    _.pull(state, action.skipContestantId) :
-                    _.concat(state, action.skipContestantId)
+                let nextState: number[] =
+                    _.includes(state, action.skipContestantId) ?
+                        _.pull(state, action.skipContestantId) :
+                        _.concat(state, action.skipContestantId)
+                return nextState;
             default:
                 return state;
         }

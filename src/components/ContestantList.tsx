@@ -2,7 +2,6 @@ import * as React from 'react';
 import { AutoSizer, List, ListRowRenderer } from 'react-virtualized';
 import { ContestantEntry, ContestantEntryMap } from '../types/index';
 import 'react-virtualized/styles.css'; // only needs to be imported once
-import { toggleSkipContestantId } from '../actions/ContestantActions';
 import { setContestantModal } from '../actions/GlobalActions';
 import ContestantPreviewContainer from '../containers/ContestantPreviewContainer';
 import '../index.css';
@@ -31,7 +30,7 @@ const rowRenderer: (contestants: ContestantEntryMap,
                         isInBout={contestantEntry.contestant.contestantId === leftContestantId ||
                             contestantEntry.contestant.contestantId === rightContestantId}
                         setContestantModal={setContestantModal}
-                        toggleSkipContestantId={toggleSkipContestantId}
+                        toggleSkipContestantId={(skipContestantId: number) => Promise.resolve()}
                     />
                 </div>
             );

@@ -9,7 +9,6 @@ import {
 import {
     CATEGORY_TYPE, RECEIVE_CATEGORIES,
     CHANGE_CATEGORY_ID,
-    RECEIVE_CHALLENGERS,
     BOUT_MODE_TYPE,
     CHANGE_BOUT_MODE,
     ROULETTE,
@@ -22,7 +21,7 @@ import {
     CHANGE_CHALLENGER_ID
 } from '../constants/index';
 import {
-    ReceiveChallengersResponseAction, ChangeCategoryIdThunkAction, ChangeChallengerIdThunkAction,
+    ChangeCategoryIdThunkAction, ChangeChallengerIdThunkAction,
 } from '../actions/ContestantActions';
 import {
     ChangeBoutModeAction,
@@ -69,10 +68,8 @@ export const categoryType =
     }
 
 export const categoryId =
-    (state: number = INITIAL_STATE.categoryId, action: ReceiveCategoriesResponseAction | ChangeCategoryIdThunkAction | ReceiveChallengersResponseAction) => {
+    (state: number = INITIAL_STATE.categoryId, action: ReceiveCategoriesResponseAction | ChangeCategoryIdThunkAction ) => {
         switch (action.type) {
-            case RECEIVE_CHALLENGERS:
-                return action.challenger.contestant.categoryId;
             case CHANGE_CATEGORY_ID:
                 return action.nextCategoryId;
             case RECEIVE_CATEGORIES:

@@ -1,6 +1,5 @@
 import {
     RECEIVE_CONTESTANTS,
-    RECEIVE_CHALLENGERS,
     SUBMIT_BOUT,
     CATEGORY_TYPE,
     TOGGLE_SKIP_CONTESTANT_ID,
@@ -11,11 +10,11 @@ import {
     RECEIVE_MATCH,
     RECEIVE_NEXT_CONTESTANT,
     RECEIVE_NEXT_CONTESTANT_TYPE,
+    RECEIVE_CONTESTANT_SKIPS,
 } from '../constants'
 import { ActionType, StoreState, ContestantEntry, LatLon, Contestant, ContestantsResponse, GetMatchResponse, NextContestantResponse, ContestantEntryPair } from '../types/index'
 import { Dispatch } from 'redux'
 import * as _ from 'lodash'
-// import { findNextContestantIndex } from '../utils/ContestantUtils'
 import { KINGS_API_BASE_URL, DEFAULT_HEADERS } from '../constants/ApiConstants';
 
 /*** TYPES: ACTION **/
@@ -36,11 +35,9 @@ export interface ReceiveContestantsResponseAction extends ActionType<RECEIVE_CON
     page: number;
 }
 
-export interface ReceiveChallengersResponseAction extends ActionType<RECEIVE_CHALLENGERS> {
-    type: RECEIVE_CHALLENGERS;
-    challenger: ContestantEntry;
-    contestants: ContestantEntry[];
-    page: number;
+export interface ReceiveContestantSkipsResponseAction extends ActionType<RECEIVE_CONTESTANT_SKIPS> {
+    type: RECEIVE_CONTESTANT_SKIPS;
+    contestantSkips: number[]
 }
 
 export interface SubmitBoutResponseAction extends ActionType<SUBMIT_BOUT> {
@@ -71,7 +68,11 @@ export interface ChangeChallengerIdThunkAction extends ActionType<CHANGE_CHALLEN
 
 /*** TYPES: CALL **/
 export type GetMatchThunkType =
-    (id: number, idType: "contestant" | "category", categoryType: CATEGORY_TYPE) =>
+    (id: number,
+        idType: "contestant" | "category",
+        categoryType: CATEGORY_TYPE,
+        skipContestantId: number | undefined
+    ) =>
         (dispatch: Dispatch<StoreState>) => Promise<ReceiveMatchResponseAction>
 
 export type ChangeCategoryIdThunkType =
@@ -86,10 +87,6 @@ export type RequestContestantsCallType =
     (categoryId: number, page: number) =>
         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<ReceiveContestantsResponseAction>
 
-// export type RequestChallengersCallType =
-//     (challengerContestantId: number, page: number) =>
-//         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<ReceiveChallengersResponseAction>
-
 export type SubmitBoutCallType =
     (challenger: ContestantEntry, winnerContestantId: number, loserContestantId: number, nextContestantId: number) =>
         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<NextContestantResponse>
@@ -98,15 +95,24 @@ export type SkipContestantThunkCallType =
     (skipContestantId: number, otherContestantId: number) =>
         (dispatch: Dispatch<StoreState>, getState: () => StoreState) => void
 
-export type ToggleSkipContestantIdType =
-    (skipContestantId: number) => ToggleSkipContestantIdAction
+export type ToggleSkipContestantIdThunkType =
+    (skipContestantId: number) =>
+        (dispatch: Dispatch<StoreState>, getState: () => StoreState) => Promise<void>
+
+type RequestSkipsThunkType =
+    (categoryId: number) =>
+        (dispatch: Dispatch<StoreState>) => Promise<ReceiveContestantSkipsResponseAction>
 
 /*** API CALL ACTIONS ***/
 export const getMatchThunk: GetMatchThunkType =
-    (id, idType, categoryType) =>
+    (id, idType, categoryType, skipContestantId) =>
         (dispatch) => {
+            let url: string = KINGS_API_BASE_URL + `/bout/${categoryType}/${idType}/${id}`;
+            if (!_.isNil(skipContestantId)) {
+                url += `?skip-contestant-id=${skipContestantId}`;
+            }
             return fetch(
-                KINGS_API_BASE_URL + `/bout/${categoryType}/${idType}/${id}`,
+                url,
                 {
                     method: 'GET',
                     credentials: "same-origin",
@@ -119,7 +125,6 @@ export const getMatchThunk: GetMatchThunkType =
 export const requestContestantsThunk: RequestContestantsCallType =
     (categoryId, page) =>
         (dispatch, getState) => {
-            // let latLon: LatLon = getState().latLon;
             // dispatch(requestContestants(latLon, categoryId))
             return fetch(
                 KINGS_API_BASE_URL + `/contestants/category/${getState().categoryType}/${categoryId}?location-id=${getState().location.locationId}&page=${page}`,
@@ -136,21 +141,30 @@ export const requestContestantsThunk: RequestContestantsCallType =
 export const changeCategoryIdThunk: ChangeCategoryIdThunkType =
     (nextCategoryId, categoryType) =>
         (dispatch) => {
-            dispatch(requestContestantsThunk(nextCategoryId, 1));
-            dispatch(getMatchThunk(nextCategoryId, "category", categoryType));
-            dispatch({ type: CHANGE_CATEGORY_ID, nextCategoryId: nextCategoryId });
+            // dispatch(requestContestantsThunk(nextCategoryId, 1));
+            dispatch(loadNewCategory(nextCategoryId));
+            dispatch(getMatchThunk(nextCategoryId, "category", categoryType, undefined));
+            // dispatch({ type: CHANGE_CATEGORY_ID, nextCategoryId: nextCategoryId });
         }
 
 export const changeChallengerThunk: ChangeChallengerIdThunkType =
     (challengerContestantId, nextCategoryId) =>
         (dispatch, getState) => {
-            if (nextCategoryId != getState().categoryId) {
-                dispatch({ type: CHANGE_CATEGORY_ID, nextCategoryId: nextCategoryId });
-            }
-            dispatch(requestContestantsThunk(nextCategoryId, 1));
-            dispatch(getMatchThunk(challengerContestantId, "contestant", getState().categoryType));
+            // if (nextCategoryId != getState().categoryId) {
+            //     dispatch({ type: CHANGE_CATEGORY_ID, nextCategoryId: nextCategoryId });
+            // }
+            // dispatch(requestContestantsThunk(nextCategoryId, 1));
+            dispatch(loadNewCategory(nextCategoryId));
+            dispatch(getMatchThunk(challengerContestantId, "contestant", getState().categoryType, undefined));
             dispatch({ type: CHANGE_CHALLENGER_ID });
+        }
 
+const loadNewCategory =
+    (categoryId: number) =>
+        (dispatch: Dispatch<StoreState>) => {
+            dispatch(requestContestantsThunk(categoryId, 1));
+            dispatch(requestSkipsThunk(categoryId));
+            dispatch({ type: CHANGE_CATEGORY_ID, nextCategoryId: categoryId });
         }
 
 export const submitBoutThunk: SubmitBoutCallType =
@@ -185,18 +199,41 @@ export const searchContestantsCall: (latLon: LatLon, categoryType: CATEGORY_TYPE
 export const skipContestantThunk: SkipContestantThunkCallType =
     (skipContestantId, otherContestantId) =>
         (dispatch, getState) => {
-            dispatch(toggleSkipContestantId(skipContestantId));
-            dispatch(getMatchThunk(otherContestantId, "contestant", getState().categoryType))
+            dispatch(toggleSkipContestantIdThunk(skipContestantId));
+            dispatch(getMatchThunk(otherContestantId, "contestant", getState().categoryType, skipContestantId))
             dispatch({ type: SKIP_CONTESTANT, skipContestantId: skipContestantId })
         }
 
-/*** LOCAL ACTIONS **/
-export const toggleSkipContestantId: ToggleSkipContestantIdType =
-    (skipContestantId: number) => ({
-        type: TOGGLE_SKIP_CONTESTANT_ID,
-        skipContestantId: skipContestantId
-    })
+export const toggleSkipContestantIdThunk: ToggleSkipContestantIdThunkType =
+    (skipContestantId) =>
+        (dispatch, getState) => {
+            dispatch({ type: TOGGLE_SKIP_CONTESTANT_ID, skipContestantId: skipContestantId })
+            let meth = _.includes(getState().skipContestantIds, skipContestantId) ? 'DELETE' : 'POST';
+            return fetch(
+                KINGS_API_BASE_URL + `/contestants/skip/${getState().categoryId}/${skipContestantId}`,
+                {
+                    method: meth,
+                    credentials: "same-origin",
+                    headers: DEFAULT_HEADERS,
+                })
+                .then(response => { })
+        }
 
+const requestSkipsThunk: RequestSkipsThunkType =
+    (categoryId) =>
+        (dispatch) => {
+            return fetch(
+                KINGS_API_BASE_URL + `/contestants/skip/${categoryId}`,
+                {
+                    method: 'GET',
+                    credentials: "same-origin",
+                    headers: DEFAULT_HEADERS,
+                })
+                .then(response => response.json())
+                .then((skips: number[]) => dispatch(receiveSkips(skips)))
+        }
+
+/*** LOCAL ACTIONS **/
 const receiveMatch: (match: ContestantEntryPair | null) => ReceiveMatchResponseAction =
     (match) => ({
         type: RECEIVE_MATCH,
@@ -218,14 +255,6 @@ const submitBout: (boutMode: BOUT_MODE_TYPE, winnerContestantId: number, loserCo
         loserContestantId: loserContestantId,
     });
 
-// const receiveChallengers: (challenger: ContestantEntry, fetchContestantsResponse: ContestantEntry[], page: number) => ReceiveChallengersResponseAction =
-//     (challenger: ContestantEntry, fetchContestantsResponse: ContestantEntry[], page: number) => ({
-//         type: RECEIVE_CHALLENGERS,
-//         challenger: challenger,
-//         contestants: fetchContestantsResponse,
-//         page: page,
-//     });
-
 const receiveContestants: (categoryId: number, fetchContestantsResponse: ContestantEntry[], page: number) => ReceiveContestantsResponseAction =
     (categoryId: number, fetchContestantsResponse: ContestantEntry[], page: number) => ({
         type: RECEIVE_CONTESTANTS,
@@ -233,15 +262,9 @@ const receiveContestants: (categoryId: number, fetchContestantsResponse: Contest
         page: page,
     });
 
-// these two are probably useless, unless you add a loading screen
-// const requestChallengers = (latLon: LatLon, challengerContestantId: number) => ({
-//     type: REQUEST_CHALLENGERS,
-//     latLon: latLon,
-//     challengerContestantId: challengerContestantId,
-// });
+const receiveSkips: (contestantSkips: number[]) => ReceiveContestantSkipsResponseAction =
+    (contestantSkips) => ({
+        type: RECEIVE_CONTESTANT_SKIPS,
+        contestantSkips: contestantSkips,
+    })
 
-// const requestContestants = (latLon: LatLon, categoryId: number) => ({
-//     type: REQUEST_CONTESTANTS,
-//     latLon: latLon,
-//     categoryId: categoryId,
-// });

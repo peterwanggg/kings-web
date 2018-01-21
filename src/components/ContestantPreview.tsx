@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { ContestantEntry } from '../types/index';
-import { ToggleSkipContestantIdType } from '../actions/ContestantActions';
 import { SetContestantModalType } from '../actions/GlobalActions';
 import 'font-awesome/css/font-awesome.css'
+
+export type ToggleSkipContestantIdType = (skipContestantId: number) => Promise<void>
 
 export interface ContestantPreviewProps {
     contestant: ContestantEntry;
@@ -29,7 +30,7 @@ const skipCheckbox = (contestant: ContestantEntry,
     isSkipped: boolean,
     isInBout: boolean,
     toggleSkipContestantId: ToggleSkipContestantIdType,
-    setContestantModal: SetContestantModalType) => {
+    setContestantModal: SetContestantModalType): JSX.Element => {
 
     return (
         <a
